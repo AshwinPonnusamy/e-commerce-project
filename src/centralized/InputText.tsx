@@ -31,12 +31,8 @@ const InputText = forwardRef<HTMLInputElement, InputTextProps>(
       label = "",
       variant = "outlined",
       fullWidth = true,
-      required = false,
       disabled = false,
       startAdornment,
-      minLength,
-      maxLength,
-      pattern,
       readOnly,
     },
     ref

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Box, Button, Typography } from "@mui/material";
 import { useForm } from "react-hook-form";
 import InputText from "../centralized/InputText";

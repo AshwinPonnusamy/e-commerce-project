@@ -13,7 +13,7 @@ import { FavoriteBorder, ShoppingCart } from "@mui/icons-material";
 const Header: React.FC = () => {
   const navigate = useNavigate();
   const [value, setValue] = React.useState(0);
-  const [isLoggedIn, setIsLoggedIn] = React.useState(true);
+  const [isLoggedIn] = React.useState(true);
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
 
   // Settings for the profile dropdown

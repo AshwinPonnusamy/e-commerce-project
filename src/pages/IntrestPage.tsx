@@ -1,5 +1,5 @@
 import { Box, Button, Chip, Divider, Typography } from "@mui/material";
-import React, { useState } from "react";
+import { useState } from "react";
 
 const IntrestPage = () => {
   const [categories, setCategories] = useState<any>([

@@ -1,4 +1,3 @@
-import React from 'react'
 import Router from './route/MainRoutes'
 import { BrowserRouter } from 'react-router-dom'
 

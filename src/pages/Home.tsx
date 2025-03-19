@@ -1,8 +1,6 @@
-import { ArrowRight, Search, ControlPointOutlined, Favorite } from "@mui/icons-material";
+import { ArrowRight, Search, ControlPointOutlined } from "@mui/icons-material";
 import {
   Box,
-  Card,
-  CardContent,
   Container,
   Grid,
   InputBase,
@@ -11,7 +9,7 @@ import {
   Select,
   Typography,
 } from "@mui/material";
-import React, { useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import prod1 from "../assets/image/thumbs/prod-1.png";
 import prod2 from "../assets/image/thumbs/prod-2.png";
@@ -25,7 +23,6 @@ import prod from "../assets/image/prod-4.png";
 import ProductCard from "../components/commonComponents/customCards/ProductCard";
 import CategoryCircleCard from "../components/commonComponents/customCards/CategoryCircleCard";
 import { Button } from "@mui/joy";
-import { useDispatch } from "react-redux";
 
 
 const MeetOrProduct = () => {
@@ -107,23 +104,7 @@ const MeetOrProduct = () => {
     },
   ];
 
-  const filterButton = [
-    {
-      btnName: "All",
-    },
-    {
-      btnName: "Today",
-    },
-    {
-      btnName: "Tomarrow",
-    },
-    {
-      btnName: "This Weekend",
-    },
-    {
-      btnName: "free",
-    },
-  ];
+ 
   const navigate = useNavigate();
   const [isFavorited, setIsFavorited] = useState<boolean>(false);
   const handleFavoriteChange = () => {
