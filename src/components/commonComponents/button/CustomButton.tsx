@@ -4,12 +4,14 @@ import React from 'react'
 interface buttonProps {
     buttonLabel: string;
     buttonColor?: any;
+    startIcon?:any
 
 }
 
 const CustomButton:React.FC<buttonProps> = ({
     buttonLabel = 'Button',
     buttonColor = 'primary',
+    startIcon,
 }) => {
 
     return (
@@ -23,7 +25,8 @@ const CustomButton:React.FC<buttonProps> = ({
                 transition: "transform 0.5s",
                 height:30
             }} variant="contained">
-                {buttonLabel}
+                
+                {startIcon} {buttonLabel}
             </Button>
         </Box>
 

@@ -3,13 +3,14 @@ import { Box, Button, Typography } from "@mui/material";
 import { useForm } from "react-hook-form";
 import InputText from "../centralized/InputText";
 import { useNavigate } from "react-router-dom";
+import backgroundImage from "../assets/image/login/login-bg.png";
 
 const Login = () => {
   const { control, handleSubmit } = useForm();
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const onSubmit = (data:any) => {
+  const onSubmit = (data: any) => {
     setLoading(true);
     console.log("Login Data:", data);
     setTimeout(() => {
@@ -24,7 +25,9 @@ const Login = () => {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        backgroundColor: "rgba(0, 0, 0, 0.25)",
+        backgroundImage: `url(${backgroundImage})`,
+        backgroundSize: "cover",
+        backgroundRepeat: "no-repeat",
         height: "100vh",
         position: "relative",
       }}
@@ -38,7 +41,7 @@ const Login = () => {
           width: "100%",
           maxWidth: "400px",
           margin: "auto",
-          backgroundColor: "rgba(58, 209, 230, 0)",
+          backgroundColor: "rgba(0, 0, 0, 0.1)",
           border: "1px solid rgba(0, 0, 0, 0.3)",
           borderRadius: "10px",
           boxShadow: "1px 2px 8px #000",
@@ -46,7 +49,7 @@ const Login = () => {
           zIndex: 2,
         }}
       >
-        <Typography variant="h4" component="h2" sx={{ mb: 3, color:"rgb(37, 126, 126)", textShadow:"2px 2px #000" }}>
+        <Typography variant="h4" component="h2" sx={{ mb: 3, color: "rgb(37, 126, 126)", textShadow: "2px 2px #000" }}>
           Login
         </Typography>
         <form onSubmit={handleSubmit(onSubmit)} style={{ width: "350px" }}>
@@ -68,7 +71,7 @@ const Login = () => {
             <Button
               type="submit"
               variant="contained"
-              sx={{ mt: 2, width: "200px", backgroundColor: "rgba(0,255,255,0.5)", color:"#000" }}
+              sx={{ mt: 2, width: "200px", backgroundColor: "rgba(0,255,255,0.5)", color: "#000" }}
               disabled={loading}
             >
               {loading ? "Logging in..." : "Login"}

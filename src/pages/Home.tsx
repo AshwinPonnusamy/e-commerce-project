@@ -4,113 +4,61 @@ import {
   Container,
   Grid,
   InputBase,
-  MenuItem,
   Paper,
-  Select,
   Typography,
 } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import prod1 from "../assets/image/thumbs/prod-1.png";
-import prod2 from "../assets/image/thumbs/prod-2.png";
-import prod3 from "../assets/image/thumbs/prod-3.png";
-import prod4 from "../assets/image/thumbs/prod-4.png";
-import prod5 from "../assets/image/thumbs/prod-5.png";
-import prod6 from "../assets/image/thumbs/prod-6.png";
-import prod7 from "../assets/image/thumbs/prod-7.png";
-import prod8 from "../assets/image/thumbs/prod-8.png";
 import prod from "../assets/image/prod-4.png";
 import ProductCard from "../components/commonComponents/customCards/ProductCard";
 import CategoryCircleCard from "../components/commonComponents/customCards/CategoryCircleCard";
 import { Button } from "@mui/joy";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../state/store/store";
+import { getAllProductList, getProductCategoryList } from "../state/action/product";
+// import ProductDetailPage from "./productDetail/ProductDetailPage";
 
 
-const MeetOrProduct = () => {
+
+const Home = () => {
   const [seeAll, setSeeAll] = useState(false);
-  const Category = [
-    { categoryName: "Electronics", categoryImage: prod1 },
-    { categoryName: "TVs & Appliances", categoryImage: prod2 },
-    { categoryName: "Home & Furniture", categoryImage: prod3 },
-    { categoryName: "Men", categoryImage: prod4 },
-    { categoryName: "Women", categoryImage: prod5 },
-    { categoryName: "Sports", categoryImage: prod6 },
-    { categoryName: "Health & Nutrition", categoryImage: prod7 },
-    { categoryName: "Books", categoryImage: prod8 },
-  ];
-
-  const displayedCategories = seeAll ? Category : Category.slice(0, 7);
+  // const Category = [
+  //   { categoryName: "Electronics", categoryImage: prod1 },
+  //   { categoryName: "TVs & Appliances", categoryImage: prod2 },
+  //   { categoryName: "Home & Furniture", categoryImage: prod3 },
+  //   { categoryName: "Men", categoryImage: prod4 },
+  //   { categoryName: "Women", categoryImage: prod5 },
+  //   { categoryName: "Sports", categoryImage: prod6 },
+  //   { categoryName: "Health & Nutrition", categoryImage: prod7 },
+  //   { categoryName: "Books", categoryImage: prod8 },
+  // ];
 
 
-  const productDetails = [
-    {
-      id:1,
-      name: "Product 1",
-      discription: "Product title that can go up to two lines",
-      venue: "Venue",
-      time: "00:00 AM - 00:00 PM",
-      price: "INR 499",
-      rating: 3.5,
-      favorite: false,
-    },
-    {
-      id:2,
-      name: "Product 2",
-      discription: "Product title that can go up to two lines",
-      venue: "Venue",
-      time: "00:00 AM - 00:00 PM",
-      price: "INR 499",
-      rating: 3.5,
-      favorite: false,
-    },
-    {
-      id:3,
-      name: "Product 3",
-      discription: "Product title that can go up to two lines",
-      venue: "Venue",
-      time: "00:00 AM - 00:00 PM",
-      price: "INR 499",
-      rating: 3.5,
-      favorite: false,
-    },
-    {
-      id:4,
-      name: "Product 4",
-      discription: "Product title that can go up to two lines",
-      venue: "Venue",
-      time: "00:00 AM - 00:00 PM",
-      price: "INR 499",
-      rating: 3.5,
-      favorite: false,
-    },
-    {
-      id:5,
-      name: "Product 5",
-      discription: "Product title that can go up to two lines",
-      venue: "Venue",
-      time: "00:00 AM - 00:00 PM",
-      price: "INR 499",
-      rating: 3.5,
-      favorite: false,
-    },
-    {
-      id:6,
-      name: "Product 6",
-      discription: "Product title that can go up to two lines",
-      venue: "Venue",
-      time: "00:00 AM - 00:00 PM",
-      price: "INR 499",
-      rating: 3.5,
-      favorite: false,
-    },
-  ];
 
- 
+  const dispatch = useDispatch<AppDispatch>();
+  const productDetails = useSelector((state: RootState) => state.productData?.allProductList) || [];
+  // const productCategoryList = useSelector((state: RootState) => state.productData?.productCategoryList) || [];
+  const uniqueCategories = Array.from(
+    new Map(
+      productDetails.map((product: any) => [product.category, { category: product.category, thumbnail: product.thumbnail }])
+    ).values()
+  );
+  const displayedCategories = seeAll ? uniqueCategories : uniqueCategories.slice(0, 7);
+  console.log(displayedCategories);
+
+
+
   const navigate = useNavigate();
   const [isFavorited, setIsFavorited] = useState<boolean>(false);
   const handleFavoriteChange = () => {
-    setIsFavorited( !isFavorited );
+    setIsFavorited(!isFavorited);
   };
-  
+
+  useEffect(() => {
+    dispatch(getAllProductList());
+    dispatch(getProductCategoryList());
+  }, [])
+
 
 
   return (
@@ -159,14 +107,9 @@ const MeetOrProduct = () => {
               >
                 <Search />
                 <InputBase
-                  placeholder="Search Products, Categories, Location..."
+                  placeholder="Search Products, Categories..."
                   sx={{ flex: 1, marginLeft: 1 }}
                 />
-                <Select defaultValue="Mumbai" variant="standard">
-                  <MenuItem value="Mumbai">Mumbai</MenuItem>
-                  <MenuItem value="Delhi">Delhi</MenuItem>
-                  <MenuItem value="Bangalore">Bangalore</MenuItem>
-                </Select>
               </Paper>
             </Box>
           </Box>
@@ -177,11 +120,11 @@ const MeetOrProduct = () => {
         {/* Categories Section */}
         <Grid item xs={12}>
           <Grid container spacing={2} columns={14}>
-            {displayedCategories.map((cat: any, index) => (
-              <Grid item xs={6} sm={4} md={2} key={index}>
+            {displayedCategories.map((c: any) => (
+              <Grid item xs={6} sm={4} md={2}>
                 <CategoryCircleCard
-                  categoryName={cat.categoryName}
-                  categoryImage={cat.categoryImage}
+                  categoryName={c.category}
+                  categoryImage={c.thumbnail}
                 />
               </Grid>
             ))}
@@ -212,17 +155,17 @@ const MeetOrProduct = () => {
                 textAlign: 'left'
               }}>Today&apos;s Trending Deals</Typography>
             </Grid>
-            {productDetails.map((product) => (
-              <Grid item xs={6} sm={4} md={3} key={product.id}>
+            {productDetails.map((product: any) => (
+              <Grid item xs={6} sm={4} md={3}>
                 <ProductCard
-                  productName={product?.name} 
-                  productDescription={product.discription} 
-                  productImage={prod} 
-                  productPrice={product.price} 
-                  productRating={product.rating} 
+                  productName={product?.title}
+                  productDescription={product?.description}
+                  productImage={product?.images}
+                  productPrice={product?.price}
+                  productRating={product?.rating}
                   showTrending={true}
                   handleFavoriteChange={() => handleFavoriteChange()}
-                  isFavorited={product.favorite}
+                  isFavorited={product?.favorite}
                 />
               </Grid>
             ))}
@@ -230,22 +173,11 @@ const MeetOrProduct = () => {
         </Grid>
 
 
-        <Grid item xs={12}>
+        {/* <Grid item xs={12}>
           <Grid container spacing={3}>
-            <Box textAlign="center" margin={3}>
-              <Button
-                sx={{
-                  color: "#000",
-                  backgroundColor: "rgb(157, 210, 253)",
-                  border: "1px solid",
-                  width: "100%",
-                }}
-              >
-                Label
-              </Button>
-            </Box>
+            <ProductDetailPage />
           </Grid>
-        </Grid>
+        </Grid> */}
 
 
 
@@ -301,13 +233,11 @@ const MeetOrProduct = () => {
             </Typography>
           </Box>
           <Grid container spacing={3} marginTop={2}>
-            {productDetails.map((product) => (
-              <Grid item xs={12} sm={6} md={4}>
-                <ProductCard
-                  productName={product?.name} productDescription={product.discription} productImage={prod} productPrice={product.price} productRating={product.rating}
-                />
-              </Grid>
-            ))}
+            <Grid item xs={12} sm={6} md={4}>
+              <ProductCard
+                productName={productDetails?.name} productDescription={productDetails?.description} productImage={prod} productPrice={productDetails?.price} productRating={productDetails?.rating}
+              />
+            </Grid>
           </Grid>
           <Box textAlign="center" margin={3}>
             <Button
@@ -369,4 +299,4 @@ const MeetOrProduct = () => {
   );
 };
 
-export default MeetOrProduct;
+export default Home;

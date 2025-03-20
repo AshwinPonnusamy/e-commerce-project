@@ -11,16 +11,11 @@ const Layout = () => {
         <Grid item xs={12}>
           <Header />
         </Grid>
-        <Grid
-          item
-          xs={12} 
-          md={12}
-          sx={{
-            height: "auto",
-          }}
-        >
+
+        <Grid item xs={12} md={12} sx={{ height: "auto" }}>
           <Outlet />
         </Grid>
+        
         <Grid item xs={12}>
           <Footer />
         </Grid>

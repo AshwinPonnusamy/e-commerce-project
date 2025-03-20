@@ -18,6 +18,7 @@ interface ProductCardProps {
   handleFavoriteChange?: () => void;
   handleAddCart?: () => void;
   handleShare?: () => void;
+  onClick?: () => void;
   isFavorited?:any;
 }
 
@@ -35,8 +36,9 @@ const ProductCard: React.FC<ProductCardProps> = ({
   handleAddCart,
   handleShare,
   isFavorited,
+  onClick,
 }) => {
-  const [hovered, setHovered] = useState(true);
+  const [hovered, setHovered] = useState(false);
   // const [isFavorited, setIsFavorited] = useState<boolean>(false);
   return (
     <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", m: 2 }}>
@@ -50,6 +52,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
         }}
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
+        onClick={onClick}
       >
         <Box sx={{ position: "relative" }}>
           <CardOverflow sx={{ overflow: "hidden" }}>
@@ -99,7 +102,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
               }}
             >
               {showFavorite && (
-                <CustomIconButton icon={isFavorited === true ? <Favorite/> : <FavoriteBorder />} iconColor={"error" }tooltip="Add to favorite" onClick={handleFavoriteChange} />
+                <CustomIconButton icon={isFavorited ? <Favorite/> : <FavoriteBorder />} iconColor={"error" }tooltip="Add to favorite" onClick={handleFavoriteChange} />
               )}
               {showCart && (
                  <CustomIconButton icon={<ShoppingCart/>} iconColor={"primary"} tooltip="Add to Cart" onClick={handleAddCart}/>
@@ -112,10 +115,18 @@ const ProductCard: React.FC<ProductCardProps> = ({
         </Box>
 
         <CardContent>
-          <Typography variant="h6" fontWeight="bold">
+          <Typography variant="h6" fontWeight="bold" sx={{whiteSpace:'nowrap',
+            overflow:'hidden',
+            textOverflow:'ellipsis',
+            fontSize:'20px'}}>
             {productName}
           </Typography>
-          <Typography variant="body2" color="text.secondary">
+          <Typography variant="body2" color="text.secondary" sx={{
+            whiteSpace:'nowrap',
+            overflow:'hidden',
+            textOverflow:'ellipsis',
+
+          }}>
             {productDescription}
           </Typography>
           <Box
@@ -127,7 +138,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
             }}
           >
             <Typography variant="body1" fontWeight="bold">
-              {productPrice}
+            ₹{productPrice}
             </Typography>
             <Rating value={productRating} precision={0.5} readOnly size="small" />
           </Box>
