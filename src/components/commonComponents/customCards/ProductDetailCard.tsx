@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Box, Grid, Dialog, DialogContent } from "@mui/material";
+import { Box, Grid, Dialog, DialogContent, Card, CardMedia } from "@mui/material";
 
 interface ProductDetailCardProps {
   images?: string[];
@@ -29,9 +29,9 @@ const ProductDetailCard: React.FC<ProductDetailCardProps> = ({ images = [] }) =>
 
   return (
     <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-      {/* Main Image */}
+      {/* Main Image using CardMedia */}
       {currentImage && (
-        <Box
+        <Card
           sx={{
             width: "100%",
             maxWidth: "400px",
@@ -42,8 +42,13 @@ const ProductDetailCard: React.FC<ProductDetailCardProps> = ({ images = [] }) =>
           }}
           onClick={handleToggle}
         >
-          <img src={currentImage} alt="product" style={{ width: "100%" }} />
-        </Box>
+          <CardMedia
+            component="img"
+            image={currentImage}
+            alt="product"
+            sx={{ width: "100%", height: 400, objectFit: "contain", borderRadius: 2, boxShadow: 1 }}
+          />
+        </Card>
       )}
 
       {/* Thumbnail Gallery */}
@@ -51,10 +56,10 @@ const ProductDetailCard: React.FC<ProductDetailCardProps> = ({ images = [] }) =>
         <Grid container spacing={1} justifyContent="center" mt={2}>
           {images.map((image, index) => (
             <Grid item key={index}>
-              <Box
+              <Card
                 sx={{
-                  width: "60px",
-                  height: "60px",
+                  width: 60,
+                  height: 60,
                   borderRadius: 1,
                   overflow: "hidden",
                   cursor: "pointer",
@@ -62,8 +67,13 @@ const ProductDetailCard: React.FC<ProductDetailCardProps> = ({ images = [] }) =>
                 }}
                 onClick={() => handleClick(index)}
               >
-                <img src={image} alt={`thumb-${index}`} style={{ width: "100%" }} />
-              </Box>
+                <CardMedia
+                  component="img"
+                  image={image}
+                  alt={`thumb-${index}`}
+                  sx={{ width: "100%", height: "100%", objectFit: "cover" }}
+                />
+              </Card>
             </Grid>
           ))}
         </Grid>
@@ -72,7 +82,12 @@ const ProductDetailCard: React.FC<ProductDetailCardProps> = ({ images = [] }) =>
       {/* Fullscreen Dialog */}
       <Dialog open={open} onClose={handleClose} maxWidth="md">
         <DialogContent>
-          <img src={currentImage} alt="enlarged-product" style={{ width: "100%" }} />
+          <CardMedia
+            component="img"
+            image={currentImage}
+            alt="enlarged-product"
+            sx={{ width: "100%", height: "auto", objectFit: "cover" }}
+          />
         </DialogContent>
       </Dialog>
     </Box>

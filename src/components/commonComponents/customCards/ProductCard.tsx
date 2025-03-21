@@ -11,6 +11,8 @@ interface ProductCardProps {
   productImage: string;
   productPrice: string;
   productRating: number;
+  originalPrice?: number;
+  discount?: number;
   showFavorite?: boolean;
   showCart?: boolean;
   showShare?: boolean;
@@ -19,7 +21,7 @@ interface ProductCardProps {
   handleAddCart?: () => void;
   handleShare?: () => void;
   onClick?: () => void;
-  isFavorited?:any;
+  isFavorited?: any;
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({
@@ -27,6 +29,8 @@ const ProductCard: React.FC<ProductCardProps> = ({
   productPrice,
   productImage,
   productDescription,
+  originalPrice,
+  discount,
   productRating,
   showFavorite = true,
   showCart = true,
@@ -39,9 +43,9 @@ const ProductCard: React.FC<ProductCardProps> = ({
   onClick,
 }) => {
   const [hovered, setHovered] = useState(false);
-  // const [isFavorited, setIsFavorited] = useState<boolean>(false);
+
   return (
-    <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", m: 2 }}>
+    <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", m: 1 }}>
       <Card
         sx={{
           maxWidth: 250,
@@ -52,10 +56,9 @@ const ProductCard: React.FC<ProductCardProps> = ({
         }}
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
-        onClick={onClick}
       >
         <Box sx={{ position: "relative" }}>
-          <CardOverflow sx={{ overflow: "hidden" }}>
+          <CardOverflow sx={{ overflow: "hidden" }}  onClick={onClick}>
             <AspectRatio ratio="1/1" sx={{ width: "100%" }}>
               <img
                 src={productImage}
@@ -88,8 +91,8 @@ const ProductCard: React.FC<ProductCardProps> = ({
                 Trending
               </Typography>
             )}
-
-          {/* Favorite & Cart Icons (Visible on Hover) */}
+            </Box>
+             {/* Favorite & Cart Icons (Visible on Hover) */}
           {hovered && (
             <Box
               sx={{
@@ -102,29 +105,30 @@ const ProductCard: React.FC<ProductCardProps> = ({
               }}
             >
               {showFavorite && (
-                <CustomIconButton icon={isFavorited ? <Favorite/> : <FavoriteBorder />} iconColor={"error" }tooltip="Add to favorite" onClick={handleFavoriteChange} />
+                <CustomIconButton icon={isFavorited ? <Favorite /> : <FavoriteBorder />} iconColor={"error"} tooltip="Add to favorite" onClick={handleFavoriteChange} />
               )}
               {showCart && (
-                 <CustomIconButton icon={<ShoppingCart/>} iconColor={"primary"} tooltip="Add to Cart" onClick={handleAddCart}/>
+                <CustomIconButton icon={<ShoppingCart />} iconColor={"primary"} tooltip="Add to Cart" onClick={handleAddCart} />
               )}
               {showShare && (
-                <CustomIconButton icon={<Share/>} iconColor={"secondary"} tooltip="Share" onClick={handleShare} />
+                <CustomIconButton icon={<Share />} iconColor={"secondary"} tooltip="Share" onClick={handleShare} />
               )}
-            </Box>
-          )}
         </Box>
+          )}
 
         <CardContent>
-          <Typography variant="h6" fontWeight="bold" sx={{whiteSpace:'nowrap',
-            overflow:'hidden',
-            textOverflow:'ellipsis',
-            fontSize:'20px'}}>
+          <Typography variant="h6" fontWeight="bold" sx={{
+            whiteSpace: 'nowrap',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            fontSize: '20px'
+          }}>
             {productName}
           </Typography>
           <Typography variant="body2" color="text.secondary" sx={{
-            whiteSpace:'nowrap',
-            overflow:'hidden',
-            textOverflow:'ellipsis',
+            whiteSpace: 'nowrap',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
 
           }}>
             {productDescription}
@@ -138,12 +142,23 @@ const ProductCard: React.FC<ProductCardProps> = ({
             }}
           >
             <Typography variant="body1" fontWeight="bold">
-            ₹{productPrice}
+              ₹{productPrice}
+            </Typography>
+            <Typography
+              variant="body2"
+              color="green"
+              fontWeight="bold"
+              sx={{ ml: 1, backgroundColor: "#d4f4dd", padding: "2px 6px", borderRadius: "4px" }}
+            >
+              {discount}%
             </Typography>
             <Rating value={productRating} precision={0.5} readOnly size="small" />
           </Box>
-          <Box sx={{ display: "flex", justifyContent: "flex-end", mt:1 }}>
-            <CustomButton buttonLabel="Buy Now"/>
+          <Typography variant="body2" sx={{ textDecoration: "line-through", color: "gray" }}>
+          ₹{originalPrice?.toFixed(2)}
+          </Typography>
+          <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 1 }}>
+            <CustomButton buttonLabel="Buy Now" />
           </Box>
         </CardContent>
       </Card>
