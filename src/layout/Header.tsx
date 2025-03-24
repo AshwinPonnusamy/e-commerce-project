@@ -9,14 +9,16 @@ import MenuIcon from "@mui/icons-material/Menu";
 import { useNavigate } from "react-router-dom";
 import { Tabs, Tab, Avatar, Menu, MenuItem, Tooltip, Badge } from "@mui/material";
 import { FavoriteBorder, ShoppingCart } from "@mui/icons-material";
+import { useSelector } from "react-redux";
+import { RootState } from "../state/store/store";
 
 const Header: React.FC = () => {
   const navigate = useNavigate();
   const [value, setValue] = React.useState(0);
   const [isLoggedIn] = React.useState(true);
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
-
-  // Settings for the profile dropdown
+  const cartItems = useSelector((state: RootState) => state.productData.cartItems);
+  const totalCartItems = cartItems.reduce((total, item) => total + item.quantity, 0);
   const settings = ["Profile", "Logout"];
 
   const handleChange = (_event: any, newValue: number) => {
@@ -30,6 +32,10 @@ const Header: React.FC = () => {
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
+  const handleCartOpen = () => {
+    navigate("/layout/shoppingcart");
+  };
+
 
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -42,7 +48,7 @@ const Header: React.FC = () => {
 
           {/* Title */}
           <Typography variant="h6" component="div">
-          ஜவுளி கடல்
+          BUYNWELL
           </Typography>
 
           {/* Centered Tabs */}
@@ -91,8 +97,8 @@ const Header: React.FC = () => {
                 Create Product
               </Button> */}
 
-              <IconButton disableFocusRipple disableTouchRipple disableRipple sx={{ color: "#fff", display:"flex", flexDirection:"column" }}>
-              <Badge badgeContent={4} color="primary">
+              <IconButton disableFocusRipple disableTouchRipple disableRipple sx={{ color: "#fff", display:"flex", flexDirection:"column" }} onClick={handleCartOpen}>
+              <Badge badgeContent={totalCartItems} color="primary">
                 <ShoppingCart />
                 </Badge>
                 <span style={{ fontSize: "12px", marginLeft: "6px" }}>

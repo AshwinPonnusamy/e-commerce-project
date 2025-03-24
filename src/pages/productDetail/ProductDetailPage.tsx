@@ -10,8 +10,6 @@ const product = useSelector((state: RootState) => state.productData?.currentProd
 
     const originalPrice = product?.price / (1 - (product?.discountPercentage / 100));
 
-    console.log(product);
-
     const [quant, setQuant] = useState(1);
     // const [orderedQuant, setOrderedQuant] = useState(0);
     const addQuant = () => setQuant((prev) => Math.min(prev + 1, 100));

@@ -1,8 +1,7 @@
 import { AspectRatio, CardOverflow } from "@mui/joy";
 import { Typography, CardContent, Box, Card, Rating } from "@mui/material";
-import { Favorite, FavoriteBorder, Share, ShoppingCart } from "@mui/icons-material";
+import { Favorite, FavoriteBorder, Share, ShoppingCart, ShoppingCartOutlined } from "@mui/icons-material";
 import React, { useState } from "react";
-import CustomButton from "../button/CustomButton";
 import CustomIconButton from "../button/CustomIconButton";
 
 interface ProductCardProps {
@@ -22,6 +21,7 @@ interface ProductCardProps {
   handleShare?: () => void;
   onClick?: () => void;
   isFavorited?: any;
+  isInCart: boolean;
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({
@@ -41,8 +41,28 @@ const ProductCard: React.FC<ProductCardProps> = ({
   handleShare,
   isFavorited,
   onClick,
+  isInCart,
 }) => {
+
   const [hovered, setHovered] = useState(false);
+  const [clicked, setClicked] = useState(false);
+
+  const handleMouseEnter = () => {
+    if (!clicked) setHovered(true);
+  };
+
+  const handleMouseLeave = () => {
+    if (!clicked) setHovered(false);
+  };
+
+  const handleClick = () => {
+    if (!isInCart) {
+      setClicked(true);
+    } else {
+      setClicked(false);
+      setHovered(false);
+    }
+  };
 
   return (
     <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", m: 1 }}>
@@ -54,11 +74,12 @@ const ProductCard: React.FC<ProductCardProps> = ({
           position: "relative",
           transition: "0.3s",
         }}
-        onMouseEnter={() => setHovered(true)}
-        onMouseLeave={() => setHovered(false)}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+        onClick={handleClick}
       >
         <Box sx={{ position: "relative" }}>
-          <CardOverflow sx={{ overflow: "hidden" }}  onClick={onClick}>
+          <CardOverflow sx={{ overflow: "hidden" }} onClick={onClick}>
             <AspectRatio ratio="1/1" sx={{ width: "100%" }}>
               <img
                 src={productImage}
@@ -91,30 +112,35 @@ const ProductCard: React.FC<ProductCardProps> = ({
                 Trending
               </Typography>
             )}
-            </Box>
-             {/* Favorite & Cart Icons (Visible on Hover) */}
-          {hovered && (
-            <Box
-              sx={{
-                position: "absolute",
-                top: 10,
-                right: 10,
-                display: "flex",
-                flexDirection: "column",
-                gap: 1,
-              }}
-            >
-              {showFavorite && (
-                <CustomIconButton icon={isFavorited ? <Favorite /> : <FavoriteBorder />} iconColor={"error"} tooltip="Add to favorite" onClick={handleFavoriteChange} />
-              )}
-              {showCart && (
-                <CustomIconButton icon={<ShoppingCart />} iconColor={"primary"} tooltip="Add to Cart" onClick={handleAddCart} />
-              )}
-              {showShare && (
-                <CustomIconButton icon={<Share />} iconColor={"secondary"} tooltip="Share" onClick={handleShare} />
-              )}
         </Box>
-          )}
+        {/* Favorite & Cart Icons (Visible on Hover) */}
+        {hovered && (
+          <Box
+            sx={{
+              position: "absolute",
+              top: 10,
+              right: 10,
+              display: "flex",
+              flexDirection: "column",
+              gap: 1,
+            }}
+          >
+            {showFavorite && (
+              <CustomIconButton icon={isFavorited ? <Favorite /> : <FavoriteBorder />} iconColor={"error"} tooltip="Add to favorite" onClick={handleFavoriteChange} />
+            )}
+            {showCart && (
+              <CustomIconButton
+                icon={isInCart ? <ShoppingCart /> : <ShoppingCartOutlined />}
+                iconColor={isInCart ? "success" : "primary"}
+                tooltip={isInCart ? "Added to Cart" : "Add to Cart"}
+                onClick={handleAddCart}
+              />
+            )}
+            {showShare && (
+              <CustomIconButton icon={<Share />} iconColor={"secondary"} tooltip="Share" onClick={handleShare} />
+            )}
+          </Box>
+        )}
 
         <CardContent>
           <Typography variant="h6" fontWeight="bold" sx={{
@@ -155,11 +181,12 @@ const ProductCard: React.FC<ProductCardProps> = ({
             <Rating value={productRating} precision={0.5} readOnly size="small" />
           </Box>
           <Typography variant="body2" sx={{ textDecoration: "line-through", color: "gray" }}>
-          ₹{originalPrice?.toFixed(2)}
+            ₹{originalPrice?.toFixed(2)}
           </Typography>
-          <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 1 }}>
+          {/* <Box sx={{ display: "flex", justifyContent: "space-", mt: 1 }}>
             <CustomButton buttonLabel="Buy Now" />
-          </Box>
+            <CustomButton buttonLabel="Buy Now" />
+          </Box> */}
         </CardContent>
       </Card>
     </Box>

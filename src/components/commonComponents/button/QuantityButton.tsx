@@ -17,7 +17,6 @@ const QuantityButton: React.FC<QuantityButtonProps> = ({ onQuant, onRemove, onAd
             sx={{
                 backgroundColor: "#f5f5f5",
                 borderRadius: "8px",
-                padding: "5px 10px",
                 width: "fit-content",
             }}
         >
