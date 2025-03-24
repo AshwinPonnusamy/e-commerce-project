@@ -17,7 +17,7 @@ const CustomButton:React.FC<buttonProps> = ({
 }) => {
 
     return (
-        <Box>
+        <Box sx={{ m: 1 }}>
             <Button onClick={onClick} sx={{
                 borderRadius: "6px",
                 color: "#fff",

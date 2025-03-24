@@ -16,17 +16,16 @@ import { Button } from "@mui/joy";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../state/store/store";
 import {
-  addProductToCart,
   getAllProductList,
   getProductCategoryList,
   getProductCById,
-  removeProductFromCart,
 } from "../../state/action/product";
 import { Carousel } from "primereact/carousel";
 import banner5 from "../../assets/image/banner/banner5.jpg";
 import banner6 from "../../assets/image/banner/banner6.jpg";
 import banner7 from "../../assets/image/banner/banner7.jpg";
 import banner8 from "../../assets/image/banner/banner8.jpg";
+import { handleAddCart } from "../../components/commonFunctions/CommonFuntion";
 
 interface Product {
   id: number;
@@ -81,16 +80,6 @@ const Home = () => {
   };
 
   const cartItems = useSelector((state: RootState) => state.productData.cartItems);
-  const handleAddCart = (product: any) => {
-    console.log(product);
-    const isInCart = cartItems.some((item) => item.id === product.id);
-
-    if (isInCart) {
-      dispatch(removeProductFromCart(product.id));
-    } else {
-      dispatch(addProductToCart(product));
-    }
-  };
 
   useEffect(() => {
     dispatch(getAllProductList());
@@ -177,7 +166,7 @@ const Home = () => {
                     showTrending={true}
                     isFavorited={favorites[product.id] || false}
                     onClick={() => handleProductCardClick(product)}
-                    handleAddCart={() => handleAddCart(product)}
+                    handleAddCart={() => dispatch(handleAddCart(product))}
                     isInCart={cartItems.some((item) => item.id === product.id)}
                     originalPrice={product.price / (1 - (product.discountPercentage / 100))}
                     discount={product.discountPercentage} />
@@ -234,7 +223,7 @@ const Home = () => {
                     // handleFavoriteChange={() => handleFavoriteChange()}
                     isFavorited={product?.favorite}
                     onClick={() => handleProductCardClick(product)}
-                    handleAddCart={() => handleAddCart(product)}
+                    handleAddCart={() => dispatch(handleAddCart(product))}
                     isInCart={cartItems.some((item: any) => item.id === product.id)}
                     originalPrice={product.price / (1 - (product.discountPercentage / 100))}
                     discount={product.discountPercentage} />

@@ -1,7 +1,6 @@
 import React from "react";
 import { Box, Typography, Grid, Rating } from "@mui/material";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
-import QuantityButton from "../button/QuantityButton"; // Ensure this component exists
 import CustomButton from "../button/CustomButton";
 
 interface ProductDescriptionProps {
@@ -13,10 +12,8 @@ interface ProductDescriptionProps {
   rating?: any;
   discount: number;
   originalPrice: number;
-  onQuant: number;
-  onRemove: () => void;
-  onAdd: () => void;
-  onSetOrderedQuant: (quantity: number) => void;
+  handleAddCart: () => void;
+  isInCart: any
 }
 
 const ProductDescription: React.FC<ProductDescriptionProps> = ({
@@ -28,10 +25,8 @@ const ProductDescription: React.FC<ProductDescriptionProps> = ({
   rating,
   discount,
   originalPrice,
-  onQuant,
-  onRemove,
-  onAdd,
-  onSetOrderedQuant,
+  handleAddCart,
+  isInCart
 }) => {
   return (
     <Grid container spacing={2} sx={{ height: "100%" }}>
@@ -79,12 +74,11 @@ const ProductDescription: React.FC<ProductDescriptionProps> = ({
       </Grid>
 
       {/* Push button to bottom */}
-      <Grid item xs={6}>
-        <Box display="flex" alignItems="center" justifyContent="space-around">
-          <QuantityButton onQuant={onQuant} onRemove={onRemove} onAdd={onAdd} />
+      <Grid item xs={10}>
+        <Box display="flex" alignItems="center" justifyContent="flex-end">
           <CustomButton
             startIcon={<ShoppingCartIcon sx={{fontSize:20, mr:1}} />}
-            onClick={() => onSetOrderedQuant(onQuant)} buttonLabel="Add to Cart"          />
+            onClick={handleAddCart} buttonLabel={isInCart ? "Remove from Cart" : "Add to Cart"}/>
 
           <CustomButton buttonLabel="Buy Now " />
         </Box>
