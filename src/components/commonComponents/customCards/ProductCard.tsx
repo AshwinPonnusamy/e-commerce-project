@@ -21,7 +21,7 @@ interface ProductCardProps {
   handleShare?: () => void;
   onClick?: () => void;
   isFavorited?: any;
-  isInCart: boolean;
+  isInCart?: boolean;
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({
@@ -89,6 +89,8 @@ const ProductCard: React.FC<ProductCardProps> = ({
                   width: "100%",
                   height: "100%",
                   objectFit: "cover",
+                  transition: "0.3s",
+                  transform: hovered ? "scale(1.1)" : "scale(1)",
                 }}
               />
             </AspectRatio>

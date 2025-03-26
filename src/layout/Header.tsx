@@ -7,7 +7,7 @@ import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
 import { useNavigate } from "react-router-dom";
-import { Tabs, Tab, Avatar, Menu, MenuItem, Tooltip, Badge } from "@mui/material";
+import { Tabs, Tab, Avatar, Menu, MenuItem, Tooltip, Badge, useMediaQuery, Drawer, List, ListItem, ListItemText } from "@mui/material";
 import { FavoriteBorder, ShoppingCart } from "@mui/icons-material";
 import { useSelector } from "react-redux";
 import { RootState } from "../state/store/store";
@@ -17,9 +17,11 @@ const Header: React.FC = () => {
   const [value, setValue] = React.useState(0);
   const [isLoggedIn] = React.useState(true);
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
+  const [mobileOpen, setMobileOpen] = React.useState(false);
   const cartItems = useSelector((state: RootState) => state.productData.cartItems);
   const totalCartItems = cartItems.reduce((total, item) => total + item.quantity, 0);
   const settings = ["Profile", "Logout"];
+  const isMobile = useMediaQuery("(max-width:768px)");
 
   const handleChange = (_event: any, newValue: number) => {
     setValue(newValue);
@@ -32,140 +34,77 @@ const Header: React.FC = () => {
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
+
   const handleCartOpen = () => {
     navigate("/layout/shoppingcart");
   };
 
+  const toggleDrawer = (open: boolean) => () => {
+    setMobileOpen(open);
+  };
 
   return (
-    <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static" sx={{ backgroundColor: "#333" }}>
+    <Box sx={{ flexGrow: 1 , p:2}}>
+      <AppBar position="fixed" sx={{ backgroundColor: "#333" }}>
         <Toolbar variant="dense">
-          {/* Left side - Menu Icon */}
-          <IconButton size="large" edge="start" color="inherit" aria-label="menu" sx={{ mr: 2 }}>
-            <MenuIcon />
-          </IconButton>
-
-          {/* Title */}
-          <Typography variant="h6" component="div">
-          BUYNWELL
+          {isMobile && (
+            <IconButton edge="start" color="inherit" aria-label="menu" onClick={toggleDrawer(true)}>
+              <MenuIcon />
+            </IconButton>
+          )}
+          <Typography variant="h6" component="div" sx={{ flexGrow: 1, textAlign: isMobile ? "center" : "left" }}>
+            BUYNWELL
           </Typography>
-
-          {/* Centered Tabs */}
-          <Box sx={{ flexGrow: 1, display: "flex", justifyContent: "center" }}>
-            <Tabs
-              value={value}
-              onChange={handleChange}
-              textColor="inherit"
-              TabIndicatorProps={{
-                style: { backgroundColor: "rgb(226, 190, 27)", color: "#fff" },
-              }}
-            >
-              <Tab
-                label="Home"
-                sx={{ fontSize: "12px", color: value === 0 ? "rgb(226, 190, 27)" : "#fff" }}
-                onClick={() => navigate("/")}
-              />
-              <Tab
-                label="Products"
-                sx={{ fontSize: "12px", color: value === 1 ? "rgb(226, 190, 27)" : "#fff" }}
-                onClick={() => navigate("/events")}
-              />
-              <Tab
-                label="About"
-                sx={{ fontSize: "12px", color: value === 2 ? "rgb(226, 190, 27)" : "#fff" }}
-                onClick={() => navigate("/about")}
-              />
-              <Tab
-                label="Contact"
-                sx={{ fontSize: "12px", color: value === 3 ? "rgb(226, 190, 27)" : "#fff" }}
-                onClick={() => navigate("/contact")}
-              />
-            </Tabs>
-          </Box>
-
-          {/* Right side - Login / Profile Options */}
-          {isLoggedIn ? (
-            <Box sx={{ flexGrow: 0, display:"flex", flexDirection:"row" }}>
-              {/* <Button sx={{ color: "#fff", textTransform: "none", "&:hover":{
-                backgroundColor: "transparent",
-                "& .MuiButtonBase-root":{
-                  p:0,
-                }
-              } }}
-              onClick={() => navigate("/layout/createevent")}>
-                Create Product
-              </Button> */}
-
-              <IconButton disableFocusRipple disableTouchRipple disableRipple sx={{ color: "#fff", display:"flex", flexDirection:"column" }} onClick={handleCartOpen}>
+          {!isMobile ? (
+            <Box sx={{ flexGrow: 1, display: "flex", justifyContent: "start" }}>
+              <Tabs value={value} onChange={handleChange} textColor="inherit" TabIndicatorProps={{ style: { backgroundColor: "rgb(226, 190, 27)", color: "#fff" } }}>
+                <Tab label="Home" sx={{ fontSize: "12px", color: value === 0 ? "rgb(226, 190, 27)" : "#fff" }} onClick={() => navigate("/")} />
+                <Tab label="Products" sx={{ fontSize: "12px", color: value === 1 ? "rgb(226, 190, 27)" : "#fff" }} onClick={() => navigate("/layout/allproducts")} />
+              </Tabs>
+            </Box>
+          ) : null}
+          <Box sx={{ display: "flex", alignItems: "center" }}>
+            <IconButton sx={{ color: "#fff" }} onClick={handleCartOpen}>
               <Badge badgeContent={totalCartItems} color="primary">
                 <ShoppingCart />
-                </Badge>
-                <span style={{ fontSize: "12px", marginLeft: "6px" }}>
-                  Cart
-                </span>
-              </IconButton>
-
-              <IconButton disableFocusRipple disableTouchRipple disableRipple sx={{ color: "#fff", display:"flex", flexDirection:"column" }}>
-                <Badge badgeContent={4} color="primary">
+              </Badge>
+            </IconButton>
+            <IconButton sx={{ color: "#fff" }}>
+              <Badge badgeContent={4} color="primary">
                 <FavoriteBorder />
-                </Badge>
-                <span style={{ fontSize: "12px", marginLeft: "6px" }}>
-                  Wishlist
-                </span>
-              </IconButton>
-
+              </Badge>
+            </IconButton>
+            {isLoggedIn ? (
               <Tooltip title="Open settings">
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 1 }}>
-                  <Avatar
-                    sx={{ height: "30px", width: "30px" }}
-                    alt="User Avatar"
-                    // src="../../public/vite.svg"
-                  />
+                  <Avatar sx={{ height: "30px", width: "30px" }} alt="User Avatar" />
                 </IconButton>
               </Tooltip>
-              <Menu
-                sx={{ mt: "45px" }}
-                id="menu-appbar"
-                anchorEl={anchorElUser}
-                anchorOrigin={{ vertical: "top", horizontal: "right" }}
-                keepMounted
-                transformOrigin={{ vertical: "top", horizontal: "right" }}
-                open={Boolean(anchorElUser)}
-                onClose={handleCloseUserMenu}
-              >
-                {settings.map((setting) => (
-                  <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                    <Typography sx={{ textAlign: "center" }}>
-                      {setting}
-                    </Typography>
-                  </MenuItem>
-                ))}
-              </Menu>
-            </Box>
-          ) : (
-            <Box sx={{ marginLeft: "auto", display: "flex", gap: 1 }}>
-              <Button sx={{ color: "inherit", fontSize: "12px" }} onClick={() => navigate("/login")}>
-                Login
-              </Button>
-              <Button
-                color="inherit"
-                variant="outlined"
-                sx={{
-                  backgroundColor: "rgb(226, 190, 27)",
-                  color: "rgb(30, 11, 51)",
-                  border: "none",
-                  fontSize: "12px",
-                  padding: "0 10px",
-                }}
-                onClick={() => navigate("/signup")}
-              >
-                Sign Up
-              </Button>
-            </Box>
-          )}
+            ) : (
+              <Box sx={{ marginLeft: "auto", display: "flex", gap: 1 }}>
+                <Button sx={{ color: "inherit", fontSize: "12px" }} onClick={() => navigate("/login")}>Login</Button>
+                <Button color="inherit" variant="outlined" sx={{ backgroundColor: "rgb(226, 190, 27)", color: "rgb(30, 11, 51)", border: "none", fontSize: "12px", padding: "0 10px" }} onClick={() => navigate("/signup")}>Sign Up</Button>
+              </Box>
+            )}
+          </Box>
         </Toolbar>
       </AppBar>
+      <Menu anchorEl={anchorElUser} open={Boolean(anchorElUser)} onClose={handleCloseUserMenu}>
+        {settings.map((setting) => (
+          <MenuItem key={setting} onClick={handleCloseUserMenu}>
+            {setting}
+          </MenuItem>
+        ))}
+      </Menu>
+      <Drawer anchor="left" open={mobileOpen} onClose={toggleDrawer(false)} sx={{ '& .MuiDrawer-paper': { backgroundColor: "#333", color:'#fff' } }}>
+        <List>
+          {["Home", "Products", "About", "Contact"].map((text, index) => (
+            <ListItem  key={text} onClick={() => { navigate(["/", "/layout/allproducts", "/about", "/contact"][index]); setMobileOpen(false); }}>
+              <ListItemText primary={text} />
+            </ListItem>
+          ))}
+        </List>
+      </Drawer>
     </Box>
   );
 };

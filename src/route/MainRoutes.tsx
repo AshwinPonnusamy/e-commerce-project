@@ -4,6 +4,7 @@ import Layout from '../layout/Layout';
 import Home from '../pages/home/Home';
 import ProductDetailPage from '../pages/productDetail/ProductDetailPage';
 import ShoppingCart from '../pages/cart/ShoppingCart';
+import ProductsPage from '../pages/productList/ProductsPage';
 
 
 const Router = () => {
@@ -14,6 +15,7 @@ const Router = () => {
         <Route path='home' element={<Home />} />
         <Route path="productdetail" element={<ProductDetailPage />} />
         <Route path="shoppingcart" element={<ShoppingCart />} />
+        <Route path="allproducts" element={<ProductsPage />} />
       </Route>
       <Route path="/login" element={<Login />} />
     </Routes>

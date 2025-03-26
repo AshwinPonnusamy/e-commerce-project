@@ -80,7 +80,7 @@ const ProductDescription: React.FC<ProductDescriptionProps> = ({
             startIcon={<ShoppingCartIcon sx={{fontSize:20, mr:1}} />}
             onClick={handleAddCart} buttonLabel={isInCart ? "Remove from Cart" : "Add to Cart"}/>
 
-          <CustomButton buttonLabel="Buy Now " />
+          <CustomButton buttonLabel="Buy Now " buttonColor="#ff0ff0" />
         </Box>
       </Grid>
     </Grid>

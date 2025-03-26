@@ -15,7 +15,7 @@ const ProductDetailPage: React.FC = () => {
 
 
     return (
-        <Grid container spacing={2}>
+        <Grid container spacing={2} sx={{ mt: 5, mb: 5 }}>
             <Grid item xs={12}>
                 <Grid container spacing={2}>
                     <Grid item xs={4}>

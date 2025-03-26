@@ -30,7 +30,7 @@ const ShoppingCart: React.FC = () => {
     const handleRemove = (id: number) => {
         dispatch(removeProductFromCart(id));
     };
-
+    // const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
     const totalPrice = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
     const totalDiscount = cartItems.reduce((sum, item) => sum + (item.price * (item.discountPercentage / 100)) * item.quantity, 0);
     const discountedPrice = totalPrice - totalDiscount;
@@ -105,7 +105,7 @@ const ShoppingCart: React.FC = () => {
             <Box sx={{ display: "flex", justifyContent: "space-between" }}>
                 <Typography variant="h6" fontWeight="bold" color="success" sx={{ fontSize: '16px' }}>Discount Price :</Typography>
                 <Typography variant="h6" fontWeight="bold" color="success" sx={{ fontSize: '16px' }}>
-                    {cartItems?.map((item) => item.discountPercentage)}%
+                    {totalDiscount.toFixed()}%
                 </Typography>
             </Box>
             <Box sx={{ display: "flex", justifyContent: "space-between" }}>
