@@ -6,6 +6,7 @@ import {
     addToCart,
     removeFromCart,
     updateCartQuantity,
+    setSearchProductList,
 } from "../store/features/productData";
 
 //Fetch all products
@@ -37,13 +38,26 @@ export const getProductCategoryList = () => async (dispatch: any) => {
 };
 
 //Fetch product details by ID
-export const getProductCById = (data: any) => async (dispatch: any) => {
+export const getProductById = (data: any) => async (dispatch: any) => {
     try {
         const result = await axios.get(`https://dummyjson.com/products/${data.id}`);
         if (result?.data) {
             dispatch(setCurrentProduct(result?.data));
         } else {
             console.error("Error: No data found in API response");
+        }
+    } catch (error) {
+        console.error("Failed to get product details:", error);
+    }
+};
+export const getSearchProductList = (searchQuery: string) => async (dispatch: any) => {
+    try {
+        const result = await axios.get(`https://dummyjson.com/products/search?q=${searchQuery}`);
+        if (result?.data?.products) {
+            dispatch(setSearchProductList(result?.data?.products));
+        } else {
+            dispatch(setSearchProductList([]));
+            console.error("No search results found.");
         }
     } catch (error) {
         console.error("Failed to get product details:", error);

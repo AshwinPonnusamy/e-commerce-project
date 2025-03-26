@@ -3,24 +3,26 @@ import { useState } from 'react';
 import ProductCard from '../../components/commonComponents/customCards/ProductCard';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../../state/store/store';
-import { handleAddCart, handleProductCardClick } from '../../components/commonFunctions/CommonFuntion';
+import { handleAddCart, handleProductCardClick, toggleFavorite } from '../../components/commonFunctions/CommonFuntion';
 import { useNavigate } from 'react-router-dom';
 import { Search, Close } from '@mui/icons-material';
 import { Filter } from 'iconsax-react';
 import FilterMenu from '../../components/commonComponents/FilterMenu';
+import { setSearchProductList } from '../../state/store/features/productData';
+import { getSearchProductList } from '../../state/action/product';
 
 const ProductsPage = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch<AppDispatch>();
     const productDetails = useSelector((state: RootState) => state.productData?.allProductList || []);
-    const [showAll, setShowAll] = useState(false);
+
     const [filterOpen, setFilterOpen] = useState(false);
-    const favorites = useSelector((state: RootState) => state.productData.isFavorited);
     const cartItems = useSelector((state: RootState) => state.productData.cartItems);
     const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
     const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
     const [selectedRatings, setSelectedRatings] = useState<string[]>([]);
-
+    const [searchQuery, setSearchQuery] = useState("");
+    const searchResults = useSelector((state: RootState) => state.productData.searchProductList || []);
     const filteredProducts = productDetails.filter((product: any) => {
         return (
             (selectedCategories.length === 0 || selectedCategories.includes(product.category)) &&
@@ -29,15 +31,14 @@ const ProductsPage = () => {
         );
     });
 
-    const displayedProducts = showAll ? filteredProducts : filteredProducts.slice(0, 10);
+    const displayedProducts = productDetails ?  filteredProducts  : filteredProducts.slice(0, 10);
     const categories = Array.from(
         new Set(productDetails.map((item: any) => item.category))
     ).map((category) => ({ label: category, value: category }));
     const brands = Array.from(
         new Set(productDetails.map((item: any) => item.brand))
     ).map((brand) => ({ label: brand, value: brand }));
-    console.log(productDetails);
-    console.log(brands);
+    const favorites = useSelector((state: RootState) => state.productData.isFavorited);
 
     const options = [
         { label: "4★ & above", value: "4" },
@@ -45,6 +46,17 @@ const ProductsPage = () => {
         { label: "2★ & above", value: "2" },
         { label: "1★ & above", value: "1" },
     ];
+
+    const handleSearch = (query: string) => {
+        setSearchQuery(query);
+        if (query.trim() === "") {
+            dispatch(setSearchProductList([]));
+            return;
+        }
+        dispatch(getSearchProductList(query));
+    };
+
+
     return (
         <>
             <Grid container spacing={2}>
@@ -63,11 +75,11 @@ const ProductsPage = () => {
                                 width: 500,
                             }}>
                                 <Search />
-                                <InputBase placeholder="Search Products..." sx={{ flex: 1, marginLeft: 1 }} />
+                                <InputBase placeholder="Search Products..." sx={{ flex: 1, marginLeft: 1 }}  onChange={(e) => handleSearch(e.target.value)} />
                             </Paper>
                         </Grid>
 
-                        {displayedProducts.map((item: any) => (
+                        {(searchQuery ? searchResults : displayedProducts).map((item: any) => (
                             <Grid item xs={15} sm={6} md={3} lg={3} key={item.id}>
                                 <ProductCard
                                     productName={item?.title}
@@ -76,22 +88,16 @@ const ProductsPage = () => {
                                     productPrice={item?.price}
                                     productRating={item?.rating}
                                     showTrending={true}
-                                    isFavorited={favorites[item.id] || false}
                                     onClick={() => handleProductCardClick(item, dispatch, navigate)}
                                     handleAddCart={() => dispatch(handleAddCart(item))}
+                                    isFavorited={favorites[item.id] || false}
+                                    onFavoriteClick={() => toggleFavorite(dispatch, item.id, favorites[item.id])}
                                     isInCart={cartItems.some((cartItem: any) => cartItem.id === item.id)}
                                     originalPrice={item.price / (1 - (item.discountPercentage / 100))}
                                     discount={item.discountPercentage}
                                 />
                             </Grid>
                         ))}
-                        {productDetails.length > 10 && (
-                            <Grid item xs={15} textAlign="center">
-                                <Button onClick={() => setShowAll(!showAll)}>
-                                    {showAll ? "See Less" : "See More"}
-                                </Button>
-                            </Grid>
-                        )}
                     </Grid>
                 </Grid>
             </Grid>

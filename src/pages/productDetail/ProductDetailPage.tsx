@@ -3,23 +3,24 @@ import { Grid } from "@mui/material";
 import ProductDescription from "../../components/commonComponents/customCards/ProductDescription";
 import ProductDetailCard from "../../components/commonComponents/customCards/ProductDetailCard";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../state/store/store";
-import { handleAddCart } from "../../components/commonFunctions/CommonFuntion";
-import { ThunkDispatch } from "@reduxjs/toolkit";
+import { AppDispatch, RootState } from "../../state/store/store";
+import { handleAddCart, toggleFavorite } from "../../components/commonFunctions/CommonFuntion";
 const ProductDetailPage: React.FC = () => {
-    const dispatch = useDispatch<ThunkDispatch<RootState, void, any>>();
+    const dispatch = useDispatch<AppDispatch>();
     const product = useSelector((state: RootState) => state.productData?.currentProduct)
     const cartItems = useSelector((state: RootState) => state.productData.cartItems);
     const originalPrice = product?.price / (1 - (product?.discountPercentage / 100));
 
-
+    const favorites = useSelector((state: RootState) => state.productData.isFavorited);
+    const isFavorited = favorites[product?.id] || false;
 
     return (
         <Grid container spacing={2} sx={{ mt: 5, mb: 5 }}>
             <Grid item xs={12}>
                 <Grid container spacing={2}>
                     <Grid item xs={4}>
-                        <ProductDetailCard images={product?.images} />
+                        <ProductDetailCard images={product?.images} isFavorited={isFavorited}
+                            onFavoriteClick={() => toggleFavorite(dispatch, product.id, isFavorited)} />
                     </Grid>
                     <Grid item xs={8}>
                         <ProductDescription

@@ -24,7 +24,7 @@ import banner5 from "../../assets/image/banner/banner5.jpg";
 import banner6 from "../../assets/image/banner/banner6.jpg";
 import banner7 from "../../assets/image/banner/banner7.jpg";
 import banner8 from "../../assets/image/banner/banner8.jpg";
-import { handleAddCart, handleProductCardClick } from "../../components/commonFunctions/CommonFuntion";
+import { handleAddCart, handleProductCardClick, toggleFavorite } from "../../components/commonFunctions/CommonFuntion";
 
 interface Product {
   id: number;
@@ -74,7 +74,7 @@ const Home = () => {
 
   // const handleProductCardClick = (item: Product) => {
   //   console.log("Selected Product:", item);
-  //   dispatch(getProductCById(item));
+  //   dispatch(getProductById(item));
   //   navigate("/layout/productdetail");
   // };
 
@@ -168,6 +168,7 @@ const Home = () => {
                     handleAddCart={() => dispatch(handleAddCart(product))}
                     isInCart={cartItems.some((item) => item.id === product.id)}
                     originalPrice={product.price / (1 - (product.discountPercentage / 100))}
+                    onFavoriteClick={() => toggleFavorite(dispatch, Number(product.id), favorites[product.id])}
                     discount={product.discountPercentage} />
                 )}
               />
@@ -220,6 +221,7 @@ const Home = () => {
                     productPrice={product?.price}
                     productRating={product?.rating}
                     // handleFavoriteChange={() => handleFavoriteChange()}
+                    
                     isFavorited={product?.favorite}
                     onClick={() => handleProductCardClick(product, dispatch, navigate)}
                     handleAddCart={() => dispatch(handleAddCart(product))}

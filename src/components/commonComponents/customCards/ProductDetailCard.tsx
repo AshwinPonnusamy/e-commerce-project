@@ -1,11 +1,16 @@
 import React, { useState, useEffect } from "react";
-import { Box, Grid, Dialog, DialogContent, Card, CardMedia } from "@mui/material";
+import { 
+  Box, Grid, Dialog, DialogContent, Card, CardMedia, IconButton 
+} from "@mui/material";
+import { Favorite, FavoriteBorder } from "@mui/icons-material";
 
 interface ProductDetailCardProps {
   images?: string[];
+  isFavorited?: boolean;
+  onFavoriteClick: () => void;
 }
 
-const ProductDetailCard: React.FC<ProductDetailCardProps> = ({ images = [] }) => {
+const ProductDetailCard: React.FC<ProductDetailCardProps> = ({ images = [], isFavorited = false, onFavoriteClick }) => {
   const [currentImage, setCurrentImage] = useState<string>("");
   const [open, setOpen] = useState(false);
 
@@ -29,7 +34,7 @@ const ProductDetailCard: React.FC<ProductDetailCardProps> = ({ images = [] }) =>
 
   return (
     <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-      {/* Main Image using CardMedia */}
+      {/* Main Image Card with Favorite Icon */}
       {currentImage && (
         <Card
           sx={{
@@ -39,9 +44,28 @@ const ProductDetailCard: React.FC<ProductDetailCardProps> = ({ images = [] }) =>
             boxShadow: 2,
             borderRadius: 2,
             overflow: "hidden",
+            position: "relative"
           }}
           onClick={handleToggle}
         >
+          {/* Favorite Icon */}
+          <IconButton 
+            sx={{ 
+              position: "absolute", 
+              top: 8, 
+              right: 8, 
+              backgroundColor: "rgba(255,255,255,0.7)", 
+              "&:hover": { backgroundColor: "rgba(255,255,255,1)" }
+            }} 
+            onClick={(e) => {
+              e.stopPropagation(); // Prevent clicking the card
+              onFavoriteClick && onFavoriteClick(); // Call function if provided
+            }}
+          >
+            {isFavorited ? <Favorite color="error" /> : <FavoriteBorder />}
+          </IconButton>
+
+          {/* Main Product Image */}
           <CardMedia
             component="img"
             image={currentImage}

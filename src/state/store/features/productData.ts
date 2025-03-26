@@ -15,6 +15,7 @@ export interface CartItem {
   thumbnail: string;
 }
 export interface ProductData {
+  searchProductList:any;
   allProductList: any;
   productCategoryList: any;
   currentProduct: any;
@@ -23,6 +24,7 @@ export interface ProductData {
   cartItems: CartItem[];
 }
 const initialState: ProductData = {
+  searchProductList:[],
   allProductList: [],
   productCategoryList: [],
   currentProduct: [],
@@ -34,6 +36,9 @@ export const productSlice = createSlice({
   name: "productData",
   initialState,
   reducers: {
+    setSearchProductList: (state, action: PayloadAction<any>) => {
+      state.searchProductList = action.payload;
+    },
     setAllProductList: (state, action: PayloadAction<any>) => {
       state.allProductList = action.payload;
     },
@@ -43,9 +48,8 @@ export const productSlice = createSlice({
     setCurrentProduct: (state, action: PayloadAction<any>) => {
       state.currentProduct = action.payload;
     },
-    setIsFavorited: (state, action: PayloadAction<{ productId: string; isFavorited: boolean }>) => {
-      const { productId, isFavorited } = action.payload;
-      state.isFavorited[productId] = isFavorited;
+    setIsFavorited: (state, action: PayloadAction<{ productId: number; isFavorited: boolean }>) => {
+      state.isFavorited[action.payload.productId] = action.payload.isFavorited;
     },
     setOpen: (state, action: PayloadAction<boolean>) => {
       state.open = action.payload;
@@ -79,5 +83,6 @@ export const {
   addToCart,
   updateCartQuantity,
   removeFromCart,
+  setSearchProductList
 } = productSlice.actions;
 export default productSlice.reducer;

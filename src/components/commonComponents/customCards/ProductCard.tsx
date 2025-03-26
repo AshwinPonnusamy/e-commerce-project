@@ -16,7 +16,7 @@ interface ProductCardProps {
   showCart?: boolean;
   showShare?: boolean;
   showTrending?: boolean;
-  handleFavoriteChange?: () => void;
+  onFavoriteClick?: () => void;
   handleAddCart?: () => void;
   handleShare?: () => void;
   onClick?: () => void;
@@ -36,7 +36,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
   showCart = true,
   showShare = true,
   showTrending = false,
-  handleFavoriteChange,
+  onFavoriteClick,
   handleAddCart,
   handleShare,
   isFavorited,
@@ -128,7 +128,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
             }}
           >
             {showFavorite && (
-              <CustomIconButton icon={isFavorited ? <Favorite /> : <FavoriteBorder />} iconColor={"error"} tooltip="Add to favorite" onClick={handleFavoriteChange} />
+              <CustomIconButton icon={isFavorited ? <Favorite /> : <FavoriteBorder />} iconColor={"error"} tooltip="Add to favorite" onClick={onFavoriteClick} />
             )}
             {showCart && (
               <CustomIconButton

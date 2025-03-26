@@ -5,6 +5,7 @@ import Home from '../pages/home/Home';
 import ProductDetailPage from '../pages/productDetail/ProductDetailPage';
 import ShoppingCart from '../pages/cart/ShoppingCart';
 import ProductsPage from '../pages/productList/ProductsPage';
+import FavoritesPage from '../pages/wishList/FavoritesPage';
 
 
 const Router = () => {
@@ -16,6 +17,7 @@ const Router = () => {
         <Route path="productdetail" element={<ProductDetailPage />} />
         <Route path="shoppingcart" element={<ShoppingCart />} />
         <Route path="allproducts" element={<ProductsPage />} />
+        <Route path="favoritepage" element={<FavoritesPage />} />
       </Route>
       <Route path="/login" element={<Login />} />
     </Routes>

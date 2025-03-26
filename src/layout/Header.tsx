@@ -19,6 +19,9 @@ const Header: React.FC = () => {
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const cartItems = useSelector((state: RootState) => state.productData.cartItems);
+  const favoriteProducts = useSelector((state: RootState) =>
+    state.productData.allProductList.filter((product: any) => state.productData.isFavorited[product.id])
+);
   const totalCartItems = cartItems.reduce((total, item) => total + item.quantity, 0);
   const settings = ["Profile", "Logout"];
   const isMobile = useMediaQuery("(max-width:768px)");
@@ -37,6 +40,9 @@ const Header: React.FC = () => {
 
   const handleCartOpen = () => {
     navigate("/layout/shoppingcart");
+  };
+  const handleFavoritesOpen = () => {
+    navigate("/layout/favoritepage");
   };
 
   const toggleDrawer = (open: boolean) => () => {
@@ -69,8 +75,8 @@ const Header: React.FC = () => {
                 <ShoppingCart />
               </Badge>
             </IconButton>
-            <IconButton sx={{ color: "#fff" }}>
-              <Badge badgeContent={4} color="primary">
+            <IconButton sx={{ color: "#fff" }} onClick={handleFavoritesOpen}>
+              <Badge badgeContent={favoriteProducts.length} color="primary">
                 <FavoriteBorder />
               </Badge>
             </IconButton>
