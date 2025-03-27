@@ -44,7 +44,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
   isInCart,
 }) => {
 
-  const [hovered, setHovered] = useState(false);
+  const [hovered, setHovered] = useState(true);
   const [clicked, setClicked] = useState(false);
 
   const handleMouseEnter = () => {
@@ -52,16 +52,16 @@ const ProductCard: React.FC<ProductCardProps> = ({
   };
 
   const handleMouseLeave = () => {
-    if (!clicked) setHovered(false);
+    if (!clicked) setHovered(true);
   };
 
   const handleClick = () => {
-    if (!isInCart) {
-      setClicked(true);
-    } else {
-      setClicked(false);
-      setHovered(false);
-    }
+    // if (!isInCart) {
+    //   setClicked(true);
+    // } else {
+    //   setClicked(false);
+    //   setHovered(false);
+    // }
   };
 
   return (
@@ -80,7 +80,11 @@ const ProductCard: React.FC<ProductCardProps> = ({
       >
         <Box sx={{ position: "relative" }}>
           <CardOverflow sx={{ overflow: "hidden" }} onClick={onClick}>
-            <AspectRatio ratio="1/1" sx={{ width: "100%" }}>
+            <AspectRatio ratio="1/1" sx={{
+              width: "100%", transition: "0.3s", "&:hover": {
+                transform: "scale(1.2)",
+              }
+            }}>
               <img
                 src={productImage}
                 loading="lazy"
@@ -89,8 +93,8 @@ const ProductCard: React.FC<ProductCardProps> = ({
                   width: "100%",
                   height: "100%",
                   objectFit: "cover",
-                  transition: "0.3s",
-                  transform: hovered ? "scale(1.1)" : "scale(1)",
+
+
                 }}
               />
             </AspectRatio>

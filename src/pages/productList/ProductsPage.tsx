@@ -80,7 +80,7 @@ const ProductsPage = () => {
                         </Grid>
 
                         {(searchQuery ? searchResults : displayedProducts).map((item: any) => (
-                            <Grid item xs={15} sm={6} md={3} lg={3} key={item.id}>
+                            <Grid item xs={15} sm={5} md={3.7} lg={3} key={item.id}>
                                 <ProductCard
                                     productName={item?.title}
                                     productDescription={item?.description}

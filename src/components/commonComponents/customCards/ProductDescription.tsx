@@ -52,7 +52,7 @@ const ProductDescription: React.FC<ProductDescriptionProps> = ({
             {/* Price Section */}
             <Box display="flex" alignItems="center" mt={2}>
               <Typography variant="h5" fontWeight="bold">
-                ${price?.toFixed(2)}
+              ₹{price?.toFixed(2)}
               </Typography>
               <Typography
                 variant="body2"
