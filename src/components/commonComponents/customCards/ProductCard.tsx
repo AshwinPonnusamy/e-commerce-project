@@ -45,7 +45,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
 }) => {
 
   const [hovered, setHovered] = useState(true);
-  const [clicked, setClicked] = useState(false);
+  const [clicked] = useState(false);
 
   const handleMouseEnter = () => {
     if (!clicked) setHovered(true);
