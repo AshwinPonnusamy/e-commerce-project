@@ -14,6 +14,7 @@ interface ProductDescriptionProps {
   originalPrice: number;
   handleAddCart: () => void;
   isInCart: any
+  onBuy?: any
 }
 
 const ProductDescription: React.FC<ProductDescriptionProps> = ({
@@ -26,8 +27,10 @@ const ProductDescription: React.FC<ProductDescriptionProps> = ({
   discount,
   originalPrice,
   handleAddCart,
+  onBuy,
   isInCart
 }) => {
+
   return (
     <Grid container spacing={2} sx={{ height: "100%" }}>
       <Grid item xs={12}>
@@ -80,7 +83,7 @@ const ProductDescription: React.FC<ProductDescriptionProps> = ({
             startIcon={<ShoppingCartIcon sx={{fontSize:20, mr:1}} />}
             onClick={handleAddCart} buttonLabel={isInCart ? "Remove from Cart" : "Add to Cart"}/>
 
-          <CustomButton buttonLabel="Buy Now " buttonColor="#ff0ff0" />
+          <CustomButton buttonLabel="Buy Now " buttonColor="#ff0ff0" onClick={onBuy} />
         </Box>
       </Grid>
     </Grid>

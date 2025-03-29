@@ -4,8 +4,9 @@ import React from 'react'
 interface buttonProps {
     buttonLabel: string;
     buttonColor?: any;
-    startIcon?:any
-    onClick?: () => void
+    onClick?: () => void;
+    startIcon?:any;
+    disabled?: boolean
 
 }
 
@@ -14,11 +15,12 @@ const CustomButton:React.FC<buttonProps> = ({
     buttonColor = 'primary',
     startIcon,
     onClick,
+    disabled = false, 
 }) => {
 
     return (
         <Box sx={{ m: 1 }}>
-            <Button onClick={onClick} sx={{
+            <Button disabled={disabled}  onClick={onClick} sx={{
                 borderRadius: "6px",
                 color: "#fff",
                 backgroundColor: buttonColor,

@@ -6,6 +6,7 @@ import ProductDetailPage from '../pages/productDetail/ProductDetailPage';
 import ShoppingCart from '../pages/cart/ShoppingCart';
 import ProductsPage from '../pages/productList/ProductsPage';
 import FavoritesPage from '../pages/wishList/FavoritesPage';
+import CommonStepper from '../pages/order/CheckOut';
 
 
 const Router = () => {
@@ -18,6 +19,7 @@ const Router = () => {
         <Route path="shoppingcart" element={<ShoppingCart />} />
         <Route path="allproducts" element={<ProductsPage />} />
         <Route path="favoritepage" element={<FavoritesPage />} />
+        <Route path="orderdetails" element={<CommonStepper />} />
       </Route>
       <Route path="/login" element={<Login />} />
     </Routes>

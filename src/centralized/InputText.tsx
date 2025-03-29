@@ -9,6 +9,7 @@ interface InputTextProps {
   name: string;
   control: any;
   label?: string;
+  value?: string;
   placeholder?: string;
   variant?: "outlined" | "filled" | "standard";
   fullWidth?: boolean;
@@ -20,6 +21,7 @@ interface InputTextProps {
   maxLength?: number;
   pattern?: RegExp;
   InputProps?: any;
+  onChange?: (e:any) => void;
 }
 
 const InputText = forwardRef<HTMLInputElement, InputTextProps>(
@@ -28,12 +30,14 @@ const InputText = forwardRef<HTMLInputElement, InputTextProps>(
       name,
       control,
       placeholder = "",
+      value,
       label = "",
       variant = "outlined",
       fullWidth = true,
       disabled = false,
       startAdornment,
       readOnly,
+      onChange
     },
     ref
   ) => {
@@ -44,14 +48,14 @@ const InputText = forwardRef<HTMLInputElement, InputTextProps>(
       },
       "& .MuiInputBase-input": {
         fontSize: "14px !important",
-        padding: "3px 3px 3px 10px !important",
+        padding: "3px 10px !important",
         color: "#000",
       },
       "& .MuiOutlinedInput-root": {
-        borderRadius: "7px ",
+        borderRadius: "4px ",
 
         "& input": {
-          backgroundColor: "rgba(58, 209, 230, 0)",
+          backgroundColor: "rgba(0, 0, 0, 0)",
           color: "#000",
           padding: "6px",
           border: "none",
@@ -76,7 +80,7 @@ const InputText = forwardRef<HTMLInputElement, InputTextProps>(
         <Controller
           name={name}
           control={control}
-          defaultValue=""
+          defaultValue={value || ""}
           render={({ field, fieldState: { error } }) => (
             <>
               <CustomTextField
@@ -87,11 +91,13 @@ const InputText = forwardRef<HTMLInputElement, InputTextProps>(
                 fullWidth={fullWidth}
                 disabled={disabled}
                 error={!!error}
+                onChange={(e) => {
+                  field.onChange(e);
+                  if (onChange) onChange(e);
+                }}
                 InputProps={{
                   startAdornment: startAdornment,
-                  inputProps: {
                     readOnly: readOnly,
-                  },
                 }}
               />
               {error && (

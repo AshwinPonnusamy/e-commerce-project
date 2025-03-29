@@ -7,12 +7,17 @@ import { changeCartQuantity, removeProductFromCart } from "../../state/action/pr
 import { ThunkDispatch } from "@reduxjs/toolkit";
 import CustomButton from "../../components/commonComponents/button/CustomButton";
 import QuantityButton from "../../components/commonComponents/button/QuantityButton";
+import { useNavigate } from "react-router-dom";
 
 const ShoppingCart: React.FC = () => {
+    const navigate = useNavigate();
     const dispatch = useDispatch<ThunkDispatch<RootState, void, any>>();
     const cartItems = useSelector((state: RootState) => state.productData.cartItems);
     console.log(cartItems, "cart items");
-
+    const handleBuy = () => {
+        console.log("Navigating to order details");
+        navigate("/layout/orderdetails");
+      };
     const handleIncrease = (id: number) => {
         const item = cartItems.find((item) => item.id === id);
         if (item) {
@@ -114,7 +119,7 @@ const ShoppingCart: React.FC = () => {
             </Box>
 
             <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
-                <CustomButton buttonLabel="Proceed to Buy" buttonColor="#ff0ff0" />
+                <CustomButton buttonLabel="Proceed to Buy" buttonColor="#ff0ff0" onClick={handleBuy} disabled={cartItems.length === 0} />
             </Box>
 
         </Box>
