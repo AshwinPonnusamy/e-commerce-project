@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
   Box,
   Button,
@@ -7,44 +7,61 @@ import {
 import InputText from '../../centralized/InputText';
 import CustomRadio from '../../centralized/CustomRadio';
 import { useForm } from "react-hook-form";
+import googlePay from '../../assets/image/paymentIcons/google-pay-icon.svg';
+import phonePay from '../../assets/image/paymentIcons/phonepe-icon.svg';
+import stripePay from '../../assets/image/paymentIcons/stripe-icon.svg';
+import razorPay from '../../assets/image/paymentIcons/razorpay-icon.svg';
 
 interface Props {
   setPaymentMethod?: any;
   paymentMethod?: any;
+  totalAmount?: number;
 }
 
-const PaymentsPage: React.FC<Props> = ({ setPaymentMethod, paymentMethod }) => {
-  // const [paymentMethod, setPaymentMethod] = useState('');
-  const [upiId, setUpiId] = useState('');
-  const [cardNumber, setCardNumber] = useState('');
-  const [expiry, setExpiry] = useState('');
-  const [cvv, setCvv] = useState('');
-  const [captcha, setCaptcha] = useState('');
-  const { control } = useForm();
+const PaymentsPage: React.FC<Props> = ({ setPaymentMethod, paymentMethod, totalAmount }) => {
+  const { control } = useForm({
+    defaultValues: {
+      cardNumber: "",
+      expiry: "",
+      cvv: "",
+    },
+  });
+
+
+  const walletOptions = [
+    { name: "Google Pay", src: googlePay, method: "gpay" },
+    { name: "PhonePe", src: phonePay, method: "phonepe" },
+    { name: "Stripe", src: stripePay, method: "stripe" },
+    { name: "Razorpay", src: razorPay, method: "razorpay" }
+  ];
+
+  const handlePaymentClick = (method: string) => {
+    console.log(`Selected payment method: ${method}`);
+  };
 
   const paymentOptions = [
     {
-      value: 'upi',
-      label: 'Your UPI ID',
-      description: 'Pay by any UPI app',
+      value: 'wallets',
+      label: 'Wallets',
+      description: 'Pay via Google Pay, PhonePe, Stripe, or Razorpay',
       content: (
-        <Box sx={{ mt: 2 }}>
-          <InputText
-            fullWidth
-            label="Enter UPI ID"
-            name="upiId"
-            placeholder='UPI ID'
-            control={control}
-            value={upiId}
-            onChange={(e) => setUpiId(e.target.value)}
-          />
-          <Button
-            fullWidth
-            variant="contained"
-            sx={{ mt: 2, backgroundColor: '#1976d2' }}
-          >
-            PAY ¥910
-          </Button>
+        <Box sx={{ mt: 2, display: "flex", gap: 2 }}>
+          {walletOptions.map((app) => (
+            <Box
+              key={app.method}
+              component="img"
+              src={app.src}
+              alt={app.name}
+              onClick={() => handlePaymentClick(app.method)}
+              sx={{
+                width: 60,
+                height: 25,
+                cursor: "pointer",
+                transition: "transform 0.2s",
+                "&:hover": { transform: "scale(1.1)" }
+              }}
+            />
+          ))}
         </Box>
       )
     },
@@ -53,6 +70,7 @@ const PaymentsPage: React.FC<Props> = ({ setPaymentMethod, paymentMethod }) => {
       label: 'Credit / Debit Card',
       description: 'Add and secure cards as per RBI guidelines',
       content: (
+        // <form onSubmit={handleSubmit(onSubmit)}>
         <Box sx={{ mt: 2 }}>
           <InputText
             fullWidth
@@ -60,8 +78,7 @@ const PaymentsPage: React.FC<Props> = ({ setPaymentMethod, paymentMethod }) => {
             name="cardNumber"
             placeholder='Card Number'
             control={control}
-            value={cardNumber}
-            onChange={(e) => setCardNumber(e.target.value)}
+            pattern={/^\d*$/}
           />
           <Grid container spacing={2}>
             <Grid item xs={6}>
@@ -71,8 +88,6 @@ const PaymentsPage: React.FC<Props> = ({ setPaymentMethod, paymentMethod }) => {
                 name="expiry"
                 placeholder='MM/YY'
                 control={control}
-                value={expiry}
-                onChange={(e) => setExpiry(e.target.value)}
               />
             </Grid>
             <Grid item xs={6}>
@@ -82,8 +97,7 @@ const PaymentsPage: React.FC<Props> = ({ setPaymentMethod, paymentMethod }) => {
                 name="cvv"
                 placeholder='CVV'
                 control={control}
-                value={cvv}
-                onChange={(e) => setCvv(e.target.value)}
+                pattern={/^\d*$/}
               />
             </Grid>
           </Grid>
@@ -92,9 +106,10 @@ const PaymentsPage: React.FC<Props> = ({ setPaymentMethod, paymentMethod }) => {
             variant="contained"
             sx={{ mt: 2, backgroundColor: '#1976d2' }}
           >
-            PAY ¥910
+            PAY ₹{totalAmount?.toFixed(2)}
           </Button>
         </Box>
+        // </form>
       )
     },
     {
@@ -105,7 +120,7 @@ const PaymentsPage: React.FC<Props> = ({ setPaymentMethod, paymentMethod }) => {
     {
       value: 'cod',
       label: 'Cash on Delivery',
-      description: 'Due to handling costs, a nominal fee of ¥17 will be charged',
+      description: 'Due to handling costs, a nominal fee of ₹17 will be charged',
       content: (
         <Box sx={{ mt: 2 }}>
           <InputText
@@ -114,8 +129,7 @@ const PaymentsPage: React.FC<Props> = ({ setPaymentMethod, paymentMethod }) => {
             name="captcha"
             placeholder='Captcha'
             control={control}
-            value={captcha}
-            onChange={(e) => setCaptcha(e.target.value)}
+          // onChange={(e) => setCaptcha(e.target.value)}
           />
           <Button
             fullWidth
@@ -130,8 +144,10 @@ const PaymentsPage: React.FC<Props> = ({ setPaymentMethod, paymentMethod }) => {
   ];
 
   return (
-    <Grid container spacing={2}>
+    <Grid container spacing={2} p={2}>
       <Grid item xs={12}>
+        <Grid container spacing={2}>
+          <Grid item xs={12}>
             {paymentOptions.map((option) => (
               <CustomRadio
                 key={option.value}
@@ -146,6 +162,8 @@ const PaymentsPage: React.FC<Props> = ({ setPaymentMethod, paymentMethod }) => {
             ))}
           </Grid>
         </Grid>
+      </Grid>
+    </Grid>
   );
 };
 

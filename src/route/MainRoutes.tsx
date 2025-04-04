@@ -6,7 +6,9 @@ import ProductDetailPage from '../pages/productDetail/ProductDetailPage';
 import ShoppingCart from '../pages/cart/ShoppingCart';
 import ProductsPage from '../pages/productList/ProductsPage';
 import FavoritesPage from '../pages/wishList/FavoritesPage';
-import CommonStepper from '../pages/order/CheckOut';
+import CommonStepper from '../pages/checkout/CheckOut';
+import PaymentStatus from '../pages/checkout/PaymentStatus';
+import Register from '../authlogin/Register';
 
 
 const Router = () => {
@@ -19,9 +21,11 @@ const Router = () => {
         <Route path="shoppingcart" element={<ShoppingCart />} />
         <Route path="allproducts" element={<ProductsPage />} />
         <Route path="favoritepage" element={<FavoritesPage />} />
-        <Route path="orderdetails" element={<CommonStepper />} />
+        <Route path="orderDetails" element={<CommonStepper />} />
+        <Route path="orderDetails/payment-status/:status" element={<PaymentStatus />} />
       </Route>
       <Route path="/login" element={<Login />} />
+      <Route path="/register" element={<Register />} />
     </Routes>
   );
 };

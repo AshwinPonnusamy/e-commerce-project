@@ -1,0 +1,16 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "type": "commonjs",
+  "scripts": {
+    "start": "npx ts-node server.ts"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "stripe": "^18.0.0",
+    "ts-node": "^10.9.1"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0"
+  }
+}

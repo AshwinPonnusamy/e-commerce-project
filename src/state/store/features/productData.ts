@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 export interface CartItem {
+  discount: any;
   discountPercentage: number;
   availabilityStatus: string;
   description: string;
@@ -22,6 +23,7 @@ export interface ProductData {
   isFavorited: { [key: string]: boolean };
   open: boolean;
   cartItems: CartItem[];
+  searchQuery: string;
 }
 const initialState: ProductData = {
   searchProductList:[],
@@ -31,13 +33,16 @@ const initialState: ProductData = {
   isFavorited: {},
   open: false,
   cartItems: [],
+  searchQuery: "",
 };
+
 export const productSlice = createSlice({
   name: "productData",
   initialState,
   reducers: {
-    setSearchProductList: (state, action: PayloadAction<any>) => {
-      state.searchProductList = action.payload;
+    setSearchProductList: (state, action: PayloadAction<{ list: any; query: string }>) => {
+      state.searchProductList = Array.isArray(action.payload.list) ? action.payload.list : [];
+      state.searchQuery = action.payload.list.length > 0 ? action.payload.query : "";
     },
     setAllProductList: (state, action: PayloadAction<any>) => {
       state.allProductList = action.payload;

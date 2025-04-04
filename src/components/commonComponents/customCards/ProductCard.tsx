@@ -8,7 +8,7 @@ interface ProductCardProps {
   productName: string;
   productDescription: string;
   productImage: string;
-  productPrice: string;
+  productPrice: any;
   productRating: number;
   originalPrice?: number;
   discount?: number;
@@ -189,10 +189,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
           <Typography variant="body2" sx={{ textDecoration: "line-through", color: "gray" }}>
             ₹{originalPrice?.toFixed(2)}
           </Typography>
-          {/* <Box sx={{ display: "flex", justifyContent: "space-", mt: 1 }}>
-            <CustomButton buttonLabel="Buy Now" />
-            <CustomButton buttonLabel="Buy Now" />
-          </Box> */}
+
         </CardContent>
       </Card>
     </Box>

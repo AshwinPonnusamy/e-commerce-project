@@ -54,13 +54,14 @@ export const getSearchProductList = (searchQuery: string) => async (dispatch: an
     try {
         const result = await axios.get(`https://dummyjson.com/products/search?q=${searchQuery}`);
         if (result?.data?.products) {
-            dispatch(setSearchProductList(result?.data?.products));
+            dispatch(setSearchProductList({ list: result.data.products, query: searchQuery }));
         } else {
-            dispatch(setSearchProductList([]));
+            dispatch(setSearchProductList({ list: [], query: searchQuery }));
             console.error("No search results found.");
         }
     } catch (error) {
         console.error("Failed to get product details:", error);
+        dispatch(setSearchProductList({ list: [], query: searchQuery }));
     }
 };
 

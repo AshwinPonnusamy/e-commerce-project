@@ -11,28 +11,37 @@ import { Tabs, Tab, Avatar, Menu, MenuItem, Tooltip, Badge, useMediaQuery, Drawe
 import { FavoriteBorder, ShoppingCart } from "@mui/icons-material";
 import { useSelector } from "react-redux";
 import { RootState } from "../state/store/store";
+import { signOut } from "firebase/auth";
+import { auth, db } from "../fireBase/fireBase-config";
+
+import { get, ref } from "firebase/database";
+import Profile from "./ProfilePage";
+
 
 const Header: React.FC = () => {
   const navigate = useNavigate();
   const [value, setValue] = React.useState(0);
-  const [isLoggedIn] = React.useState(true);
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
   const [mobileOpen, setMobileOpen] = React.useState(false);
+  const [profileDrawerOpen, setProfileDrawerOpen] = React.useState(false);
+  const isLoggedIn = useSelector((state: RootState) => state.authData.isLoggedIn);
   const cartItems = useSelector((state: RootState) => state.productData.cartItems);
   const favoriteProducts = useSelector((state: RootState) =>
     state.productData.allProductList.filter((product: any) => state.productData.isFavorited[product.id])
-);
+  );
   const totalCartItems = cartItems.reduce((total, item) => total + item.quantity, 0);
   const settings = ["Profile", "Logout"];
   const isMobile = useMediaQuery("(max-width:768px)");
-
+  const userId = useSelector((state: RootState) => state.authData.userId);
+  const [profileData, setProfileData] = React.useState<any>(null);
+  console.log(profileData, "profileData");
   const handleChange = (_event: any, newValue: number) => {
     setValue(newValue);
   };
 
-  const handleOpenUserMenu = (event: any) => {
-    setAnchorElUser(event.currentTarget);
-  };
+  // const handleOpenUserMenu = (event: any) => {
+  //   setAnchorElUser(event.currentTarget);
+  // };
 
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
@@ -49,8 +58,34 @@ const Header: React.FC = () => {
     setMobileOpen(open);
   };
 
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      console.log("User logged out successfully");
+      navigate("/login");
+    } catch (error) {
+      console.error("Error logging out:", error);
+    }
+  };
+  React.useEffect(() => {
+    const fetchProfileData = async () => {
+      if (!userId) return;
+      try {
+        const snapshot = await get(ref(db, "users/" + userId));
+        if (snapshot.exists()) {
+          setProfileData(snapshot.val());
+        } else {
+          console.log("No user data found");
+        }
+      } catch (err) {
+        console.error("Error fetching profile:", err);
+      }
+    };
+
+    fetchProfileData();
+  }, [userId]);
   return (
-    <Box sx={{ flexGrow: 1 , p:2}}>
+    <Box sx={{ flexGrow: 1, p: 2 }}>
       <AppBar position="fixed" sx={{ backgroundColor: "#333" }}>
         <Toolbar variant="dense">
           {isMobile && (
@@ -82,30 +117,58 @@ const Header: React.FC = () => {
             </IconButton>
             {isLoggedIn ? (
               <Tooltip title="Open settings">
-                <IconButton onClick={handleOpenUserMenu} sx={{ p: 1 }}>
+                <IconButton onClick={() => setProfileDrawerOpen(true)} sx={{ p: 1 }}>
                   <Avatar sx={{ height: "30px", width: "30px" }} alt="User Avatar" />
                 </IconButton>
               </Tooltip>
             ) : (
               <Box sx={{ marginLeft: "auto", display: "flex", gap: 1 }}>
                 <Button sx={{ color: "inherit", fontSize: "12px" }} onClick={() => navigate("/login")}>Login</Button>
-                <Button color="inherit" variant="outlined" sx={{ backgroundColor: "rgb(226, 190, 27)", color: "rgb(30, 11, 51)", border: "none", fontSize: "12px", padding: "0 10px" }} onClick={() => navigate("/signup")}>Sign Up</Button>
+                <Button color="inherit" variant="outlined" sx={{ backgroundColor: "rgb(226, 190, 27)", color: "rgb(30, 11, 51)", border: "none", fontSize: "12px", padding: "0 10px" }} onClick={() => navigate("/register")}>Sign Up</Button>
               </Box>
             )}
           </Box>
         </Toolbar>
       </AppBar>
+      <Drawer
+        anchor="right"
+        open={profileDrawerOpen}
+        onClose={() => setProfileDrawerOpen(false)}
+        sx={{
+          '& .MuiDrawer-paper': {
+            width: 350,
+            backgroundColor: '#fff',
+            color: '#333',
+          },
+        }}
+      >
+        <Profile
+          handleLogout={handleLogout}
+          userData={profileData}
+        />
+      </Drawer>
+
       <Menu anchorEl={anchorElUser} open={Boolean(anchorElUser)} onClose={handleCloseUserMenu}>
         {settings.map((setting) => (
-          <MenuItem key={setting} onClick={handleCloseUserMenu}>
+          <MenuItem
+            key={setting}
+            onClick={() => {
+              if (setting === "Logout") {
+                handleLogout();
+              } else if (setting === "Profile") {
+                navigate("/profile");
+              }
+              handleCloseUserMenu();
+            }}
+          >
             {setting}
           </MenuItem>
         ))}
       </Menu>
-      <Drawer anchor="left" open={mobileOpen} onClose={toggleDrawer(false)} sx={{ '& .MuiDrawer-paper': { backgroundColor: "#333", color:'#fff' } }}>
+      <Drawer anchor="left" open={mobileOpen} onClose={toggleDrawer(false)} sx={{ '& .MuiDrawer-paper': { backgroundColor: "#333", color: '#fff' } }}>
         <List>
           {["Home", "Products", "About", "Contact"].map((text, index) => (
-            <ListItem  key={text} onClick={() => { navigate(["/", "/layout/allproducts", "/about", "/contact"][index]); setMobileOpen(false); }}>
+            <ListItem key={text} onClick={() => { navigate(["/", "/layout/allproducts", "/about", "/contact"][index]); setMobileOpen(false); }}>
               <ListItemText primary={text} />
             </ListItem>
           ))}

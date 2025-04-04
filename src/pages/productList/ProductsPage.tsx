@@ -3,13 +3,11 @@ import { useState } from 'react';
 import ProductCard from '../../components/commonComponents/customCards/ProductCard';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../../state/store/store';
-import { handleAddCart, handleProductCardClick, toggleFavorite } from '../../components/commonFunctions/CommonFuntion';
+import { handleAddCart, handleProductCardClick, handleSearch, toggleFavorite } from '../../components/commonFunctions/CommonFuntion';
 import { useNavigate } from 'react-router-dom';
 import { Search, Close } from '@mui/icons-material';
 import { Filter } from 'iconsax-react';
 import FilterMenu from '../../components/commonComponents/FilterMenu';
-import { setSearchProductList } from '../../state/store/features/productData';
-import { getSearchProductList } from '../../state/action/product';
 
 const ProductsPage = () => {
     const navigate = useNavigate();
@@ -21,7 +19,7 @@ const ProductsPage = () => {
     const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
     const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
     const [selectedRatings, setSelectedRatings] = useState<string[]>([]);
-    const [searchQuery, setSearchQuery] = useState("");
+    const searchQuery = useSelector((state: RootState) => state.productData.searchQuery);
     const searchResults = useSelector((state: RootState) => state.productData.searchProductList || []);
     const filteredProducts = productDetails.filter((product: any) => {
         return (
@@ -31,7 +29,7 @@ const ProductsPage = () => {
         );
     });
 
-    const displayedProducts = productDetails ?  filteredProducts  : filteredProducts.slice(0, 10);
+    const displayedProducts = productDetails ? filteredProducts : filteredProducts.slice(0, 10);
     const categories = Array.from(
         new Set(productDetails.map((item: any) => item.category))
     ).map((category) => ({ label: category, value: category }));
@@ -39,6 +37,7 @@ const ProductsPage = () => {
         new Set(productDetails.map((item: any) => item.brand))
     ).map((brand) => ({ label: brand, value: brand }));
     const favorites = useSelector((state: RootState) => state.productData.isFavorited);
+    
 
     const options = [
         { label: "4★ & above", value: "4" },
@@ -46,15 +45,6 @@ const ProductsPage = () => {
         { label: "2★ & above", value: "2" },
         { label: "1★ & above", value: "1" },
     ];
-
-    const handleSearch = (query: string) => {
-        setSearchQuery(query);
-        if (query.trim() === "") {
-            dispatch(setSearchProductList([]));
-            return;
-        }
-        dispatch(getSearchProductList(query));
-    };
 
 
     return (
@@ -75,7 +65,7 @@ const ProductsPage = () => {
                                 width: 500,
                             }}>
                                 <Search />
-                                <InputBase placeholder="Search Products..." sx={{ flex: 1, marginLeft: 1 }}  onChange={(e) => handleSearch(e.target.value)} />
+                                <InputBase placeholder="Search Products..." sx={{ flex: 1, marginLeft: 1 }} onChange={(e) => handleSearch(e.target.value, dispatch)} />
                             </Paper>
                         </Grid>
 

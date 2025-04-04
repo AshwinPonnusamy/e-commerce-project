@@ -1,7 +1,6 @@
 import { Grid } from "@mui/material";
 import { Outlet } from "react-router-dom";
 import Header from "./Header";
-import './Layout.css';
 import Footer from "./Footer";
 
 const Layout = () => {

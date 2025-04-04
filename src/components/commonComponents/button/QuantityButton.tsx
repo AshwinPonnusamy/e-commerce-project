@@ -21,7 +21,7 @@ const QuantityButton: React.FC<QuantityButtonProps> = ({ onQuant, onRemove, onAd
             }}
         >
             {/* Decrease Quantity */}
-            <IconButton onClick={onRemove} disabled={onQuant === 0} color="primary">
+            <IconButton onClick={onRemove} disabled={onQuant === 1} color="primary">
                 <RemoveIcon />
             </IconButton>
 
@@ -31,7 +31,7 @@ const QuantityButton: React.FC<QuantityButtonProps> = ({ onQuant, onRemove, onAd
             </Typography>
 
             {/* Increase Quantity */}
-            <IconButton onClick={onAdd} disabled={onQuant === 100} color="primary">
+            <IconButton onClick={onAdd} disabled={onQuant === 10} color="primary">
                 <AddIcon />
             </IconButton>
         </Box>

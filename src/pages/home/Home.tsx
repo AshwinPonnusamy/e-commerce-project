@@ -24,7 +24,7 @@ import banner5 from "../../assets/image/banner/banner5.jpg";
 import banner6 from "../../assets/image/banner/banner6.jpg";
 import banner7 from "../../assets/image/banner/banner7.jpg";
 import banner8 from "../../assets/image/banner/banner8.jpg";
-import { handleAddCart, handleProductCardClick, toggleFavorite } from "../../components/commonFunctions/CommonFuntion";
+import { handleAddCart, handleProductCardClick, handleSearch, toggleFavorite } from "../../components/commonFunctions/CommonFuntion";
 
 interface Product {
   id: number;
@@ -40,13 +40,15 @@ interface Product {
 
 const Home = () => {
   const [seeAll, setSeeAll] = useState(false);
+  const [viewMore, setViewMore ] = useState(false);
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
-
+  const searchQuery = useSelector((state: RootState) => state.productData.searchQuery);
+  const searchResults = useSelector((state: RootState) => state.productData.searchProductList || []);
   const productDetails: Product[] = useSelector(
     (state: RootState) => state.productData?.allProductList || []
   );
-
+  const displayedProducts = viewMore ? productDetails : productDetails.slice(0, 10);
   const uniqueCategories = Array.from(
     new Map(
       productDetails.map((product) => [
@@ -107,7 +109,7 @@ const Home = () => {
             }}
             >
               <Search />
-              <InputBase placeholder="Search Products, Categories..." sx={{ flex: 1, marginLeft: 1 }} />
+              <InputBase placeholder="Search Products..." sx={{ flex: 1, marginLeft: 1 }} onChange={(e) => handleSearch(e.target.value, dispatch)} />
             </Paper>
           </Box>
         </Grid>
@@ -140,8 +142,8 @@ const Home = () => {
           </Grid>
         </Grid>
         <Grid item xs={12}>
-          <Grid container spacing={2} columns={14}>
-            <Grid item xs={14}>
+          <Grid container spacing={2} columns={15} sx={{p:2 }}>
+            <Grid item xs={15}>
               <Typography variant="h5" sx={{
                 color: "#333",
                 fontWeight: "bold",
@@ -149,29 +151,36 @@ const Home = () => {
                 textAlign: 'left'
               }}>Today&apos;s Trending Deals</Typography>
             </Grid>
-            <Grid item xs={14}>
-              <Carousel
-                value={productDetails}
-                numVisible={5}
-                numScroll={4}
-                responsiveOptions={responsiveOptions}
-                itemTemplate={(product) => (
-                  <ProductCard
-                    productName={product?.title}
-                    productDescription={product?.description}
-                    productImage={product?.images[0]}
-                    productPrice={product?.price}
-                    productRating={product?.rating}
-                    showTrending={true}
-                    isFavorited={favorites[product.id] || false}
-                    onClick={() => handleProductCardClick(product, dispatch, navigate)}
-                    handleAddCart={() => dispatch(handleAddCart(product))}
-                    isInCart={cartItems.some((item) => item.id === product.id)}
-                    originalPrice={product.price / (1 - (product.discountPercentage / 100))}
-                    onFavoriteClick={() => toggleFavorite(dispatch, Number(product.id), favorites[product.id])}
-                    discount={product.discountPercentage} />
-                )}
-              />
+            {(searchQuery ? searchResults : displayedProducts).map((product: any) => (
+            <Grid item xs={15} sm={7.5} md={3} lg={3} key={product.id}>
+                <ProductCard
+                  key={product?.id}
+                  productName={product?.title}
+                  productDescription={product?.description}
+                  productImage={product?.images[0]}
+                  productPrice={product?.price}
+                  productRating={product?.rating}
+                  showTrending={true}
+                  isFavorited={favorites[product?.id] || false}
+                  onClick={() => handleProductCardClick(product, dispatch, navigate)}
+                  handleAddCart={() => dispatch(handleAddCart(product))}
+                  isInCart={cartItems.some((item: any) => item.id === product.id)}
+                  originalPrice={product.price / (1 - (product.discountPercentage / 100))}
+                  onFavoriteClick={() => toggleFavorite(dispatch, Number(product.id), favorites[product.id])}
+                  discount={product.discountPercentage}
+                />
+            </Grid>
+              ))}
+              <Grid item xs={14} style={{ textAlign: "right", }}>
+              {displayedProducts.length >=  5 && (
+                <Button
+                  sx={{ '&:hover': { backgroundColor: 'transparent' } }}
+                  variant="plain"
+                  onClick={() => setViewMore(!viewMore)}
+                >
+                  {viewMore ? "view Less" : "View More"}
+                </Button>
+              )}
             </Grid>
           </Grid>
         </Grid>
@@ -221,7 +230,6 @@ const Home = () => {
                     productPrice={product?.price}
                     productRating={product?.rating}
                     // handleFavoriteChange={() => handleFavoriteChange()}
-                    
                     isFavorited={product?.favorite}
                     onClick={() => handleProductCardClick(product, dispatch, navigate)}
                     handleAddCart={() => dispatch(handleAddCart(product))}

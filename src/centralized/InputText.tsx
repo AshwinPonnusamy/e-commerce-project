@@ -1,28 +1,53 @@
 import React, { forwardRef } from "react";
 import { FormLabel, TextField, Typography } from "@mui/material";
-import { Controller } from "react-hook-form";
-import { Box } from "@mui/system";
-import { styled } from "@mui/system";
-import "../App.css";
+import { Controller, Control } from "react-hook-form";
+import { Box, styled } from "@mui/system";
 
 interface InputTextProps {
   name: string;
-  control: any;
+  control: Control<any>;
   label?: string;
-  value?: string;
   placeholder?: string;
   variant?: "outlined" | "filled" | "standard";
   fullWidth?: boolean;
   required?: boolean;
   disabled?: boolean;
   readOnly?: boolean;
+  type?: string;
   startAdornment?: React.ReactNode;
+  endAdornment?: React.ReactNode;
   minLength?: number;
   maxLength?: number;
   pattern?: RegExp;
-  InputProps?: any;
-  onChange?: (e:any) => void;
+  helperText?: string;
 }
+
+const CustomTextField = styled(TextField)({
+  '& .MuiOutlinedInput-root': {
+    borderRadius: '7px',
+    backgroundColor: '#fff',
+    '&:hover': {
+      backgroundColor: '#f5f5f5',
+    },
+    '&.Mui-focused': {
+      backgroundColor: '#fff',
+      boxShadow: '0 0 0 2px rgba(0, 0, 0, 0.1)',
+    },
+    '&.Mui-error': {
+      backgroundColor: '#ffebee',
+    },
+  },
+  '& .MuiOutlinedInput-input': {
+    padding: '10px 10px',
+    fontSize: '12px',
+    height: '24px',
+    '&::placeholder': {
+      color: '#999',
+      opacity: 1,
+      fontSize: '12px',
+    },
+  },
+});
 
 const InputText = forwardRef<HTMLInputElement, InputTextProps>(
   (
@@ -30,80 +55,85 @@ const InputText = forwardRef<HTMLInputElement, InputTextProps>(
       name,
       control,
       placeholder = "",
-      value,
       label = "",
       variant = "outlined",
       fullWidth = true,
+      required = false,
       disabled = false,
+      readOnly = false,
+      type = "text",
       startAdornment,
-      readOnly,
-      onChange
+      endAdornment,
+      minLength,
+      maxLength,
+      pattern,
+      helperText,
+      ...props
     },
     ref
   ) => {
-
-    const CustomTextField = styled(TextField)({
-      "& .MuiOutlinedInput-notchedOutline": {
-        border: "1px solid #000",
-      },
-      "& .MuiInputBase-input": {
-        fontSize: "14px !important",
-        padding: "3px 10px !important",
-        color: "#000",
-      },
-      "& .MuiOutlinedInput-root": {
-        borderRadius: "4px ",
-
-        "& input": {
-          backgroundColor: "rgba(0, 0, 0, 0)",
-          color: "#000",
-          padding: "6px",
-          border: "none",
-          borderRadius: "5px ",
-          flex: 1,
-          width: "200px",
-          fontSize: "12px",
-          height: "40px",
-        },
-        "& input::placeholder": {
-          color: "ff00ff",
-          fontSize: "14px",
-        },
-      }
-    });
-
     return (
-      <Box sx={{ display: "flex", flexDirection: "column" }}>
-        <FormLabel sx={{ margin: "13px 0px 16px 0px" }}>
-          <Typography sx={{ fontSize: "16px" }}>{label}</Typography>
-        </FormLabel>
+      <Box sx={{ display: "flex", flexDirection: "column", mb: 2 }}>
+        {label && (
+          <FormLabel sx={{ mb: 1 }}>
+            <Typography variant="body2" sx={{ fontSize: '14px', fontWeight: 500 }}>
+              {label}
+              {required && <span style={{ color: 'red' }}> *</span>}
+            </Typography>
+          </FormLabel>
+        )}
+        
         <Controller
           name={name}
           control={control}
-          defaultValue={value || ""}
+          defaultValue=""
+          rules={{
+            required: required ? `${label || placeholder} is required` : false,
+            minLength: minLength ? {
+              value: minLength,
+              message: `${label || placeholder} must be at least ${minLength} characters`
+            } : undefined,
+            maxLength: maxLength ? {
+              value: maxLength,
+              message: `${label || placeholder} must be less than ${maxLength} characters`
+            } : undefined,
+            pattern: pattern ? {
+              value: pattern,
+              message: `Invalid ${label || placeholder} format`
+            } : undefined
+          }}
           render={({ field, fieldState: { error } }) => (
             <>
               <CustomTextField
                 {...field}
-                inputRef={ref }
+                {...props}
+                inputRef={ref}
                 placeholder={placeholder}
                 variant={variant}
                 fullWidth={fullWidth}
                 disabled={disabled}
+                type={type}
                 error={!!error}
-                onChange={(e) => {
-                  field.onChange(e);
-                  if (onChange) onChange(e);
-                }}
                 InputProps={{
+                  readOnly: readOnly,
                   startAdornment: startAdornment,
-                    readOnly: readOnly,
+                  endAdornment: endAdornment,
                 }}
               />
-              {error && (
-                <p style={{ color: "red", fontSize: "10px" }}>
-                  {error.message}
-                </p>
+              
+              {(error || helperText) && (
+                <Typography
+                  variant="caption"
+                  sx={{
+                    display: 'block',
+                    mt: 0.5,
+                    ml: 1,
+                    color: error ? 'error.main' : 'text.secondary',
+                    fontSize: '12px',
+                  }}
+                >
+                  {error?.message || helperText}
+                </Typography>
               )}
             </>
           )}
