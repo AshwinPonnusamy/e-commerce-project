@@ -39,10 +39,6 @@ const Header: React.FC = () => {
     setValue(newValue);
   };
 
-  // const handleOpenUserMenu = (event: any) => {
-  //   setAnchorElUser(event.currentTarget);
-  // };
-
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
