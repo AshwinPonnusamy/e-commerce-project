@@ -79,3 +79,5 @@ export const removeProductFromCart = (id: number) => (dispatch: any) => {
 export const changeCartQuantity = (id: number, quantity: number) => (dispatch: any) => {
     dispatch(updateCartQuantity({ id, quantity }));
 };
+
+

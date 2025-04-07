@@ -9,6 +9,7 @@ import FavoritesPage from '../pages/wishList/FavoritesPage';
 import CommonStepper from '../pages/checkout/CheckOut';
 import PaymentStatus from '../pages/checkout/PaymentStatus';
 import Register from '../authlogin/Register';
+import AddProduct from '../pages/productList/add_product/AddProduct';
 
 
 const Router = () => {
@@ -23,6 +24,7 @@ const Router = () => {
         <Route path="favoritepage" element={<FavoritesPage />} />
         <Route path="orderDetails" element={<CommonStepper />} />
         <Route path="orderDetails/payment-status/:status" element={<PaymentStatus />} />
+        <Route path="addProduct" element={<AddProduct />} />
       </Route>
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />

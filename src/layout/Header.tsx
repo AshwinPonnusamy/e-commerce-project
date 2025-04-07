@@ -8,13 +8,11 @@ import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
 import { useNavigate } from "react-router-dom";
 import { Tabs, Tab, Avatar, Menu, MenuItem, Tooltip, Badge, useMediaQuery, Drawer, List, ListItem, ListItemText } from "@mui/material";
-import { FavoriteBorder, ShoppingCart } from "@mui/icons-material";
+import { Dashboard, FavoriteBorder, ShoppingCart } from "@mui/icons-material";
 import { useSelector } from "react-redux";
 import { RootState } from "../state/store/store";
 import { signOut } from "firebase/auth";
-import { auth, db } from "../fireBase/fireBase-config";
-
-import { get, ref } from "firebase/database";
+import { auth } from "../fireBase/fireBase-config";
 import Profile from "./ProfilePage";
 
 
@@ -32,9 +30,10 @@ const Header: React.FC = () => {
   const totalCartItems = cartItems.reduce((total, item) => total + item.quantity, 0);
   const settings = ["Profile", "Logout"];
   const isMobile = useMediaQuery("(max-width:768px)");
-  const userId = useSelector((state: RootState) => state.authData.userId);
-  const [profileData, setProfileData] = React.useState<any>(null);
+  const profileData = useSelector((state: RootState) => state.userData);
   console.log(profileData, "profileData");
+
+
   const handleChange = (_event: any, newValue: number) => {
     setValue(newValue);
   };
@@ -63,23 +62,6 @@ const Header: React.FC = () => {
       console.error("Error logging out:", error);
     }
   };
-  React.useEffect(() => {
-    const fetchProfileData = async () => {
-      if (!userId) return;
-      try {
-        const snapshot = await get(ref(db, "users/" + userId));
-        if (snapshot.exists()) {
-          setProfileData(snapshot.val());
-        } else {
-          console.log("No user data found");
-        }
-      } catch (err) {
-        console.error("Error fetching profile:", err);
-      }
-    };
-
-    fetchProfileData();
-  }, [userId]);
   return (
     <Box sx={{ flexGrow: 1, p: 2 }}>
       <AppBar position="fixed" sx={{ backgroundColor: "#333" }}>
@@ -94,6 +76,7 @@ const Header: React.FC = () => {
           </Typography>
           {!isMobile ? (
             <Box sx={{ flexGrow: 1, display: "flex", justifyContent: "start" }}>
+
               <Tabs value={value} onChange={handleChange} textColor="inherit" TabIndicatorProps={{ style: { backgroundColor: "rgb(226, 190, 27)", color: "#fff" } }}>
                 <Tab label="Home" sx={{ fontSize: "12px", color: value === 0 ? "rgb(226, 190, 27)" : "#fff" }} onClick={() => navigate("/")} />
                 <Tab label="Products" sx={{ fontSize: "12px", color: value === 1 ? "rgb(226, 190, 27)" : "#fff" }} onClick={() => navigate("/layout/allproducts")} />
@@ -101,6 +84,24 @@ const Header: React.FC = () => {
             </Box>
           ) : null}
           <Box sx={{ display: "flex", alignItems: "center" }}>
+            {profileData?.role === "admin" && (
+              <>
+                <Button
+                  color="inherit"
+                  sx={{ fontSize: "12px" }}
+                  onClick={() => navigate("/layout/addproduct")}
+                >
+                  Add Product
+                </Button>
+                <IconButton
+                  color="inherit"
+                  sx={{ fontSize: "12px" }}
+                  onClick={() => navigate("/layout/dashboard")}
+                >
+                  <Dashboard />
+                </IconButton>
+              </>
+            )}
             <IconButton sx={{ color: "#fff" }} onClick={handleCartOpen}>
               <Badge badgeContent={totalCartItems} color="primary">
                 <ShoppingCart />
@@ -114,7 +115,7 @@ const Header: React.FC = () => {
             {isLoggedIn ? (
               <Tooltip title="Open settings">
                 <IconButton onClick={() => setProfileDrawerOpen(true)} sx={{ p: 1 }}>
-                  <Avatar sx={{ height: "30px", width: "30px" }} alt="User Avatar" />
+                  <Avatar sx={{ height: "30px", width: "30px" }} alt="User Avatar" src={profileData?.profileUrl || ""} />
                 </IconButton>
               </Tooltip>
             ) : (

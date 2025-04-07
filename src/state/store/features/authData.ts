@@ -7,7 +7,6 @@ export interface AuthData {
     email: string | null;
     role: string | null;
     loading: boolean;
-    userData: any | null;
 }
 
 const initialState: AuthData = {
@@ -17,28 +16,23 @@ const initialState: AuthData = {
     email: null,
     role: null,
     loading: false,
-    userData: null,
 };
 
 const authSlice = createSlice({
     name: "authData",
     initialState,
     reducers: {
-        login: (state, action: PayloadAction<{ userData: any; }>) => {
-            state.userData = action.payload.userData;
-            console.log("User data in auth slice:", action.payload.userData);
-            
+        login: ( state, action: PayloadAction<{ userId: string; token: string; email: string; role: string }>
+        ) => {
+            state.userId = action.payload.userId;
+            state.token = action.payload.token;
+            state.email = action.payload.email;
+            state.role = action.payload.role;
             state.isLoggedIn = true;
-            state.userId = action.payload.userData.userId;
-            state.token = action.payload.userData.token;
-            state.role = action.payload.userData.role;
         },
         logout: () => initialState,
-        setLoading: (state, action: PayloadAction<boolean>) => {
-            state.loading = action.payload;
-        },
     },
 });
 
-export const { login, logout, setLoading } = authSlice.actions;
+export const { login, logout } = authSlice.actions;
 export default authSlice.reducer;

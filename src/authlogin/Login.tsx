@@ -12,11 +12,9 @@ import { useNavigate } from "react-router-dom";
 import { GitHub, Google, Facebook } from "@mui/icons-material";
 import InputText from "../centralized/InputText";
 import backgroundImage from "../assets/image/login/login-bg3.jpg";
-import { auth, db } from "../fireBase/fireBase-config";
-import { signInWithEmailAndPassword } from "firebase/auth";
-import { login } from "../state/store/features/authData";
 import { useDispatch } from "react-redux";
-import { get, ref } from "firebase/database";
+import { loginUser } from "../state/action/users";
+import { AppDispatch } from "../state/store/store";
 
 interface LoginFormData {
   email: string;
@@ -24,48 +22,23 @@ interface LoginFormData {
 }
 
 const Login = () => {
-  const {
-    control,
-    handleSubmit,
-  } = useForm({
+  const navigate = useNavigate();
+  const dispatch = useDispatch<AppDispatch>();
+  const { control, handleSubmit } = useForm({
     defaultValues: {
       email: "",
       password: ""
     }
   });
 
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
   const onSubmit = async (data: LoginFormData) => {
     try {
-      const userCredential = await signInWithEmailAndPassword(auth, data.email, data.password);
-      const user = userCredential.user;
-
-      console.log("User logged in:", user);
-      const role = data.email === "ashwinas8902@gmail.com" ? "admin" : "user";
-      const token = await user.getIdToken();
-      const snapshot = await get(ref(db, 'users/' + user.uid));
-      const dbData = snapshot.val();
-      if (!dbData || !dbData.role) {
-        console.error("User role not found in DB");
-        return;
-      }
-      const userData = {
-        isLoggedIn: true,
-        userId: user.uid,
-        token: token,
-        email: user.email,
-        role: role,
-        loading: false,
-      };
-      dispatch(login({ userData }));
-      navigate(role === 'admin' ? "/layout/admin" : "/layout/home");
+      const userData = await dispatch(loginUser(data.email, data.password));
+      navigate(userData.role === "admin" ? "/layout/home" : "/layout/home");
     } catch (error: any) {
-      console.error("Error logging in:", error.message);
+      console.error("Login failed:", error.message);
     }
   };
-
-
   return (
     <Box
       sx={{

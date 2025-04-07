@@ -13,59 +13,29 @@ import { useNavigate } from "react-router-dom";
 import { GitHub, Google, Facebook } from "@mui/icons-material";
 import InputText from "../centralized/InputText";
 import backgroundImage from "../assets/image/login/login-bg3.jpg";
-import { createUserWithEmailAndPassword } from "firebase/auth";
-import { auth, db } from "../fireBase/fireBase-config";
 import { useDispatch } from "react-redux";
-import { login } from "../state/store/features/authData";
-import { ref, set } from "firebase/database";
+import { registerUser } from "../state/action/users";
+import { AppDispatch } from "../state/store/store";
+
 const Register = () => {
-    const {
-        control,
-        handleSubmit,
-    } = useForm({
+    const dispatch = useDispatch<AppDispatch>();
+    const navigate = useNavigate();
+    const { control, handleSubmit } = useForm({
         defaultValues: {
-            firstName: "",
-            lastName: "",
+            fullName: "",
             email: "",
             password: "",
             confirmPassword: "",
         }
     });
     const [showConfirmPassword] = useState(false);
-    const navigate = useNavigate();
-    const dispatch = useDispatch();
 
-    const writeUserToDB = async (userId: string, data: any) => {
-        await set(ref(db, 'users/' + userId), data);
-    };
     const onSubmit = async (data: any) => {
         try {
-            const userCredential = await createUserWithEmailAndPassword(auth, data.email, data.password);
-            const user = userCredential.user;
-            const role = data.email === "ashwinas8902@gmail.com" ? "admin" : "user";
-
-            console.log("User registered:", user);
-            const token = await user.getIdToken();
-            const userData = {
-                isLoggedIn: true,
-                userId: user.uid,
-                token: token,
-                email: user.email,
-                role: role,
-                loading: false,
-            };
-            await writeUserToDB(user.uid, {
-                userId: user.uid,
-                fName: data.firstName,
-                lName: data.lastName,
-                email: user.email,
-                role,
-            });
-
-            dispatch(login({ userData }));
+            await dispatch(registerUser(data));
             navigate("/login");
-        } catch (error) {
-            console.error("Error registering user:", error);
+        } catch (error: any) {
+            console.error("Registration failed:", error.message);
         }
     };
     return (
@@ -116,18 +86,18 @@ const Register = () => {
                         <Box sx={{ display: 'flex', gap: 1, flexDirection: 'column' }}>
                             <Box sx={{ display: 'flex', gap: 2 }}>
                                 <InputText
-                                    name="firstName"
+                                    name="fullName"
                                     control={control}
-                                    label="First Name"
-                                    placeholder="Enter your first name"
+                                    label="Full Name"
+                                    placeholder="Enter your full name"
                                     fullWidth
                                 // required
                                 />
                                 <InputText
-                                    name="lastName"
+                                    name="phone"
                                     control={control}
-                                    label="Last Name"
-                                    placeholder="Enter your last name"
+                                    label="Mobile Number"
+                                    placeholder="Enter your mobile number"
                                     fullWidth
                                 // required
                                 />
