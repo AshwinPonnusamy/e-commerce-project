@@ -6,7 +6,6 @@ export interface AuthData {
     token: string | null;
     email: string | null;
     role: string | null;
-    loading: boolean;
 }
 
 const initialState: AuthData = {
@@ -15,13 +14,16 @@ const initialState: AuthData = {
     token: null,
     email: null,
     role: null,
-    loading: false,
 };
 
 const authSlice = createSlice({
     name: "authData",
     initialState,
     reducers: {
+        // set local storage data when user login
+    
+
+
         login: ( state, action: PayloadAction<{ userId: string; token: string; email: string; role: string }>
         ) => {
             state.userId = action.payload.userId;
@@ -29,8 +31,27 @@ const authSlice = createSlice({
             state.email = action.payload.email;
             state.role = action.payload.role;
             state.isLoggedIn = true;
+            localStorage.setItem("userId", action.payload.userId || "");
+            localStorage.setItem("token", action.payload.token || "");
+            localStorage.setItem("email", action.payload.email || "");
+            localStorage.setItem("role", action.payload.role || "");
+
         },
-        logout: () => initialState,
+        //after logout clear all data form local storage and set initial state
+        logout: ( state ) => {
+            state.isLoggedIn = false;
+            state.userId = null;
+            state.token = null;
+            state.email = null;
+            state.role = null;
+
+            // Clear local storage
+            localStorage.removeItem("userId");
+            localStorage.removeItem("token");
+            localStorage.removeItem("email");
+            localStorage.removeItem("role");
+        }
+
     },
 });
 

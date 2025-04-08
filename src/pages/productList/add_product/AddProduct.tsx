@@ -55,7 +55,6 @@ const AddProduct = () => {
                             </Grid>
                         </Grid>
                     </CommonPaper>
-
                 </Grid>
 
                 <Grid item xs={12} md={4}>
