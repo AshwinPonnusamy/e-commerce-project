@@ -12,7 +12,6 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ProductCard from "../../components/commonComponents/customCards/ProductCard";
 import CategoryCircleCard from "../../components/commonComponents/customCards/CategoryCircleCard";
-import { Button } from "@mui/joy";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../state/store/store";
 import {
@@ -25,6 +24,7 @@ import banner6 from "../../assets/image/banner/banner6.jpg";
 import banner7 from "../../assets/image/banner/banner7.jpg";
 import banner8 from "../../assets/image/banner/banner8.jpg";
 import { handleAddCart, handleProductCardClick, handleSearch, toggleFavorite } from "../../components/commonFunctions/CommonFuntion";
+import CustomButton from "../../components/commonComponents/button/CustomButton";
 
 interface Product {
   id: number;
@@ -40,7 +40,7 @@ interface Product {
 
 const Home = () => {
   const [seeAll, setSeeAll] = useState(false);
-  const [viewMore, setViewMore ] = useState(false);
+  const [viewMore, setViewMore] = useState(false);
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
   const searchQuery = useSelector((state: RootState) => state.productData.searchQuery);
@@ -130,19 +130,18 @@ const Home = () => {
             {/* See All Button */}
             <Grid item xs={14} style={{ textAlign: "center", }}>
               {uniqueCategories.length > 7 && (
-                <Button
+                <CustomButton
+                  label={seeAll ? "See Less" : "See All"}
                   sx={{ '&:hover': { backgroundColor: 'transparent' } }}
-                  variant="plain"
+                  variant="text"
                   onClick={() => setSeeAll(!seeAll)}
-                >
-                  {seeAll ? "See Less" : "See All"}
-                </Button>
+                />
               )}
             </Grid>
           </Grid>
         </Grid>
         <Grid item xs={12}>
-          <Grid container spacing={2} columns={15} sx={{p:2 }}>
+          <Grid container spacing={2} columns={15} sx={{ p: 2 }}>
             <Grid item xs={15}>
               <Typography variant="h5" sx={{
                 color: "#333",
@@ -152,7 +151,7 @@ const Home = () => {
               }}>Today&apos;s Trending Deals</Typography>
             </Grid>
             {(searchQuery ? searchResults : displayedProducts).map((product: any) => (
-            <Grid item xs={15} sm={7.5} md={3} lg={3} key={product.id}>
+              <Grid item xs={15} sm={7.5} md={3} lg={3} key={product.id}>
                 <ProductCard
                   key={product?.id}
                   productName={product?.title}
@@ -169,17 +168,16 @@ const Home = () => {
                   onFavoriteClick={() => toggleFavorite(dispatch, Number(product.id), favorites[product.id])}
                   discount={product.discountPercentage}
                 />
-            </Grid>
-              ))}
-              <Grid item xs={14} style={{ textAlign: "right", }}>
-              {displayedProducts.length >=  5 && (
-                <Button
+              </Grid>
+            ))}
+            <Grid item xs={14} style={{ textAlign: "right", }}>
+              {displayedProducts.length >= 5 && (
+                <CustomButton
+                  label={viewMore ? "View Less" : "View More"}
                   sx={{ '&:hover': { backgroundColor: 'transparent' } }}
-                  variant="plain"
+                  variant="text"
                   onClick={() => setViewMore(!viewMore)}
-                >
-                  {viewMore ? "view Less" : "View More"}
-                </Button>
+                />
               )}
             </Grid>
           </Grid>

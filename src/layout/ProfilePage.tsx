@@ -12,7 +12,6 @@ interface ProfileProps {
 }
 const Profile: React.FC<ProfileProps> = ({ handleLogout, userData }) => {
     const [activeTab, setActiveTab] = useState("profile");
-    const [previewImage] = useState<any>(null);
     const fileInputRef = useRef<HTMLInputElement | null>(null);
     const [editingField, setEditingField] = useState<string | null>(null);
     const dispatch = useDispatch<AppDispatch>();
@@ -41,13 +40,11 @@ const Profile: React.FC<ProfileProps> = ({ handleLogout, userData }) => {
     const handleImageChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
         const selectedFile = event.target.files?.item(0);
         if (!selectedFile) {
-            previewImage(null);
             return;
         }
         const reader = new FileReader();
         reader.onloadend = async () => {
             const base64Image = reader.result as string;
-            previewImage(base64Image);
             await dispatch(updateUserDetails({ profileUrl: base64Image })); // update Firebase
         };
 

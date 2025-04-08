@@ -1,41 +1,61 @@
-import { Box, Button } from '@mui/material'
-import React from 'react'
+import { Box, Button } from '@mui/material';
+import React from 'react';
 
-interface buttonProps {
-    buttonLabel: string;
-    buttonColor?: any;
-    onClick?: () => void;
-    startIcon?:any;
-    disabled?: boolean
-
+interface CustomButtonProps {
+  label: string;
+  color?: string;
+  startIcon?: React.ReactNode;
+  endIcon?: React.ReactNode;
+  disabled?: boolean;
+  fullWidth?: boolean;
+  size?: 'small' | 'medium' | 'large';
+  variant?: 'text' | 'outlined' | 'contained';
+  sx?: object;
+  onClick?: () => void;
 }
 
-const CustomButton:React.FC<buttonProps> = ({
-    buttonLabel = 'Button',
-    buttonColor = 'primary',
-    startIcon,
-    onClick,
-    disabled = false, 
+const CustomButton: React.FC<CustomButtonProps> = ({
+  label = 'Button',
+  color = 'primary',
+  startIcon,
+  endIcon,
+  disabled = false,
+  fullWidth = false,
+  size = 'medium',
+  variant = 'contained',
+  sx = {},
+  onClick,
 }) => {
+  const isMuiColor = ['primary', 'secondary', 'error', 'info', 'success', 'warning'].includes(color);
 
-    return (
-        <Box sx={{ m: 1 }}>
-            <Button disabled={disabled}  onClick={onClick} sx={{
-                borderRadius: "6px",
-                color: "#fff",
-                backgroundColor: buttonColor,
-                fontWeight: "400",
-                textTransform:'none',
-                transition: "transform 0.5s",
-                height:30,
-                padding:1,
-            }} variant="contained">
-                
-                {startIcon} {buttonLabel}
-            </Button>
-        </Box>
+  return (
+    <Box>
+      <Button
+        disabled={disabled}
+        onClick={onClick}
+        startIcon={startIcon}
+        endIcon={endIcon}
+        fullWidth={fullWidth}
+        size={size}
+        variant={variant}
+        color={isMuiColor ? color as 'primary' | 'secondary' : undefined}
+        sx={{
+          borderRadius: '6px',
+          fontWeight: 400,
+          textTransform: 'none',
+          transition: 'all 0.3s ease',
+          ...(!isMuiColor && {
+            backgroundColor: variant === 'contained' ? color : undefined,
+            color: variant === 'contained' ? '#fff' : color,
+            borderColor: color,
+          }),
+          ...sx,
+        }}
+      >
+        {label}
+      </Button>
+    </Box>
+  );
+};
 
-    )
-}
-
-export default CustomButton
+export default CustomButton;

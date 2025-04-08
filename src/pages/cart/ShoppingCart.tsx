@@ -3,7 +3,6 @@ import {
     Box,
     Grid,
     Typography,
-    Button,
     Rating,
     CardMedia,
 } from "@mui/material";
@@ -156,14 +155,14 @@ const ShoppingCart: React.FC = () => {
                                 />
 
                                 {/* Delete Button */}
-                                <Button
+                                <CustomButton
+                                    label="Remove"
+                                    variant="text"
                                     startIcon={<DeleteIcon />}
                                     color="error"
                                     onClick={() => handleRemove(item.id, dispatch)}
                                     sx={{ ml: 2 }}
-                                >
-                                    Remove
-                                </Button>
+                                />
                             </Box>
                         </Grid>
 
@@ -210,10 +209,10 @@ const ShoppingCart: React.FC = () => {
 
             <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
                 <CustomButton
-                    buttonLabel="Proceed to Buy"
-                    buttonColor="#ff0ff0"
+                    label="Proceed to Buy"
+                    color="warning"
                     onClick={handleBuy}
-                    disabled={cartItems.length === 0}
+                    disabled={cartItems.length === 0 ? true : false}
                 />
             </Box>
         </Box>

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Box, Typography, Button, Paper, Grid, Stepper, Step, StepLabel, Divider } from '@mui/material';
+import { Box, Typography, Paper, Grid, Stepper, Step, StepLabel, Divider } from '@mui/material';
 import OrderSummary from './OrderSummary';
 import PaymentOptions from './PaymentsPage';
 import ShippingDetails from './ShippingDetails';
@@ -9,10 +9,11 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../../state/store/store';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import CustomButton from '../../components/commonComponents/button/CustomButton';
 const steps = ['Shipping Details', 'Order Summary', 'Payment'];
 
 const CheckOut = () => {
-        const navigate = useNavigate();
+    const navigate = useNavigate();
     const [activeStep, setActiveStep] = useState(0);
     const [paymentMethod, setPaymentMethod] = useState('');
     const cartItems = useSelector((state: RootState) => state.productData.cartItems);
@@ -48,7 +49,7 @@ const CheckOut = () => {
         } catch (error) {
             console.error("Error processing payment:", error);
             alert(`Payment failed. Error: ${(error as Error).message}`);
-           navigate("/layout/orderDetails/payment-status/", { state: { status: "failed" } });
+            navigate("/layout/orderDetails/payment-status/", { state: { status: "failed" } });
         }
     };
     return (
@@ -74,17 +75,17 @@ const CheckOut = () => {
 
                 {/* Main Content Area */}
                 <Grid container item xs={12} spacing={3}>
-                        <Grid item xs={12} md={8}>
-                            {activeStep === 0 && <ShippingDetails />}
-                            {activeStep === 1 && <OrderSummary />}
-                            {activeStep === 2 && (
-                                <PaymentOptions
-                                    setPaymentMethod={setPaymentMethod}
-                                    paymentMethod={paymentMethod}
-                                    totalAmount={totalAmount}
-                                />
-                            )}
-                        </Grid>
+                    <Grid item xs={12} md={8}>
+                        {activeStep === 0 && <ShippingDetails />}
+                        {activeStep === 1 && <OrderSummary />}
+                        {activeStep === 2 && (
+                            <PaymentOptions
+                                setPaymentMethod={setPaymentMethod}
+                                paymentMethod={paymentMethod}
+                                totalAmount={totalAmount}
+                            />
+                        )}
+                    </Grid>
 
                     {/* Price Details Section */}
                     <Grid item xs={12} md={4}>
@@ -135,16 +136,20 @@ const CheckOut = () => {
                             </Paper>
                             {activeStep === 2 && (
                                 <Box>
-                                    <Button variant="contained" color="warning" disabled={!paymentMethod} fullWidth sx={{ mt: 2, mb: 2 }}
-                                         onClick={() => {
+                                    <CustomButton
+                                        label={paymentMethod === "cod" ? 'Place Order' : `Pay ₹${totalAmount?.toFixed(2)}`}
+                                        variant="contained" color="warning"
+                                        disabled={!paymentMethod}
+                                        fullWidth={true}
+                                        sx={{mt:2}}
+
+                                        onClick={() => {
                                             if (paymentMethod === "cod") {
                                                 navigate("/layout/orderDetais/payment-status", { state: { status: "success" } });
                                             } else {
                                                 handleCardPayment(totalAmount);
                                             }
-                                        }}>
-                                        {paymentMethod === "cod" ? 'Place Order' : `Pay ₹${totalAmount?.toFixed(2)}`}
-                                    </Button>
+                                        }} />
                                 </Box>
                             )}
                         </Box>
@@ -157,7 +162,9 @@ const CheckOut = () => {
                         display: 'flex',
                         justifyContent: 'space-between',
                     }}>
-                        <Button
+                        <CustomButton
+                            label="Back"
+                            variant="text"
                             disabled={activeStep === 0}
                             onClick={handleBack}
                             startIcon={<ArrowBack />}
@@ -166,25 +173,23 @@ const CheckOut = () => {
                                 fontSize: 14,
                                 color: '#c21d17',
                             }}
-                        >
-                            Back
-                        </Button>
-                        <Button
+                        />
+                        <CustomButton
+                            label="Next"
+                            variant="text"
                             onClick={handleNext}
                             endIcon={<ArrowRight />}
                             disabled={activeStep === steps.length - 1}
+                            color= 'primary'
                             sx={{
                                 textTransform: 'none',
                                 fontSize: 14,
-                                color: '#0026fd',
                             }}
-                        >
-                            Next
-                        </Button>
+                        />
                     </Box>
                 </Grid>
             </Grid>
-        </Box>
+        </Box >
     );
 };
 

@@ -1,7 +1,6 @@
 import React from 'react';
 import {
   Box,
-  Button,
   Grid
 } from '@mui/material';
 import InputText from '../../centralized/InputText';
@@ -11,6 +10,7 @@ import googlePay from '../../assets/image/paymentIcons/google-pay-icon.svg';
 import phonePay from '../../assets/image/paymentIcons/phonepe-icon.svg';
 import stripePay from '../../assets/image/paymentIcons/stripe-icon.svg';
 import razorPay from '../../assets/image/paymentIcons/razorpay-icon.svg';
+import CustomButton from '../../components/commonComponents/button/CustomButton';
 
 interface Props {
   setPaymentMethod?: any;
@@ -101,13 +101,11 @@ const PaymentsPage: React.FC<Props> = ({ setPaymentMethod, paymentMethod, totalA
               />
             </Grid>
           </Grid>
-          <Button
+          <CustomButton
+            label={`PAY ₹${totalAmount?.toFixed(2)}`}
             fullWidth
             variant="contained"
-            sx={{ mt: 2, backgroundColor: '#1976d2' }}
-          >
-            PAY ₹{totalAmount?.toFixed(2)}
-          </Button>
+          />
         </Box>
         // </form>
       )
@@ -129,15 +127,12 @@ const PaymentsPage: React.FC<Props> = ({ setPaymentMethod, paymentMethod, totalA
             name="captcha"
             placeholder='Captcha'
             control={control}
-          // onChange={(e) => setCaptcha(e.target.value)}
           />
-          <Button
+          <CustomButton
+            label='CONFIRM ORDER'
             fullWidth
             variant="contained"
-            sx={{ mt: 2, backgroundColor: '#1976d2' }}
-          >
-            CONFIRM ORDER
-          </Button>
+          />
         </Box>
       )
     }

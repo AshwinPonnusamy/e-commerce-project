@@ -20,6 +20,8 @@ interface InputTextProps {
   maxLength?: number;
   pattern?: RegExp;
   helperText?: string;
+  multiline?: boolean;
+  rows?: number;
 }
 
 const CustomTextField = styled(TextField)({
@@ -68,6 +70,8 @@ const InputText = forwardRef<HTMLInputElement, InputTextProps>(
       maxLength,
       pattern,
       helperText,
+      multiline = false,
+      rows,
       ...props
     },
     ref
@@ -112,6 +116,8 @@ const InputText = forwardRef<HTMLInputElement, InputTextProps>(
                 variant={variant}
                 fullWidth={fullWidth}
                 disabled={disabled}
+                multiline={multiline}
+                rows={rows}
                 type={type}
                 error={!!error}
                 InputProps={{

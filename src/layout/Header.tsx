@@ -3,7 +3,6 @@ import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
-import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
 import { useNavigate } from "react-router-dom";
@@ -14,6 +13,7 @@ import { RootState } from "../state/store/store";
 import { signOut } from "firebase/auth";
 import { auth } from "../fireBase/fireBase-config";
 import Profile from "./ProfilePage";
+import CustomButton from "../components/commonComponents/button/CustomButton";
 
 
 const Header: React.FC = () => {
@@ -32,7 +32,6 @@ const Header: React.FC = () => {
   const isMobile = useMediaQuery("(max-width:768px)");
   const profileData = useSelector((state: RootState) => state.userData);
   console.log(profileData, "profileData");
-
 
   const handleChange = (_event: any, newValue: number) => {
     setValue(newValue);
@@ -86,13 +85,14 @@ const Header: React.FC = () => {
           <Box sx={{ display: "flex", alignItems: "center" }}>
             {profileData?.role === "admin" && (
               <>
-                <Button
+                <CustomButton
+                  label="Add Product"
+                  variant="text"
                   color="inherit"
                   sx={{ fontSize: "12px" }}
                   onClick={() => navigate("/layout/addproduct")}
-                >
-                  Add Product
-                </Button>
+                />
+                <Tooltip title="Dashboard">
                 <IconButton
                   color="inherit"
                   sx={{ fontSize: "12px" }}
@@ -100,6 +100,7 @@ const Header: React.FC = () => {
                 >
                   <Dashboard />
                 </IconButton>
+                </Tooltip>
               </>
             )}
             <IconButton sx={{ color: "#fff" }} onClick={handleCartOpen}>
@@ -120,8 +121,8 @@ const Header: React.FC = () => {
               </Tooltip>
             ) : (
               <Box sx={{ marginLeft: "auto", display: "flex", gap: 1 }}>
-                <Button sx={{ color: "inherit", fontSize: "12px" }} onClick={() => navigate("/login")}>Login</Button>
-                <Button color="inherit" variant="outlined" sx={{ backgroundColor: "rgb(226, 190, 27)", color: "rgb(30, 11, 51)", border: "none", fontSize: "12px", padding: "0 10px" }} onClick={() => navigate("/register")}>Sign Up</Button>
+                <CustomButton label="Login" variant="text" sx={{ color: "inherit", fontSize: "12px" }} onClick={() => navigate("/login")} />
+                <CustomButton label="Sign Up" color="#fff" variant="outlined" sx={{ backgroundColor: "rgb(226, 190, 27)", color: "rgb(30, 11, 51)", border: "none", fontSize: "12px", p: 0.5 }} onClick={() => navigate("/register")} />
               </Box>
             )}
           </Box>

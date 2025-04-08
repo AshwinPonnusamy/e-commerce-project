@@ -1,10 +1,11 @@
-import { Box, Button, CardMedia, Grid, Rating, Typography } from "@mui/material"
+import { Box, CardMedia, Grid, Rating, Typography } from "@mui/material"
 import QuantityButton from "../../components/commonComponents/button/QuantityButton"
 import { handleIncrease, handleDecrease, handleRemove } from "../../components/commonFunctions/CommonFuntion"
 import { RootState } from "../../state/store/store"
 import { useDispatch, useSelector } from "react-redux"
 import { ThunkDispatch } from "@reduxjs/toolkit"
 import DeleteIcon from "@mui/icons-material/Delete";
+import CustomButton from "../../components/commonComponents/button/CustomButton"
 
 const OrderSummary = () => {
   const dispatch = useDispatch<ThunkDispatch<RootState, undefined, any>>();
@@ -18,7 +19,7 @@ const OrderSummary = () => {
           paddingX: 1,
           backgroundColor: "#f5f5f5",
           borderRadius: 2,
-          m:2
+          m: 2
         }}
       >
         {cartItems.length !== 0 && (
@@ -111,14 +112,14 @@ const OrderSummary = () => {
                   />
 
                   {/* Delete Button */}
-                  <Button
+                  <CustomButton
+                    label="Remove"
+                    variant="text"
                     startIcon={<DeleteIcon />}
                     color="error"
                     onClick={() => handleRemove(item.id, dispatch)}
                     sx={{ ml: 2 }}
-                  >
-                    Remove
-                  </Button>
+                  />
                 </Box>
               </Grid>
 

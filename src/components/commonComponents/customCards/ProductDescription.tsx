@@ -79,7 +79,7 @@ const ProductDescription: React.FC<ProductDescriptionProps> = ({
         <Box display="flex" alignItems="center" justifyContent="flex-end">
           <CustomButton
             startIcon={<ShoppingCartIcon sx={{fontSize:20, mr:1}} />}
-            onClick={handleAddCart} buttonLabel={isInCart ? "Remove from Cart" : "Add to Cart"}/>
+            onClick={handleAddCart} color="warning" label={isInCart ? "Remove from Cart" : "Add to Cart"}/>
         </Box>
       </Grid>
     </Grid>

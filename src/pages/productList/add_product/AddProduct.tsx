@@ -2,24 +2,28 @@ import React, { useState } from 'react';
 import {
     Box,
     Typography,
-    TextField,
     Grid,
     Button,
 } from '@mui/material';
 import { Add, HighlightOff } from '@mui/icons-material';
 import CommonPaper from '../../../components/commonComponents/CommonPaper';
+import InputText from '../../../centralized/InputText';
+import { useForm } from 'react-hook-form';
 
 const AddProduct = () => {
-    const [productName, setProductName] = useState('');
-    const [description, setDescription] = useState('');
-    const [basePrice, setBasePrice] = useState('');
-    const [stock, setStock] = useState('');
-    const [discount, setDiscount] = useState('');
-    const [discountType, setDiscountType] = useState('');
-    const [category, setCategory] = useState('');
     const [images, setImages] = useState<string[]>([]);
     const [mainImageIndex, setMainImageIndex] = useState(0);
-
+    const { control } = useForm({
+        defaultValues: {
+            productName: "",
+            productDescription: "",
+            category: "",
+            basePrice: "",
+            stock: "",
+            discount: "",
+            discountType: "",
+        }
+    });
     const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
         const files = Array.from(e.target.files || []);
         files.forEach(file => {
@@ -31,9 +35,6 @@ const AddProduct = () => {
         });
     };
 
-    const handleSubmit = () => {
-        console.log({ productName, description, basePrice, stock, discount, discountType, category, images });
-    };
 
     return (
         <Box sx={{ p: 4, backgroundColor: '#f7f7f7' }}>
@@ -41,16 +42,16 @@ const AddProduct = () => {
                 🛍️ Add New Product
             </Typography>
 
-            <Grid container spacing={3}>
+            <Grid container spacing={2}>
                 <Grid item xs={12} md={8}>
                     <CommonPaper sx={{ height: "100%" }}>
                         <Typography variant="h6" sx={{ mb: 2 }}>General Information</Typography>
                         <Grid container spacing={3}>
                             <Grid item xs={12}>
-                                <TextField label="Name Product" value={productName} onChange={e => setProductName(e.target.value)} fullWidth />
+                                <InputText name="productName" control={control} label="Name Product" fullWidth />
                             </Grid>
                             <Grid item xs={12}>
-                                <TextField label="Description Product" multiline rows={3} value={description} onChange={e => setDescription(e.target.value)} fullWidth sx={{ mt: 2 }} />
+                                <InputText name="productDescrition" control={control} label="Product Description" multiline={true} rows={3} fullWidth />
                             </Grid>
                         </Grid>
                     </CommonPaper>
@@ -59,11 +60,11 @@ const AddProduct = () => {
 
                 <Grid item xs={12} md={4}>
                     <Grid item xs={12}>
-                        <CommonPaper>
+                        <CommonPaper sx={{ height: "100%" }}>
                             <Typography variant="h6" sx={{ mb: 2 }}>Upload Product Image</Typography>
                             {/* Main Preview */}
                             <Box sx={{
-                                width: '100%', height: 200, borderRadius: 2, backgroundColor: '#f5f5f5',
+                                width: '100%', height: 210, borderRadius: 2, backgroundColor: '#f5f5f5',
                                 display: 'flex', alignItems: 'center', justifyContent: 'center', mb: 2
                             }}>
                                 {images[mainImageIndex] ? (
@@ -126,23 +127,23 @@ const AddProduct = () => {
                     <CommonPaper>
                         <Typography variant="h6" sx={{ mb: 2 }}>Pricing And Stock</Typography>
                         <Grid container spacing={2}>
-                            <Grid item xs={6}><TextField label="Base Pricing" value={basePrice} onChange={e => setBasePrice(e.target.value)} fullWidth /></Grid>
-                            <Grid item xs={6}><TextField label="Stock" value={stock} onChange={e => setStock(e.target.value)} fullWidth /></Grid>
-                            <Grid item xs={6}><TextField label="Discount" value={discount} onChange={e => setDiscount(e.target.value)} fullWidth /></Grid>
-                            <Grid item xs={6}><TextField label="Discount Type" value={discountType} onChange={e => setDiscountType(e.target.value)} fullWidth /></Grid>
+                            <Grid item xs={6}><InputText name="basePrice" control={control} label="Base Pricing" type='number' fullWidth /></Grid>
+                            <Grid item xs={6}><InputText name="stock" control={control} label="Stock" type='number' fullWidth /></Grid>
+                            <Grid item xs={6}><InputText name="discount" control={control} label="Discount" type='number' fullWidth /></Grid>
+                            <Grid item xs={6}><InputText name="discountType" control={control} label="Discount Type" fullWidth /></Grid>
                         </Grid>
                     </CommonPaper>
                 </Grid>
 
                 <Grid item xs={12} md={4}>
-                    <CommonPaper>
+                    <CommonPaper sx={{ height: "100%" }}>
                         <Typography variant="h6" sx={{ mb: 2 }}>Category</Typography>
                         <Grid container spacing={2}>
                             <Grid item xs={12}>
-                                <TextField label="Product Category" value={category} onChange={e => setCategory(e.target.value)} fullWidth />
+                                <InputText name="category" control={control} label="Product Category" fullWidth />
                             </Grid>
-                            <Grid item xs={12}>
-                                <Button variant="outlined" fullWidth startIcon={<Add />} sx={{ mt: 2 }}>Add Category</Button>
+                            <Grid item xs={12} display={'flex'} justifyContent="center" alignItems="center" height={'100%'}>
+                                <Button variant="outlined" startIcon={<Add />} sx={{ mt: 2 }}>Add Category</Button>
                             </Grid>
                         </Grid>
                     </CommonPaper>
@@ -150,7 +151,7 @@ const AddProduct = () => {
             </Grid>
             <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2, mt: 3 }}>
                 <Button variant="outlined">Save Draft</Button>
-                <Button variant="contained" onClick={handleSubmit}>Add Product</Button>
+                <Button variant="contained">Add Product</Button>
             </Box>
         </Box>
     );
