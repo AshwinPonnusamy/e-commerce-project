@@ -1,7 +1,7 @@
 import React from 'react';
 import {
   Box,
-  Grid
+  Grid,
 } from '@mui/material';
 import InputText from '../../centralized/InputText';
 import CustomRadio from '../../centralized/CustomRadio';
@@ -13,8 +13,8 @@ import razorPay from '../../assets/image/paymentIcons/razorpay-icon.svg';
 import CustomButton from '../../components/commonComponents/button/CustomButton';
 
 interface Props {
-  setPaymentMethod?: any;
-  paymentMethod?: any;
+  setPaymentMethod: (method: string) => void;
+  paymentMethod: string;
   totalAmount?: number;
 }
 
@@ -71,7 +71,7 @@ const PaymentsPage: React.FC<Props> = ({ setPaymentMethod, paymentMethod, totalA
       description: 'Add and secure cards as per RBI guidelines',
       content: (
         // <form onSubmit={handleSubmit(onSubmit)}>
-        <Box sx={{ mt: 2 }}>
+        (<Box sx={{ mt: 2 }}>
           <InputText
             fullWidth
             label="Enter Card Number"
@@ -81,7 +81,7 @@ const PaymentsPage: React.FC<Props> = ({ setPaymentMethod, paymentMethod, totalA
             pattern={/^\d*$/}
           />
           <Grid container spacing={2}>
-            <Grid item xs={6}>
+            <Grid size={{ xs: 6 }}>
               <InputText
                 fullWidth
                 label="Valid thru MM/YY"
@@ -90,7 +90,7 @@ const PaymentsPage: React.FC<Props> = ({ setPaymentMethod, paymentMethod, totalA
                 control={control}
               />
             </Grid>
-            <Grid item xs={6}>
+            <Grid size={{ xs: 6 }}>
               <InputText
                 fullWidth
                 label="CVV"
@@ -106,7 +106,7 @@ const PaymentsPage: React.FC<Props> = ({ setPaymentMethod, paymentMethod, totalA
             fullWidth
             variant="contained"
           />
-        </Box>
+        </Box>)
         // </form>
       )
     },
@@ -140,9 +140,9 @@ const PaymentsPage: React.FC<Props> = ({ setPaymentMethod, paymentMethod, totalA
 
   return (
     <Grid container spacing={2} p={2}>
-      <Grid item xs={12}>
+      <Grid size={{ xs: 12 }}>
         <Grid container spacing={2}>
-          <Grid item xs={12}>
+          <Grid size={{ xs: 12 }}>
             {paymentOptions.map((option) => (
               <CustomRadio
                 key={option.value}

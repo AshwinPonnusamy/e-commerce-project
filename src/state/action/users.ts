@@ -1,28 +1,31 @@
 import { auth, db } from "../../fireBase/fireBase-config";
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
 import { ref, set, get } from "firebase/database";
-import { setUserDetails } from "../store/features/userData";
+import { setUserDetails, UserData } from "../store/features/userData";
 import { login } from "../store/features/authData";
+import { AppDispatch } from "../store/store";
 
 // Register user
-export const registerUser = (data: any) => async (dispatch: any) => {
+export const registerUser = (data: Partial<UserData>) => async (dispatch: AppDispatch) => {
     try {
         const { email, password, fullName, address, phone, profileUrl } = data;
-        const userCredential = await createUserWithEmailAndPassword(auth, data.email, data.password);
+        if (!email || !password) throw new Error("Email and password are required");
+
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
         const user = userCredential.user;
         const role = email === "ashwinas8902@gmail.com" ? "admin" : "user";
-        const userData = {
+        const userData: UserData = {
             uid: user.uid,
             fullName: fullName || "User",
             email,
             password,
-            phone,
+            phone: phone || null,
             address: address || "",
             profileUrl: profileUrl || "https://example.com/default-profile.png",
-            role: role, 
+            role: role,
         };
 
-        await set(ref(db, `users/` +  user.uid), userData);
+        await set(ref(db, `users/` + user.uid), userData);
         const token = await user.getIdToken();
         dispatch(login({
             userId: user.uid,
@@ -41,7 +44,7 @@ export const registerUser = (data: any) => async (dispatch: any) => {
 
 
 //login user
-export const loginUser = (email: string, password: string) => async (dispatch: any) => {
+export const loginUser = (email: string, password: string) => async (dispatch: AppDispatch) => {
     try {
         const userCredential = await signInWithEmailAndPassword(auth, email, password);
         const user = userCredential.user;
@@ -53,12 +56,12 @@ export const loginUser = (email: string, password: string) => async (dispatch: a
         if (!dbData || !dbData.role) {
             throw new Error("User role not found in DB");
         }
-        const userData = {
+        const userData: UserData = {
             uid: user.uid || "",
             fullName: dbData.fullName || "User",
             email: user.email || "",
             password: dbData.password || "",
-            phone: dbData.phone || "",  
+            phone: dbData.phone || "",
             address: dbData.address || "",
             profileUrl: dbData.profileUrl || "",
             role: dbData.role || "user",
@@ -80,7 +83,7 @@ export const loginUser = (email: string, password: string) => async (dispatch: a
 
 
 //update user details
-export const updateUserDetails = (data: any) => async (dispatch: any) => {
+export const updateUserDetails = (data: Partial<UserData>) => async (dispatch: AppDispatch) => {
     try {
         const user = auth.currentUser;
         if (!user) {
@@ -90,7 +93,7 @@ export const updateUserDetails = (data: any) => async (dispatch: any) => {
         const userRef = ref(db, "users/" + userId);
         const snapshot = await get(userRef);
         const dbData = snapshot.val();
-         const updatedData = {
+        const updatedData = {
             ...dbData,
             ...data,
             profileUrl: data.profileUrl || dbData?.profileUrl || "https://example.com/default-profile.png",

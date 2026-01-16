@@ -1,50 +1,70 @@
-# React + TypeScript + Vite
+# BUYNWELL E-commerce Platform
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+BUYNWELL is a modern, premium e-commerce application designed to provide a seamless and visually stunning shopping experience. Built with a mobile-first approach, it offers a responsive and intuitive interface across all devices.
 
-Currently, two official plugins are available:
+## 🚀 Key Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Dynamic Product Discovery**: Advanced filtering by category, price, and sorting capabilities.
+- **Responsive Design**: Fully optimized for mobile, tablet, and desktop viewports using Material UI v7.
+- **Interactive Shop**: 
+  - Vibrant Hero section with integrated search.
+  - Interactive Category exploration.
+  - Trending and Popular product carousels.
+- **Rich Product Details**: Detailed descriptions, responsive image galleries with fullscreen view, and availability status.
+- **Cart & Checkout**: 
+  - Comprehensive Shopping Cart management.
+  - Secure, multi-step Shipping and Payment process.
+  - Dynamic price calculations and order summary.
+- **Admin Capabilities**: Dedicated dashboard for product management and inventory control.
 
-## Expanding the ESLint configuration
+## 🛠️ Technology Stack
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+- **Framework**: [React](https://reactjs.org/) + [Vite](https://vitejs.dev/)
+- **Language**: [TypeScript](https://www.typescriptlang.org/)
+- **UI Architecture**: [Material UI (MUI) v7](https://mui.com/)
+- **State Management**: [Redux Toolkit](https://redux-toolkit.js.org/)
+- **Form Handling**: [React Hook Form](https://react-hook-form.com/)
+- **Icons**: [MUI Icons](https://mui.com/material-ui/material-icons/)
+- **Carousel**: [PrimeReact](https://primereact.org/)
 
-- Configure the top-level `parserOptions` property like this:
+## 📦 Getting Started
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+### Prerequisites
+
+- [Node.js](https://nodejs.org/) (Recommended version: v18 or later)
+- npm or yarn
+
+### Installation
+
+1. Clone the repository:
+   ```bash
+   git clone <repository-url>
+   ```
+
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+
+3. Start the development server:
+   ```bash
+   npm run dev
+   ```
+
+### Building for Production
+
+To create an optimized production build:
+```bash
+npm run build
 ```
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+## 📂 Project Structure
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
+- `src/components`: Reusable UI components and business logic.
+- `src/layout`: Application-wide layouts and structural components (Header, Footer).
+- `src/pages`: Individual page views for various sections.
+- `src/state`: Redux slices and store configuration.
+- `src/centralized`: Core utility components.
 
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
-```
+---
+*Created with passion for Advanced Agentic Coding.*

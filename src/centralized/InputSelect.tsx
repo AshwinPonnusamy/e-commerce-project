@@ -4,19 +4,22 @@ import { Controller } from "react-hook-form";
 import { styled } from "@mui/system";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import "../App.css";
+import { Control } from "react-hook-form";
+import { SxProps, Theme } from "@mui/material";
+
 interface InputSelectProps {
   name: string;
-  control?: any;
+  control?: Control<any>;
   placeholder?: string;
   label?: string;
   fullWidth?: boolean;
   required?: boolean;
   disabled?: boolean;
   readOnly?: boolean;
-  options?: any;
-  onchange?: any;
-  getOptionLabel?: any;
-  sx?: any;
+  options?: any[];
+  onchange?: (value: any) => void;
+  getOptionLabel: (option: any) => string;
+  sx?: SxProps<Theme>;
 }
 const InputSelect = forwardRef<HTMLInputElement, InputSelectProps>(
   (
@@ -101,7 +104,7 @@ const InputSelect = forwardRef<HTMLInputElement, InputSelectProps>(
                 <MenuItem disabled value="">
                   {placeholder}
                 </MenuItem>
-                {options.map((option:any) => (
+                {options?.map((option: any) => (
                   <MenuItem key={option.id} value={option.id}>
                     {getOptionLabel(option)}
                   </MenuItem>

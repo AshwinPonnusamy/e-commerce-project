@@ -6,9 +6,11 @@ import { AppDispatch } from "../state/store/store";
 import InputText from "../centralized/InputText";
 import { useForm } from "react-hook-form";
 import { updateUserDetails } from "../state/action/users";
+import { UserData } from "../state/store/features/userData";
+
 interface ProfileProps {
     handleLogout: () => void;
-    userData: any;
+    userData: UserData;
 }
 const Profile: React.FC<ProfileProps> = ({ handleLogout, userData }) => {
     const [activeTab, setActiveTab] = useState("profile");
@@ -17,20 +19,21 @@ const Profile: React.FC<ProfileProps> = ({ handleLogout, userData }) => {
     const dispatch = useDispatch<AppDispatch>();
     const { control, getValues } = useForm({
         defaultValues: {
-            fullName: userData?.fullName,
+            fullName: userData?.fullName || "",
             email: userData?.email || "",
             phone: userData?.phone || "",
             address: userData?.address || ""
         }
     });
-    const handleFieldSave = async (field: any) => {
-        const value = getValues(field);
+
+    const handleFieldSave = async (field: keyof UserData) => {
+        const value = getValues(field as any);
         if (!value || value === userData[field]) {
             setEditingField(null);
             return;
         }
         try {
-            await dispatch(updateUserDetails({ [field]: value }));
+            await dispatch(updateUserDetails({ [field]: value }) as any);
             setEditingField(null);
             console.log(`${field} updated to:`, value);
         } catch (error) {
@@ -45,7 +48,7 @@ const Profile: React.FC<ProfileProps> = ({ handleLogout, userData }) => {
         const reader = new FileReader();
         reader.onloadend = async () => {
             const base64Image = reader.result as string;
-            await dispatch(updateUserDetails({ profileUrl: base64Image })); // update Firebase
+            await dispatch(updateUserDetails({ profileUrl: base64Image }) as any); // update Firebase
         };
 
         reader.readAsDataURL(selectedFile);
@@ -56,9 +59,9 @@ const Profile: React.FC<ProfileProps> = ({ handleLogout, userData }) => {
     return (
         <>
             <Grid container spacing={2} sx={{ p: 3 }} justifyContent="center">
-                <Grid item sx={{ position: "relative" }}>
+                <Grid sx={{ position: "relative" }}>
                     <Avatar
-                        src={userData?.profileUrl}
+                        src={userData?.profileUrl || ""}
                         sx={{ width: 120, height: 120, border: "3px solid #ffd000" }}
                     />
                     <IconButton
@@ -80,7 +83,7 @@ const Profile: React.FC<ProfileProps> = ({ handleLogout, userData }) => {
                         onChange={handleImageChange}
                     />
                 </Grid>
-                <Grid item xs={12} md={12} textAlign="center">
+                <Grid size={{ xs: 12, md: 12 }} sx={{ textAlign: "center" }}>
                     <Typography variant="h6" sx={{ fontWeight: 600 }}>
                         {userData?.fullName || "Guest User"}
                     </Typography>
@@ -91,12 +94,12 @@ const Profile: React.FC<ProfileProps> = ({ handleLogout, userData }) => {
             </Grid>
             <Divider />
             <Grid container>
-                <Grid item xs={6} sx={{ textAlign: "center", py: 2, cursor: "pointer", borderBottom: activeTab === "profile" ? "2px solid #333" : "none" }}
+                <Grid size={{ xs: 6 }} sx={{ textAlign: "center", py: 2, cursor: "pointer", borderBottom: activeTab === "profile" ? "2px solid #333" : "none" }}
                     onClick={() => setActiveTab("profile")}
                 >
                     <Typography>Profile</Typography>
                 </Grid>
-                <Grid item xs={6} sx={{ textAlign: "center", py: 2, cursor: "pointer", borderBottom: activeTab === "settings" ? "2px solid #333" : "none" }}
+                <Grid size={{ xs: 6 }} sx={{ textAlign: "center", py: 2, cursor: "pointer", borderBottom: activeTab === "settings" ? "2px solid #333" : "none" }}
                     onClick={() => setActiveTab("settings")}
                 >
                     <Typography>Settings</Typography>
@@ -113,19 +116,19 @@ const Profile: React.FC<ProfileProps> = ({ handleLogout, userData }) => {
                                 { label: "Phone", field: "phone", icon: <Phone /> },
                                 { label: "Address", field: "address", icon: <LocationOn /> },
                             ].map(({ field, icon, label }) => (
-                                <Grid item xs={12} key={field}>
+                                <Grid size={{ xs: 12 }} key={field}>
                                     <Box sx={{ display: "flex", alignItems: "center" }}>
                                         <ListItemIcon sx={{ color: "#333", minWidth: 36 }}>{icon}</ListItemIcon>
                                         {editingField === field ? (
                                             <>
                                                 <InputText
-                                                    name={field}
+                                                    name={field as any}
                                                     control={control}
                                                     placeholder={`Enter your ${label}`}
                                                     fullWidth
                                                     variant="standard"
                                                 />
-                                                <IconButton onClick={() => handleFieldSave(field)}>
+                                                <IconButton onClick={() => handleFieldSave(field as keyof UserData)}>
                                                     <Check />
                                                 </IconButton>
                                                 <IconButton onClick={() => setEditingField(null)}>
@@ -136,7 +139,7 @@ const Profile: React.FC<ProfileProps> = ({ handleLogout, userData }) => {
                                             <>
                                                 <ListItemText
                                                     primary={label}
-                                                    secondary={userData[field] || "Not provided"}
+                                                    secondary={userData[field as keyof UserData] || "Not provided"}
                                                 />
                                                 <IconButton onClick={() => setEditingField(field)}>
                                                     <Edit />
@@ -164,7 +167,7 @@ const Profile: React.FC<ProfileProps> = ({ handleLogout, userData }) => {
                                 <ListItemText primary="Dark Mode" />
                                 <Switch color="primary" />
                             </ListItem>
-                            <ListItem component="button" onClick={handleLogout}>
+                            <ListItem onClick={handleLogout}>
                                 <ListItemIcon sx={{ color: "#333" }}>
                                     <ExitToApp />
                                 </ListItemIcon>

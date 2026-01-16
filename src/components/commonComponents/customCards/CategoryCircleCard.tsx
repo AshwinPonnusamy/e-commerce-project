@@ -4,14 +4,29 @@ import React from "react";
 interface CategoryCircleCardProps {
     categoryName: string;
     categoryImage: string;
+    onClick?: () => void;
 }
 
 const CategoryCircleCard: React.FC<CategoryCircleCardProps> = ({
     categoryName,
     categoryImage,
+    onClick,
 }) => {
     return (
-        <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", m:2 }}>
+        <Box 
+            onClick={onClick}
+            sx={{ 
+                display: "flex", 
+                flexDirection: "column", 
+                alignItems: "center", 
+                m: 2, 
+                cursor: onClick ? "pointer" : "default",
+                '&:hover .MuiCard-root': {
+                    transform: 'scale(1.05)',
+                    transition: 'transform 0.3s ease-in-out'
+                }
+            }}
+        >
             <Card
                 sx={{
                     width: 100,
@@ -22,6 +37,7 @@ const CategoryCircleCard: React.FC<CategoryCircleCardProps> = ({
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
+                    transition: 'transform 0.3s ease-in-out'
                 }}
             >
                 <img

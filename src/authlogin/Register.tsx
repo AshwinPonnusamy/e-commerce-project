@@ -34,8 +34,10 @@ const Register = () => {
         try {
             await dispatch(registerUser(data));
             navigate("/login");
-        } catch (error: any) {
-            console.error("Registration failed:", error.message);
+        } catch (error) {
+            if (error instanceof Error) {
+                console.error("Registration failed:", error.message);
+            }
         }
     };
     return (

@@ -1,5 +1,5 @@
 import { AspectRatio, CardOverflow } from "@mui/joy";
-import { Typography, CardContent, Box, Card, Rating } from "@mui/material";
+import { Typography, CardContent, Box, Card, Rating, Tooltip } from "@mui/material";
 import { Favorite, FavoriteBorder, Share, ShoppingCart, ShoppingCartOutlined } from "@mui/icons-material";
 import React, { useState } from "react";
 import CustomIconButton from "../button/CustomIconButton";
@@ -8,7 +8,7 @@ interface ProductCardProps {
   productName: string;
   productDescription: string;
   productImage: string;
-  productPrice: any;
+  productPrice: number | string;
   productRating: number;
   originalPrice?: number;
   discount?: number;
@@ -20,7 +20,7 @@ interface ProductCardProps {
   handleAddCart?: () => void;
   handleShare?: () => void;
   onClick?: () => void;
-  isFavorited?: any;
+  isFavorited?: boolean;
   isInCart?: boolean;
 }
 
@@ -148,48 +148,72 @@ const ProductCard: React.FC<ProductCardProps> = ({
           </Box>
         )}
 
-        <CardContent>
-          <Typography variant="h6" fontWeight="bold" sx={{
-            whiteSpace: 'nowrap',
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
-            fontSize: '20px'
-          }}>
-            {productName}
-          </Typography>
-          <Typography variant="body2" color="text.secondary" sx={{
-            whiteSpace: 'nowrap',
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
+        <CardContent sx={{ p: 2 }}>
+          <Tooltip title={productName}>
+            <Typography variant="h6" fontWeight="bold" sx={{
+              whiteSpace: 'nowrap',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              fontSize: '18px',
+              mb: 0.5
+            }}>
+              {productName}
+            </Typography>
+          </Tooltip>
 
+          <Typography variant="body2" color="text.secondary" sx={{
+            display: '-webkit-box',
+            WebkitLineClamp: 2,
+            WebkitBoxOrient: 'vertical',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            height: '40px',
+            mb: 1
           }}>
             {productDescription}
           </Typography>
+
+          <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
+            <Rating value={productRating} precision={0.5} readOnly size="small" />
+            <Typography variant="caption" sx={{ ml: 0.5, color: 'text.secondary' }}>
+              ({productRating})
+            </Typography>
+          </Box>
+
           <Box
             sx={{
               display: "flex",
               justifyContent: "space-between",
-              alignItems: "center",
-              marginTop: "8px",
+              alignItems: "flex-end",
             }}
           >
-            <Typography variant="body1" fontWeight="bold">
-              ₹{productPrice}
-            </Typography>
-            <Typography
-              variant="body2"
-              color="green"
-              fontWeight="bold"
-              sx={{ ml: 1, backgroundColor: "#d4f4dd", padding: "2px 6px", borderRadius: "4px" }}
-            >
-              {discount}%
-            </Typography>
-            <Rating value={productRating} precision={0.5} readOnly size="small" />
-          </Box>
-          <Typography variant="body2" sx={{ textDecoration: "line-through", color: "gray" }}>
-            ₹{originalPrice?.toFixed(2)}
-          </Typography>
+            <Box>
+              <Typography variant="h6" fontWeight="bold" color="primary" sx={{ fontSize: '1.1rem', lineHeight: 1 }}>
+                ₹{productPrice}
+              </Typography>
+              {originalPrice && (
+                <Typography variant="caption" sx={{ textDecoration: "line-through", color: "gray", display: 'block' }}>
+                  ₹{originalPrice.toFixed(2)}
+                </Typography>
+              )}
+            </Box>
 
+            {discount && (
+              <Typography
+                variant="caption"
+                color="green"
+                fontWeight="bold"
+                sx={{
+                  backgroundColor: "#d4f4dd",
+                  padding: "2px 6px",
+                  borderRadius: "4px",
+                  fontSize: '0.75rem'
+                }}
+              >
+                {discount}% OFF
+              </Typography>
+            )}
+          </Box>
         </CardContent>
       </Card>
     </Box>

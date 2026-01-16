@@ -5,7 +5,7 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Tabs, Tab, Avatar, Menu, MenuItem, Tooltip, Badge, useMediaQuery, Drawer, List, ListItem, ListItemText } from "@mui/material";
 import { Dashboard, FavoriteBorder, ShoppingCart } from "@mui/icons-material";
 import { useSelector } from "react-redux";
@@ -15,9 +15,12 @@ import { auth } from "../fireBase/fireBase-config";
 import Profile from "./ProfilePage";
 import CustomButton from "../components/commonComponents/button/CustomButton";
 
+import { Product } from "../state/store/features/productData";
+
 
 const Header: React.FC = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [value, setValue] = React.useState(0);
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
   const [mobileOpen, setMobileOpen] = React.useState(false);
@@ -25,7 +28,7 @@ const Header: React.FC = () => {
   const isLoggedIn = useSelector((state: RootState) => state.authData.isLoggedIn);
   const cartItems = useSelector((state: RootState) => state.productData.cartItems);
   const favoriteProducts = useSelector((state: RootState) =>
-    state.productData.allProductList.filter((product: any) => state.productData.isFavorited[product.id])
+    state.productData.allProductList.filter((product: Product) => state.productData.isFavorited[product.id])
   );
   const totalCartItems = cartItems.reduce((total, item) => total + item.quantity, 0);
   const settings = ["Profile", "Logout"];
@@ -33,7 +36,17 @@ const Header: React.FC = () => {
   const profileData = useSelector((state: RootState) => state.userData);
   console.log(profileData, "profileData");
 
-  const handleChange = (_event: any, newValue: number) => {
+  React.useEffect(() => {
+    if (location.pathname === "/layout/home" || location.pathname === "/") {
+      setValue(0);
+    } else if (location.pathname === "/layout/allproducts") {
+      setValue(1);
+    } else {
+      setValue(-1); // No tab selected for other pages
+    }
+  }, [location.pathname]);
+
+  const handleChange = (_event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
 
@@ -70,18 +83,37 @@ const Header: React.FC = () => {
               <MenuIcon />
             </IconButton>
           )}
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1, textAlign: isMobile ? "center" : "left" }}>
+          <Typography
+            variant="h6"
+            component="div"
+            sx={{
+              mr: isMobile ? 0 : 4,
+              flexGrow: isMobile ? 1 : 0,
+              textAlign: isMobile ? "center" : "left",
+              cursor: "pointer",
+              fontWeight: "bold",
+              letterSpacing: "1px"
+            }}
+            onClick={() => navigate("/layout/home")}
+          >
             BUYNWELL
           </Typography>
           {!isMobile ? (
-            <Box sx={{ flexGrow: 1, display: "flex", justifyContent: "start" }}>
-
-              <Tabs value={value} onChange={handleChange} textColor="inherit" TabIndicatorProps={{ style: { backgroundColor: "rgb(226, 190, 27)", color: "#fff" } }}>
-                <Tab label="Home" sx={{ fontSize: "12px", color: value === 0 ? "rgb(226, 190, 27)" : "#fff" }} onClick={() => navigate("/")} />
-                <Tab label="Products" sx={{ fontSize: "12px", color: value === 1 ? "rgb(226, 190, 27)" : "#fff" }} onClick={() => navigate("/layout/allproducts")} />
+            <Box sx={{ flexGrow: 1, display: "flex", alignItems: "center" }}>
+              <Tabs
+                value={value}
+                onChange={handleChange}
+                textColor="inherit"
+                sx={{ minHeight: "auto" }}
+                TabIndicatorProps={{ style: { backgroundColor: "rgb(226, 190, 27)", color: "#fff" } }}
+              >
+                <Tab label="Home" sx={{ fontSize: "12px", minHeight: "48px", color: value === 0 ? "rgb(226, 190, 27)" : "#fff" }} onClick={() => navigate("/")} />
+                <Tab label="Products" sx={{ fontSize: "12px", minHeight: "48px", color: value === 1 ? "rgb(226, 190, 27)" : "#fff" }} onClick={() => navigate("/layout/allproducts")} />
               </Tabs>
             </Box>
-          ) : null}
+          ) : (
+            <Box sx={{ flexGrow: 1 }} />
+          )}
           <Box sx={{ display: "flex", alignItems: "center" }}>
             {profileData?.role === "admin" && (
               <>
@@ -93,13 +125,13 @@ const Header: React.FC = () => {
                   onClick={() => navigate("/layout/addproduct")}
                 />
                 <Tooltip title="Dashboard">
-                <IconButton
-                  color="inherit"
-                  sx={{ fontSize: "12px" }}
-                  onClick={() => navigate("/layout/dashboard")}
-                >
-                  <Dashboard />
-                </IconButton>
+                  <IconButton
+                    color="inherit"
+                    sx={{ fontSize: "12px" }}
+                    onClick={() => navigate("/layout/dashboard")}
+                  >
+                    <Dashboard />
+                  </IconButton>
                 </Tooltip>
               </>
             )}
@@ -163,13 +195,31 @@ const Header: React.FC = () => {
           </MenuItem>
         ))}
       </Menu>
-      <Drawer anchor="left" open={mobileOpen} onClose={toggleDrawer(false)} sx={{ '& .MuiDrawer-paper': { backgroundColor: "#333", color: '#fff' } }}>
+      <Drawer anchor="left" open={mobileOpen} onClose={toggleDrawer(false)} sx={{ '& .MuiDrawer-paper': { backgroundColor: "#333", color: '#fff', width: 240 } }}>
+        <Box sx={{ p: 2, textAlign: 'center' }}>
+          <Typography variant="h6" sx={{ fontWeight: 'bold' }}>BUYNWELL</Typography>
+        </Box>
         <List>
-          {["Home", "Products", "About", "Contact"].map((text, index) => (
-            <ListItem key={text} onClick={() => { navigate(["/", "/layout/allproducts", "/about", "/contact"][index]); setMobileOpen(false); }}>
-              <ListItemText primary={text} />
+          {[
+            { text: "Home", path: "/layout/home" },
+            { text: "Products", path: "/layout/allproducts" },
+            { text: "Cart", path: "/layout/shoppingcart" },
+            { text: "Wishlist", path: "/layout/favoritepage" },
+          ].map((item) => (
+            <ListItem key={item.text} onClick={() => { navigate(item.path); setMobileOpen(false); }}>
+              <ListItemText primary={item.text} />
             </ListItem>
           ))}
+          {profileData?.role === "admin" && (
+            <>
+              <ListItem onClick={() => { navigate("/layout/addproduct"); setMobileOpen(false); }}>
+                <ListItemText primary="Add Product" />
+              </ListItem>
+              <ListItem onClick={() => { navigate("/layout/dashboard"); setMobileOpen(false); }}>
+                <ListItemText primary="Admin Dashboard" />
+              </ListItem>
+            </>
+          )}
         </List>
       </Drawer>
     </Box>

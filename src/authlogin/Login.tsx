@@ -35,8 +35,10 @@ const Login = () => {
     try {
       const userData = await dispatch(loginUser(data.email, data.password));
       navigate(userData.role === "admin" ? "/layout/home" : "/layout/home");
-    } catch (error: any) {
-      console.error("Login failed:", error.message);
+    } catch (error) {
+      if (error instanceof Error) {
+        console.error("Login failed:", error.message);
+      }
     }
   };
   return (

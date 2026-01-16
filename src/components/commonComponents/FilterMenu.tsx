@@ -12,19 +12,24 @@ import {
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { Search } from "@mui/icons-material";
 
+interface FilterMenuOption {
+    label: string;
+    value: string;
+}
+
 interface FilterMenuProps {
     title: string;
-    options: any[];
-    selectedOptions?: any;
-    setSelectedOptions?: any
+    options: FilterMenuOption[];
+    selectedOptions: string[];
+    setSelectedOptions: React.Dispatch<React.SetStateAction<string[]>>;
 }
 
 const FilterMenu: React.FC<FilterMenuProps> = ({ title, options, selectedOptions, setSelectedOptions }) => {
     const [searchTerm, setSearchTerm] = useState("");
 
     const handleChange = (option: string) => {
-        setSelectedOptions((prev: any) =>
-            prev.includes(option) ? prev.filter((o: string) => o !== option) : [...prev, option]
+        setSelectedOptions((prev) =>
+            prev.includes(option) ? prev.filter((o) => o !== option) : [...prev, option]
         );
     };
 

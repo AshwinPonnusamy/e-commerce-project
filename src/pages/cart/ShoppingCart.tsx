@@ -1,10 +1,10 @@
 import React from "react";
 import {
     Box,
-    Grid,
     Typography,
     Rating,
     CardMedia,
+    Grid,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useDispatch, useSelector } from "react-redux";
@@ -13,7 +13,7 @@ import { ThunkDispatch } from "@reduxjs/toolkit";
 import CustomButton from "../../components/commonComponents/button/CustomButton";
 import QuantityButton from "../../components/commonComponents/button/QuantityButton";
 import { useNavigate } from "react-router-dom";
-import { handleDecrease, handleIncrease, handleRemove } from "../../components/commonFunctions/CommonFuntion";
+import { handleDecrease, handleIncrease, handleRemove } from "../../components/commonFunctions/CommonFunctions";
 import Lottie from "lottie-react";
 import EmptyCart from "../../assets/animation/EmptyCartAnimation.json";
 import { ShoppingCartSharp } from "@mui/icons-material";
@@ -30,14 +30,21 @@ const ShoppingCart: React.FC = () => {
         navigate("/layout/orderdetails");
     };
 
-    const totalPrice = cartItems.reduce(
+    const totalOriginalPrice = cartItems.reduce(
+        (sum, item) => {
+            const originalPrice = item.price / (1 - (item.discountPercentage / 100));
+            return sum + originalPrice * item.quantity;
+        },
+        0
+    );
+    const totalDiscount = totalOriginalPrice - cartItems.reduce(
         (sum, item) => sum + item.price * item.quantity,
         0
     );
-    const totalDiscount = cartItems.reduce((sum, item) => sum + item.price * (item.discountPercentage / 100) * item.quantity,
+    const subtotal = cartItems.reduce(
+        (sum, item) => sum + item.price * item.quantity,
         0
     );
-    const discountedPrice = totalPrice - totalDiscount;
 
     return (
         <Box
@@ -69,8 +76,7 @@ const ShoppingCart: React.FC = () => {
                 <Grid container spacing={2} sx={{ mt: 2 }}>
                     {cartItems.map((item) => (
                         <Grid
-                            item
-                            xs={12}
+                            size={{ xs: 12 }}
                             key={item.id}
                             sx={{
                                 borderBottom: "1px solid #ddd",
@@ -81,67 +87,82 @@ const ShoppingCart: React.FC = () => {
                                 gap: 1.5,
                             }}
                         >
-                            <Grid container spacing={2} alignItems="center">
+                            <Grid container spacing={2} alignItems="flex-start">
                                 {/* Product Image */}
-                                <Grid item xs={2}>
-                                    <CardMedia
-                                        component="img"
-                                        image={item.thumbnail}
-                                        sx={{
-                                            width: "120px",
-                                            height: "120px",
-                                            objectFit: "cover",
-                                            borderRadius: 2,
-                                            backgroundColor: "#fff",
-                                        }}
-                                    />
+                                <Grid size={{ xs: 4, sm: 2 }}>
+                                    <Box sx={{ position: 'relative', pt: '100%' }}>
+                                        <CardMedia
+                                            component="img"
+                                            image={item.thumbnail}
+                                            sx={{
+                                                position: 'absolute',
+                                                top: 0,
+                                                left: 0,
+                                                width: "100%",
+                                                height: "100%",
+                                                objectFit: "contain",
+                                                borderRadius: 2,
+                                                backgroundColor: "#fff",
+                                                border: '1px solid #eee'
+                                            }}
+                                        />
+                                    </Box>
                                 </Grid>
 
                                 {/* Product Details */}
-                                <Grid item xs={7}>
-                                    <Typography variant="body1" fontWeight="bold">
+                                <Grid size={{ xs: 8, sm: 6.5 }}>
+                                    <Typography variant="h6" fontWeight="bold" sx={{ fontSize: '1rem' }}>
                                         {item.title}
                                     </Typography>
-                                    <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
+                                    <Typography
+                                        variant="body2"
+                                        color="text.secondary"
+                                        sx={{
+                                            mt: 0.5,
+                                            display: '-webkit-box',
+                                            WebkitLineClamp: 2,
+                                            WebkitBoxOrient: 'vertical',
+                                            overflow: 'hidden'
+                                        }}
+                                    >
                                         {item.description}
                                     </Typography>
 
                                     {/* Rating */}
                                     <Box sx={{ display: "flex", alignItems: "center", mt: 1 }}>
                                         <Rating value={item.rating} precision={0.1} readOnly size="small" />
-                                        <Typography variant="body1" fontWeight="bold" sx={{ ml: 1 }}>
+                                        <Typography variant="caption" fontWeight="bold" sx={{ ml: 1, color: 'text.secondary' }}>
                                             {item.rating?.toFixed(1)}
                                         </Typography>
                                     </Box>
 
-                                    <Typography variant="body2" sx={{ color: "green", mt: 1 }}>
+                                    <Typography variant="caption" sx={{ color: "green", mt: 0.5, display: 'block', fontWeight: 'bold' }}>
                                         {item.availabilityStatus}
                                     </Typography>
                                 </Grid>
 
                                 {/* Price Section */}
-                                <Grid item xs={3} sx={{ display: "flex", flexDirection: "column", justifyContent: "center" }}>
-                                    <Box sx={{ display: "flex", alignItems: "center" }}>
+                                <Grid size={{ xs: 12, sm: 3.5 }} sx={{ display: "flex", flexDirection: "column", alignItems: { xs: 'flex-start', sm: 'flex-end' }, justifyContent: "flex-start" }}>
+                                    <Typography variant="h6" fontWeight="bold" color="primary">
+                                        ₹{(item.price * item.quantity).toFixed(2)}
+                                    </Typography>
+
+                                    <Box sx={{ display: "flex", alignItems: "center", mt: 0.5 }}>
                                         <Typography
-                                            variant="body2"
-                                            sx={{ textDecoration: "line-through", color: "gray", fontSize: "14px" }}
+                                            variant="caption"
+                                            sx={{ textDecoration: "line-through", color: "gray" }}
                                         >
-                                            ₹{(item.price * item.quantity).toFixed(2)}
+                                            ₹{(item.price / (1 - (item.discountPercentage / 100)) * item.quantity).toFixed(2)}
                                         </Typography>
                                         <Typography
-                                            variant="body2"
+                                            variant="caption"
                                             color="green"
                                             fontWeight="bold"
-                                            sx={{ ml: 1, backgroundColor: "#d4f4dd", padding: "2px 6px", borderRadius: "4px" }}
+                                            sx={{ ml: 1, backgroundColor: "#d4f4dd", padding: "1px 4px", borderRadius: "4px" }}
                                         >
-                                            {item.discountPercentage ? `${item.discountPercentage.toFixed(2)}%` : "0.00%"}
+                                            {item.discountPercentage ? `${item.discountPercentage.toFixed(2)}% OFF` : "0% OFF"}
                                         </Typography>
                                     </Box>
-
-                                    {/* Discounted Price (Updated for Quantity) */}
-                                    <Typography variant="h6" fontWeight="bold" sx={{ fontSize: "18px" }}>
-                                        ₹{((item.price - (item.price * item.discountPercentage) / 100) * item.quantity).toFixed(2)}
-                                    </Typography>
                                 </Grid>
                             </Grid>
 
@@ -173,37 +194,36 @@ const ShoppingCart: React.FC = () => {
             {/* Subtotal */}
             <Box sx={{ display: "flex", justifyContent: "space-between", mt: 2 }}>
                 <Typography variant="h6">
-                    Total Price ({cartItems.length} items):
+                    M.R.P ({cartItems.length} items):
                 </Typography>
-                <Typography fontWeight="bold" sx={{ textDecoration: "line-through" }}>
-                    ₹{totalPrice.toFixed(2)}
+                <Typography fontWeight="bold" sx={{ textDecoration: "line-through", color: 'gray' }}>
+                    ₹{totalOriginalPrice.toFixed(2)}
                 </Typography>
             </Box>
             <Box sx={{ display: "flex", justifyContent: "space-between" }}>
                 <Typography
                     variant="h6"
                     fontWeight="bold"
-                    color="success"
+                    color="success.main"
                     sx={{ fontSize: "16px" }}
                 >
-                    Discounted Price :
+                    Total Discount:
                 </Typography>
                 <Typography
                     variant="h6"
                     fontWeight="bold"
-                    color="success"
+                    color="success.main"
                     sx={{ fontSize: "16px" }}
                 >
-                    ₹ {totalDiscount.toFixed()}
+                    - ₹ {totalDiscount.toFixed(2)}
                 </Typography>
             </Box>
-            <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-                <Typography variant="h6" fontWeight="bold" color="success">
-                    Subtotal :
+            <Box sx={{ display: "flex", justifyContent: "space-between", borderTop: '1px solid #ddd', mt: 1, pt: 1 }}>
+                <Typography variant="h5" fontWeight="bold">
+                    Subtotal:
                 </Typography>
-                <Typography fontWeight="bold" color="success">
-
-                    ₹{discountedPrice.toFixed(2)}
+                <Typography variant="h5" fontWeight="bold" color="primary">
+                    ₹{subtotal.toFixed(2)}
                 </Typography>
             </Box>
 

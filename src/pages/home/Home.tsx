@@ -3,10 +3,10 @@ import {
   Box,
   Card,
   CardMedia,
-  Grid,
   InputBase,
   Paper,
   Typography,
+  Grid,
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -23,20 +23,9 @@ import banner5 from "../../assets/image/banner/banner5.jpg";
 import banner6 from "../../assets/image/banner/banner6.jpg";
 import banner7 from "../../assets/image/banner/banner7.jpg";
 import banner8 from "../../assets/image/banner/banner8.jpg";
-import { handleAddCart, handleProductCardClick, handleSearch, toggleFavorite } from "../../components/commonFunctions/CommonFuntion";
+import { handleAddCart, handleProductCardClick, handleSearch, toggleFavorite } from "../../components/commonFunctions/CommonFunctions";
 import CustomButton from "../../components/commonComponents/button/CustomButton";
-
-interface Product {
-  id: number;
-  title: string;
-  description: string;
-  price: number;
-  discountPercentage: number;
-  images: string[];
-  rating: number;
-  category: string;
-  thumbnail: string;
-}
+import { Product } from "../../state/store/features/productData";
 
 const Home = () => {
   const [seeAll, setSeeAll] = useState(false);
@@ -74,30 +63,26 @@ const Home = () => {
     { breakpoint: "560px", numVisible: 1, numScroll: 1 },
   ];
 
-  // const handleProductCardClick = (item: Product) => {
-  //   console.log("Selected Product:", item);
-  //   dispatch(getProductById(item));
-  //   navigate("/layout/productdetail");
-  // };
-
   const cartItems = useSelector((state: RootState) => state.productData.cartItems);
 
   useEffect(() => {
-    dispatch(getAllProductList());
-    dispatch(getProductCategoryList());
+    dispatch(getAllProductList() as any);
+    dispatch(getProductCategoryList() as any);
   }, [dispatch]);
   return (
     <>
       <Grid container spacing={2}>
-        <Grid item xs={12}>
+        <Grid size={{ xs: 12 }}>
           <Box
             sx={{
               backgroundImage: `url(${banner8})`,
               width: "100%",
-              height: 350,
+              height: { xs: 250, md: 350 },
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
+              backgroundSize: 'cover',
+              backgroundPosition: 'center'
             }}
           >
             <Paper sx={{
@@ -105,7 +90,8 @@ const Home = () => {
               alignItems: "center",
               paddingX: 2,
               paddingY: 1,
-              width: 600,
+              width: { xs: '90%', sm: 600 },
+              borderRadius: 2
             }}
             >
               <Search />
@@ -114,63 +100,63 @@ const Home = () => {
           </Box>
         </Grid>
         {/* Categories Section */}
-        <Grid item xs={12}>
-          <Grid container spacing={2} columns={14} sx={{ display: 'flex', justifyContent: 'center' }}>
-            <Grid item xs={14} style={{ textAlign: "center", }}>
-              <Typography variant="h6">Explore Categories</Typography>
+        <Grid size={{ xs: 12 }}>
+          <Box sx={{ p: 2 }}>
+            <Typography variant="h6" sx={{ textAlign: "center", mb: 2, fontWeight: 'bold' }}>Explore Categories</Typography>
+            <Grid container spacing={2} sx={{ justifyContent: 'center' }}>
+              {displayedCategories.map((c) => (
+                <Grid size={{ xs: 4, sm: 3, md: 1.7 }} key={c.category}>
+                  <CategoryCircleCard
+                    categoryName={c.category}
+                    categoryImage={c.thumbnail}
+                    onClick={() => navigate(`/layout/allproducts?category=${c.category}`)}
+                  />
+                </Grid>
+              ))}
             </Grid>
-            {displayedCategories.map((c: any) => (
-              <Grid item xs={6} sm={4} md={2}>
-                <CategoryCircleCard
-                  categoryName={c.category}
-                  categoryImage={c.thumbnail}
-                />
-              </Grid>
-            ))}
-            {/* See All Button */}
-            <Grid item xs={14} style={{ textAlign: "center", }}>
-              {uniqueCategories.length > 7 && (
+            {uniqueCategories.length > 7 && (
+              <Box sx={{ textAlign: "center", mt: 1 }}>
                 <CustomButton
                   label={seeAll ? "See Less" : "See All"}
                   sx={{ '&:hover': { backgroundColor: 'transparent' } }}
                   variant="text"
                   onClick={() => setSeeAll(!seeAll)}
                 />
-              )}
-            </Grid>
-          </Grid>
+              </Box>
+            )}
+          </Box>
         </Grid>
-        <Grid item xs={12}>
-          <Grid container spacing={2} columns={15} sx={{ p: 2 }}>
-            <Grid item xs={15}>
-              <Typography variant="h5" sx={{
-                color: "#333",
-                fontWeight: "bold",
-                mx: 4,
-                textAlign: 'left'
-              }}>Today&apos;s Trending Deals</Typography>
+        <Grid size={{ xs: 12 }}>
+          <Box sx={{ p: { xs: 2, md: 4 } }}>
+            <Typography variant="h5" sx={{
+              color: "#333",
+              fontWeight: "bold",
+              mb: 3,
+              textAlign: 'left'
+            }}>Today&apos;s Trending Deals</Typography>
+            <Grid container spacing={3}>
+              {(searchQuery ? searchResults : displayedProducts).map((product) => (
+                <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }} key={product.id}>
+                  <ProductCard
+                    key={product?.id}
+                    productName={product?.title}
+                    productDescription={product?.description}
+                    productImage={product?.images[0]}
+                    productPrice={product?.price}
+                    productRating={product?.rating}
+                    showTrending={true}
+                    isFavorited={favorites[product?.id] || false}
+                    onClick={() => handleProductCardClick(product, dispatch, navigate)}
+                    handleAddCart={() => dispatch(handleAddCart(product) as any)}
+                    isInCart={cartItems.some((item) => item.id === product.id)}
+                    originalPrice={product.price / (1 - (product.discountPercentage / 100))}
+                    onFavoriteClick={() => toggleFavorite(dispatch, product.id, favorites[product.id])}
+                    discount={product.discountPercentage}
+                  />
+                </Grid>
+              ))}
             </Grid>
-            {(searchQuery ? searchResults : displayedProducts).map((product: any) => (
-              <Grid item xs={15} sm={7.5} md={3} lg={3} key={product.id}>
-                <ProductCard
-                  key={product?.id}
-                  productName={product?.title}
-                  productDescription={product?.description}
-                  productImage={product?.images[0]}
-                  productPrice={product?.price}
-                  productRating={product?.rating}
-                  showTrending={true}
-                  isFavorited={favorites[product?.id] || false}
-                  onClick={() => handleProductCardClick(product, dispatch, navigate)}
-                  handleAddCart={() => dispatch(handleAddCart(product))}
-                  isInCart={cartItems.some((item: any) => item.id === product.id)}
-                  originalPrice={product.price / (1 - (product.discountPercentage / 100))}
-                  onFavoriteClick={() => toggleFavorite(dispatch, Number(product.id), favorites[product.id])}
-                  discount={product.discountPercentage}
-                />
-              </Grid>
-            ))}
-            <Grid item xs={14} style={{ textAlign: "right", }}>
+            <Box sx={{ textAlign: "right", mt: 2 }}>
               {displayedProducts.length >= 5 && (
                 <CustomButton
                   label={viewMore ? "View Less" : "View More"}
@@ -179,65 +165,67 @@ const Home = () => {
                   onClick={() => setViewMore(!viewMore)}
                 />
               )}
-            </Grid>
-          </Grid>
+            </Box>
+          </Box>
         </Grid>
-        <Grid item xs={12}>
-          <Grid container spacing={3} marginTop={2} sx={{ display: 'flex', justifyContent: 'center' }}>
-            <Grid item xs={10}>
-              <Carousel
-                value={offerBanner}
-                numVisible={1}
-                numScroll={1}
-                autoplayInterval={3000}
-                showNavigators={false}
-                itemTemplate={(banner) => (
-                  <Card>
-                    <CardMedia
-                      component="img"
-                      image={banner.image}
-                      alt={`banner`}
-                    />
-                  </Card>
-                )}
-              />
+        <Grid size={{ xs: 12 }}>
+          <Box sx={{ p: { xs: 2, md: 4 } }}>
+            <Grid container spacing={3} sx={{ justifyContent: 'center' }}>
+              <Grid size={{ xs: 12, md: 10 }}>
+                <Carousel
+                  value={offerBanner}
+                  numVisible={1}
+                  numScroll={1}
+                  autoplayInterval={3000}
+                  showNavigators={false}
+                  itemTemplate={(banner) => (
+                    <Card sx={{ borderRadius: 2, overflow: 'hidden' }}>
+                      <CardMedia
+                        component="img"
+                        image={banner.image}
+                        alt={`banner`}
+                        sx={{ height: { xs: 200, sm: 300, md: 400 }, objectFit: 'cover' }}
+                      />
+                    </Card>
+                  )}
+                />
+              </Grid>
             </Grid>
-          </Grid>
+          </Box>
         </Grid>
-        <Grid item xs={12}>
-          <Grid container spacing={3} marginTop={2} columns={14}>
-            <Grid item xs={14}>
-              <Typography variant="h5" sx={{
-                color: "#333",
-                fontWeight: "bold",
-                mx: 4,
-                textAlign: 'left'
-              }}>Most Popular Products</Typography>
-            </Grid>
-            <Grid item xs={14}>
-              <Carousel
-                value={productDetails}
-                numVisible={5}
-                numScroll={4}
-                responsiveOptions={responsiveOptions}
-                itemTemplate={(product) => (
+        <Grid size={{ xs: 12 }}>
+          <Box sx={{ p: { xs: 2, md: 4 } }}>
+            <Typography variant="h5" sx={{
+              color: "#333",
+              fontWeight: "bold",
+              mb: 3,
+              textAlign: 'left'
+            }}>Most Popular Products</Typography>
+            <Carousel
+              value={productDetails}
+              numVisible={5}
+              numScroll={4}
+              responsiveOptions={responsiveOptions}
+              itemTemplate={(product) => (
+                <Box sx={{ p: 1 }}>
                   <ProductCard
                     productName={product?.title}
                     productDescription={product?.description}
                     productImage={product?.images[0]}
                     productPrice={product?.price}
                     productRating={product?.rating}
-                    // handleFavoriteChange={() => handleFavoriteChange()}
-                    isFavorited={product?.favorite}
+                    isFavorited={favorites[product?.id]}
                     onClick={() => handleProductCardClick(product, dispatch, navigate)}
-                    handleAddCart={() => dispatch(handleAddCart(product))}
-                    isInCart={cartItems.some((item: any) => item.id === product.id)}
+                    handleAddCart={() => dispatch(handleAddCart(product) as any)}
+                    isInCart={cartItems.some((item) => item.id === product.id)}
                     originalPrice={product.price / (1 - (product.discountPercentage / 100))}
-                    discount={product.discountPercentage} />
-                )}
-              />
-            </Grid>
-          </Grid>
+                    discount={product.discountPercentage}
+                    onFavoriteClick={() => toggleFavorite(dispatch, product.id, favorites[product.id])}
+                  />
+                </Box>
+              )}
+            />
+          </Box>
         </Grid>
       </Grid>
     </>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { 
-  Box, Grid, Dialog, DialogContent, Card, CardMedia, IconButton 
+import {
+  Box, Dialog, DialogContent, Card, CardMedia, IconButton
 } from "@mui/material";
 import { Favorite, FavoriteBorder } from "@mui/icons-material";
 
@@ -39,7 +39,7 @@ const ProductDetailCard: React.FC<ProductDetailCardProps> = ({ images = [], isFa
         <Card
           sx={{
             width: "100%",
-            maxWidth: "400px",
+            maxWidth: { xs: "100%", sm: "500px" },
             cursor: "pointer",
             boxShadow: 2,
             borderRadius: 2,
@@ -49,17 +49,18 @@ const ProductDetailCard: React.FC<ProductDetailCardProps> = ({ images = [], isFa
           onClick={handleToggle}
         >
           {/* Favorite Icon */}
-          <IconButton 
-            sx={{ 
-              position: "absolute", 
-              top: 8, 
-              right: 8, 
-              backgroundColor: "rgba(255,255,255,0.7)", 
-              "&:hover": { backgroundColor: "rgba(255,255,255,1)" }
-            }} 
+          <IconButton
+            sx={{
+              position: "absolute",
+              top: 12,
+              right: 12,
+              backgroundColor: "white",
+              boxShadow: 1,
+              "&:hover": { backgroundColor: "#f5f5f5" }
+            }}
             onClick={(e) => {
-              e.stopPropagation(); // Prevent clicking the card
-              onFavoriteClick && onFavoriteClick(); // Call function if provided
+              e.stopPropagation();
+              onFavoriteClick && onFavoriteClick();
             }}
           >
             {isFavorited ? <Favorite color="error" /> : <FavoriteBorder />}
@@ -70,47 +71,65 @@ const ProductDetailCard: React.FC<ProductDetailCardProps> = ({ images = [], isFa
             component="img"
             image={currentImage}
             alt="product"
-            sx={{ width: "100%", height: 400, objectFit: "contain", borderRadius: 2, boxShadow: 1 }}
+            sx={{
+              width: "100%",
+              height: { xs: 300, sm: 400, md: 500 },
+              objectFit: "contain",
+              backgroundColor: '#f9f9f9',
+            }}
           />
         </Card>
       )}
 
       {/* Thumbnail Gallery */}
       {images.length > 0 && (
-        <Grid container spacing={1} justifyContent="center" mt={2}>
+        <Box sx={{
+          display: 'flex',
+          gap: 1,
+          mt: 2,
+          flexWrap: 'wrap',
+          justifyContent: 'center'
+        }}>
           {images.map((image, index) => (
-            <Grid item key={index}>
-              <Card
-                sx={{
-                  width: 60,
-                  height: 60,
-                  borderRadius: 1,
-                  overflow: "hidden",
-                  cursor: "pointer",
-                  border: currentImage === image ? "2px solid #1976d2" : "none",
-                }}
-                onClick={() => handleClick(index)}
-              >
-                <CardMedia
-                  component="img"
-                  image={image}
-                  alt={`thumb-${index}`}
-                  sx={{ width: "100%", height: "100%", objectFit: "cover" }}
-                />
-              </Card>
-            </Grid>
+            <Card
+              key={index}
+              sx={{
+                width: { xs: 50, sm: 60 },
+                height: { xs: 50, sm: 60 },
+                borderRadius: 1,
+                overflow: "hidden",
+                cursor: "pointer",
+                border: currentImage === image ? "2px solid #1976d2" : "1px solid #eee",
+                transition: 'all 0.2s',
+                '&:hover': { opacity: 0.8 }
+              }}
+              onClick={() => handleClick(index)}
+            >
+              <CardMedia
+                component="img"
+                image={image}
+                alt={`thumb-${index}`}
+                sx={{ width: "100%", height: "100%", objectFit: "contain" }}
+              />
+            </Card>
           ))}
-        </Grid>
+        </Box>
       )}
 
       {/* Fullscreen Dialog */}
-      <Dialog open={open} onClose={handleClose} maxWidth="md">
-        <DialogContent>
+      <Dialog open={open} onClose={handleClose} maxWidth="md" fullWidth>
+        <DialogContent sx={{ p: 0, position: 'relative' }}>
+          <IconButton
+            onClick={handleClose}
+            sx={{ position: 'absolute', right: 8, top: 8, zIndex: 1, bgcolor: 'rgba(0,0,0,0.1)' }}
+          >
+            <FavoriteBorder sx={{ color: 'white' }} />
+          </IconButton>
           <CardMedia
             component="img"
             image={currentImage}
             alt="enlarged-product"
-            sx={{ width: "100%", height: "auto", objectFit: "cover" }}
+            sx={{ width: "100%", height: "auto", maxHeight: '90vh', objectFit: "contain" }}
           />
         </DialogContent>
       </Dialog>

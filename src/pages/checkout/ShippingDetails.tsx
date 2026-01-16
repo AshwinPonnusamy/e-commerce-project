@@ -7,9 +7,9 @@ const ShippingDetails = () => {
 
   return (
     <Grid container spacing={2} p={2}>
-      <Grid item xs={12} boxShadow={2} sx={{ p: 2 }}>
+      <Grid size={{ xs: 12 }} boxShadow={2} sx={{ p: 2 }}>
         <Grid container spacing={2} >
-          <Grid item xs={6}>
+          <Grid size={{ xs: 12, sm: 6 }}>
             <InputText
               fullWidth
               label="Enter Your Name"
@@ -18,7 +18,7 @@ const ShippingDetails = () => {
               control={control}
             />
           </Grid>
-          <Grid item xs={6}>
+          <Grid size={{ xs: 12, sm: 6 }}>
             <InputText
               fullWidth
               label="Enter Your Number"
@@ -27,7 +27,7 @@ const ShippingDetails = () => {
               control={control}
             />
           </Grid>
-          <Grid item xs={6}>
+          <Grid size={{ xs: 12, sm: 6 }}>
             <InputText
               fullWidth
               label="Enter Pincode"
@@ -36,7 +36,7 @@ const ShippingDetails = () => {
               control={control}
             />
           </Grid>
-          <Grid item xs={6}>
+          <Grid size={{ xs: 12, sm: 6 }}>
             <InputText
               fullWidth
               label="Enter Address"
@@ -45,7 +45,7 @@ const ShippingDetails = () => {
               control={control}
             />
           </Grid>
-          <Grid item xs={6}>
+          <Grid size={{ xs: 12, sm: 6 }}>
             <InputText
               fullWidth
               label="Enter Your City"
@@ -54,20 +54,19 @@ const ShippingDetails = () => {
               control={control}
             />
           </Grid>
-          <Grid item xs={6}>
+          <Grid size={{ xs: 12, sm: 6 }}>
             <InputText
               fullWidth
               label="Enter State"
               name="state"
-              placeholder='Sate'
+              placeholder='State'
               control={control}
             />
           </Grid>
-
         </Grid>
       </Grid>
     </Grid>
-  )
+  );
 }
 
-export default ShippingDetails
+export default ShippingDetails;

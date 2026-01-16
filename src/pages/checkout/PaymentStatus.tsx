@@ -19,11 +19,13 @@ const PaymentStatus = () => {
 
   return (
     <Box sx={{ textAlign: "center", mt: 4 }}>
+      <Box>
       <Lottie
         animationData={status === "success" ? successAnimation : failureAnimation}
         loop={false}
-        style={{ width: 500, height: 400, margin: "auto" }}
+        style={{ width: 300, height: 300, margin: '0 auto' }}
       />
+      </Box>
 
       <Typography variant="body1" sx={{ mb: 3 }}>
         {status === "success"

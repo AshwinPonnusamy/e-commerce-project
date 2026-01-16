@@ -5,7 +5,6 @@ import "../App.css";
 
 interface ModelProps {
   open: boolean;
-  onClose: any;
   handleClose: () => void;
   bodycontent: React.ReactNode;
   modelHeadName: string;

@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-interface UserData {
+export interface UserData {
     uid: string | null;
     fullName: string | null;
     email: string | null;
@@ -27,7 +27,7 @@ const userSlice = createSlice({
     initialState,
     reducers: {
         setUserDetails(_, action: PayloadAction<UserData>) {
-            return  action.payload;
+            return action.payload;
         },
         updateUser(state, action: PayloadAction<Partial<UserData>>) {
             return { ...state, ...action.payload };
