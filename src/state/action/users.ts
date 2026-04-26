@@ -1,36 +1,31 @@
-import { auth, db } from "../../fireBase/fireBase-config";
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
-import { ref, set, get } from "firebase/database";
 import { setUserDetails, UserData } from "../store/features/userData";
 import { login } from "../store/features/authData";
 import { AppDispatch } from "../store/store";
 
-// Register user
+// Mock Register user
 export const registerUser = (data: Partial<UserData>) => async (dispatch: AppDispatch) => {
     try {
-        const { email, password, fullName, address, phone, profileUrl } = data;
+        const { email, password, fullName, address, phone } = data;
         if (!email || !password) throw new Error("Email and password are required");
 
-        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-        const user = userCredential.user;
-        const role = email === "ashwinas8902@gmail.com" ? "admin" : "user";
+        const userId = "mock_uid_" + Date.now();
+        const role = email === "admin@example.com" ? "admin" : "user";
         const userData: UserData = {
-            uid: user.uid,
-            fullName: fullName || "User",
+            uid: userId,
+            fullName: fullName || "Mock User",
             email,
             password,
             phone: phone || null,
             address: address || "",
-            profileUrl: profileUrl || "https://example.com/default-profile.png",
+            profileUrl: "https://example.com/default-profile.png",
             role: role,
         };
 
-        await set(ref(db, `users/` + user.uid), userData);
-        const token = await user.getIdToken();
+        const token = "mock_token_" + userId;
         dispatch(login({
-            userId: user.uid,
+            userId: userId,
             token,
-            email: user.email!,
+            email: email,
             role,
         }));
         dispatch(setUserDetails(userData));
@@ -43,35 +38,34 @@ export const registerUser = (data: Partial<UserData>) => async (dispatch: AppDis
 };
 
 
-//login user
+// Mock login user
 export const loginUser = (email: string, password: string) => async (dispatch: AppDispatch) => {
     try {
-        const userCredential = await signInWithEmailAndPassword(auth, email, password);
-        const user = userCredential.user;
-        const token = await user.getIdToken();
+        // Simulate a delay
+        await new Promise(resolve => setTimeout(resolve, 500));
 
-        const snapshot = await get(ref(db, "users/" + user.uid));
-        const dbData = snapshot.val();
-
-        if (!dbData || !dbData.role) {
-            throw new Error("User role not found in DB");
-        }
+        const isAdmin = email === "admin@stitch.com" && password === "admin123";
+        const userId = isAdmin ? "admin_uid" : "user_uid_" + Date.now();
+        const role = isAdmin ? "admin" : "user";
+        
         const userData: UserData = {
-            uid: user.uid || "",
-            fullName: dbData.fullName || "User",
-            email: user.email || "",
-            password: dbData.password || "",
-            phone: dbData.phone || "",
-            address: dbData.address || "",
-            profileUrl: dbData.profileUrl || "",
-            role: dbData.role || "user",
+            uid: userId,
+            fullName: isAdmin ? "Alex Rivers" : "Sample User",
+            email: email,
+            password: password,
+            phone: isAdmin ? "9876543210" : "1234567890",
+            address: isAdmin ? "Admin HQ, Stitch City" : "123 Mock Street",
+            profileUrl: isAdmin ? "https://i.pravatar.cc/150?u=admin" : "https://i.pravatar.cc/150?u=user",
+            role: role,
         };
+
+        const token = "mock_token_" + userId;
         dispatch(setUserDetails(userData));
         dispatch(login({
-            userId: user.uid,
+            userId: userId,
             token,
-            email: user.email!,
-            role: dbData.role,
+            email: email,
+            role: role,
         }));
 
         return { ...userData, token };
@@ -82,23 +76,20 @@ export const loginUser = (email: string, password: string) => async (dispatch: A
 };
 
 
-//update user details
+// Mock update user details
 export const updateUserDetails = (data: Partial<UserData>) => async (dispatch: AppDispatch) => {
     try {
-        const user = auth.currentUser;
-        if (!user) {
-            throw new Error("No user is currently logged in.");
-        }
-        const userId = user.uid;
-        const userRef = ref(db, "users/" + userId);
-        const snapshot = await get(userRef);
-        const dbData = snapshot.val();
         const updatedData = {
-            ...dbData,
+            uid: "mock_uid_123",
+            fullName: "Mock User",
+            email: "user@example.com",
+            password: "",
+            phone: "",
+            address: "",
+            profileUrl: "https://example.com/default-profile.png",
+            role: "user",
             ...data,
-            profileUrl: data.profileUrl || dbData?.profileUrl || "https://example.com/default-profile.png",
         };
-        await set(userRef, updatedData);
         dispatch(setUserDetails(updatedData));
         return updatedData;
     } catch (error) {

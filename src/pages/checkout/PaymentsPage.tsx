@@ -1,8 +1,4 @@
 import React from 'react';
-import {
-  Box,
-  Grid,
-} from '@mui/material';
 import InputText from '../../centralized/InputText';
 import CustomRadio from '../../centralized/CustomRadio';
 import { useForm } from "react-hook-form";
@@ -24,9 +20,9 @@ const PaymentsPage: React.FC<Props> = ({ setPaymentMethod, paymentMethod, totalA
       cardNumber: "",
       expiry: "",
       cvv: "",
+      captcha: "",
     },
   });
-
 
   const walletOptions = [
     { name: "Google Pay", src: googlePay, method: "gpay" },
@@ -45,24 +41,18 @@ const PaymentsPage: React.FC<Props> = ({ setPaymentMethod, paymentMethod, totalA
       label: 'Wallets',
       description: 'Pay via Google Pay, PhonePe, Stripe, or Razorpay',
       content: (
-        <Box sx={{ mt: 2, display: "flex", gap: 2 }}>
+        <div className="mt-4 flex flex-wrap gap-4 p-4 bg-white rounded-lg border border-gray-100">
           {walletOptions.map((app) => (
-            <Box
+            <img
               key={app.method}
-              component="img"
               src={app.src}
               alt={app.name}
               onClick={() => handlePaymentClick(app.method)}
-              sx={{
-                width: 60,
-                height: 25,
-                cursor: "pointer",
-                transition: "transform 0.2s",
-                "&:hover": { transform: "scale(1.1)" }
-              }}
+              className="h-6 object-contain cursor-pointer transition-transform hover:scale-110"
+              title={app.name}
             />
           ))}
-        </Box>
+        </div>
       )
     },
     {
@@ -70,44 +60,37 @@ const PaymentsPage: React.FC<Props> = ({ setPaymentMethod, paymentMethod, totalA
       label: 'Credit / Debit Card',
       description: 'Add and secure cards as per RBI guidelines',
       content: (
-        // <form onSubmit={handleSubmit(onSubmit)}>
-        (<Box sx={{ mt: 2 }}>
+        <div className="mt-4 space-y-4 p-4 bg-white rounded-lg border border-gray-100 shadow-sm">
           <InputText
             fullWidth
             label="Enter Card Number"
             name="cardNumber"
-            placeholder='Card Number'
+            placeholder='0000 0000 0000 0000'
             control={control}
             pattern={/^\d*$/}
           />
-          <Grid container spacing={2}>
-            <Grid size={{ xs: 6 }}>
-              <InputText
-                fullWidth
-                label="Valid thru MM/YY"
-                name="expiry"
-                placeholder='MM/YY'
-                control={control}
-              />
-            </Grid>
-            <Grid size={{ xs: 6 }}>
-              <InputText
-                fullWidth
-                label="CVV"
-                name="cvv"
-                placeholder='CVV'
-                control={control}
-                pattern={/^\d*$/}
-              />
-            </Grid>
-          </Grid>
+          <div className="grid grid-cols-2 gap-4">
+            <InputText
+              fullWidth
+              label="Valid thru MM/YY"
+              name="expiry"
+              placeholder='MM/YY'
+              control={control}
+            />
+            <InputText
+              fullWidth
+              label="CVV"
+              name="cvv"
+              placeholder='123'
+              control={control}
+              pattern={/^\d*$/}
+            />
+          </div>
           <CustomButton
             label={`PAY ₹${totalAmount?.toFixed(2)}`}
-            fullWidth
-            variant="contained"
+            className="w-full py-3 bg-[#7c3aed] text-white font-black rounded-lg shadow-md hover:bg-violet-700 transition-all"
           />
-        </Box>)
-        // </form>
+        </div>
       )
     },
     {
@@ -120,45 +103,47 @@ const PaymentsPage: React.FC<Props> = ({ setPaymentMethod, paymentMethod, totalA
       label: 'Cash on Delivery',
       description: 'Due to handling costs, a nominal fee of ₹17 will be charged',
       content: (
-        <Box sx={{ mt: 2 }}>
+        <div className="mt-4 space-y-4 p-4 bg-white rounded-lg border border-gray-100 shadow-sm">
           <InputText
             fullWidth
             label="Enter the characters"
             name="captcha"
-            placeholder='Captcha'
+            placeholder='Enter Captcha'
             control={control}
           />
           <CustomButton
             label='CONFIRM ORDER'
-            fullWidth
-            variant="contained"
+            className="w-full py-3 bg-orange-500 text-white font-black rounded-lg shadow-md hover:bg-orange-600 transition-all"
           />
-        </Box>
+        </div>
       )
     }
   ];
 
   return (
-    <Grid container spacing={2} p={2}>
-      <Grid size={{ xs: 12 }}>
-        <Grid container spacing={2}>
-          <Grid size={{ xs: 12 }}>
-            {paymentOptions.map((option) => (
-              <CustomRadio
-                key={option.value}
-                value={option.value}
-                label={option.label}
-                description={option.description}
-                selectedValue={paymentMethod}
-                onChange={setPaymentMethod}
-              >
-                {paymentMethod === option.value && option.content}
-              </CustomRadio>
-            ))}
-          </Grid>
-        </Grid>
-      </Grid>
-    </Grid>
+    <div className="space-y-6">
+      <div className="flex items-center gap-2 mb-4">
+        <div className="w-1.5 h-6 bg-violet-600 rounded-full"></div>
+        <h2 className="text-xl font-black text-gray-900 uppercase tracking-tight">Payment Method</h2>
+      </div>
+
+      <div className="bg-gray-50 p-2 md:p-4 rounded-xl border border-gray-100">
+        <div className="space-y-2">
+          {paymentOptions.map((option) => (
+            <CustomRadio
+              key={option.value}
+              value={option.value}
+              label={option.label}
+              description={option.description}
+              selectedValue={paymentMethod}
+              onChange={setPaymentMethod}
+            >
+              {paymentMethod === option.value && option.content}
+            </CustomRadio>
+          ))}
+        </div>
+      </div>
+    </div>
   );
 };
 

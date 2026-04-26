@@ -1,8 +1,5 @@
-import { AspectRatio, CardOverflow } from "@mui/joy";
-import { Typography, CardContent, Box, Card, Rating, Tooltip } from "@mui/material";
-import { Favorite, FavoriteBorder, Share, ShoppingCart, ShoppingCartOutlined } from "@mui/icons-material";
 import React, { useState } from "react";
-import CustomIconButton from "../button/CustomIconButton";
+import { Share2, ShoppingBag, Star } from "lucide-react";
 
 interface ProductCardProps {
   productName: string;
@@ -10,18 +7,15 @@ interface ProductCardProps {
   productImage: string;
   productPrice: number | string;
   productRating: number;
+  brand?: string;
+  reviewsCount?: number;
   originalPrice?: number;
   discount?: number;
-  showFavorite?: boolean;
   showCart?: boolean;
-  showShare?: boolean;
-  showTrending?: boolean;
-  onFavoriteClick?: () => void;
   handleAddCart?: () => void;
-  handleShare?: () => void;
   onClick?: () => void;
-  isFavorited?: boolean;
   isInCart?: boolean;
+  viewMode?: 'grid' | 'list';
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({
@@ -32,191 +26,191 @@ const ProductCard: React.FC<ProductCardProps> = ({
   originalPrice,
   discount,
   productRating,
-  showFavorite = true,
-  showCart = true,
-  showShare = true,
-  showTrending = false,
-  onFavoriteClick,
+  brand,
+  reviewsCount = 128,
   handleAddCart,
-  handleShare,
-  isFavorited,
   onClick,
   isInCart,
+  viewMode = 'grid'
 }) => {
+  const [hovered, setHovered] = useState(false);
 
-  const [hovered, setHovered] = useState(true);
-  const [clicked] = useState(false);
+  const formattedPrice = typeof productPrice === 'number' ? `₹${productPrice.toLocaleString()}` : productPrice;
+  const formattedOriginalPrice = originalPrice ? `₹${originalPrice.toLocaleString()}` : null;
 
-  const handleMouseEnter = () => {
-    if (!clicked) setHovered(true);
-  };
+  if (viewMode === 'list') {
+    return (
+      <div
+        className="group bg-[#FCFCFC] rounded-[24px] hover:bg-white border border-transparent hover:border-gray-100 shadow-[0_4px_20px_rgba(0,0,0,0.02)] hover:shadow-[0_20px_40px_rgba(0,0,0,0.06)] transition-all duration-700 flex items-center p-5 gap-6"
+        onMouseEnter={() => setHovered(true)}
+        onMouseLeave={() => setHovered(false)}
+      >
+        {/* Image Section */}
+        <div className="relative w-44 h-44 flex-shrink-0 cursor-pointer bg-white rounded-[18px] overflow-hidden p-0 group-hover:shadow-inner" onClick={onClick}>
+          <img
+            src={productImage}
+            loading="lazy"
+            alt={productName}
+            className="w-full h-full object-contain transition-transform duration-1000 group-hover:scale-105"
+          />
+          {discount && (
+            <div className="absolute top-4 left-4 z-20 group-hover:-translate-y-1 transition-all duration-700">
+              <div className="bg-[#1A1A2E] border border-amber-400/30 px-3 py-1.5 rounded-full shadow-lg flex items-center">
+                <span className="text-[12px] font-black text-white tracking-tighter">-{discount}%</span>
+              </div>
+            </div>
+          )}
+          {/* Share Button */}
+          <button 
+            onClick={(e) => {
+              e.stopPropagation();
+              navigator.share?.({ title: productName, url: window.location.href });
+            }}
+            className="absolute top-4 right-4 z-20 p-2.5 bg-white/80 backdrop-blur-md rounded-full shadow-lg text-gray-900 opacity-0 group-hover:opacity-100 transition-all duration-500 hover:bg-white active:scale-90"
+          >
+            <Share2 size={14} />
+          </button>
+        </div>
 
-  const handleMouseLeave = () => {
-    if (!clicked) setHovered(true);
-  };
+        {/* Content Section */}
+        <div className="flex-1 flex flex-col py-1">
+          <div className="flex justify-between items-start mb-4">
+            <div className="max-w-md">
+              {brand && (
+                <span className="text-[10px] font-medium text-gray-400 uppercase tracking-[0.2em] block mb-1">
+                  {brand}
+                </span>
+              )}
+              <h3 className="text-xl font-light text-gray-900 leading-snug group-hover:text-violet-600 transition-colors mb-2">
+                {productName}
+              </h3>
+              <p className="text-xs text-gray-400 font-normal leading-relaxed line-clamp-2">
+                {productDescription}
+              </p>
+            </div>
+            <div className="flex flex-col items-end">
+              <span className="text-2xl font-light text-gray-900 tracking-tight">
+                {formattedPrice}
+              </span>
+              {formattedOriginalPrice && (
+                <span className="text-xs line-through text-gray-300 mt-0.5">
+                  {formattedOriginalPrice}
+                </span>
+              )}
+            </div>
+          </div>
 
-  const handleClick = () => {
-    // if (!isInCart) {
-    //   setClicked(true);
-    // } else {
-    //   setClicked(false);
-    //   setHovered(false);
-    // }
-  };
+          <div className="flex items-center justify-between mt-auto">
+            <div className="flex items-center gap-3">
+              <div className="flex items-center gap-1 border border-gray-100 px-2 py-0.5 rounded-full">
+                <Star size={10} className="fill-gray-900 text-gray-900" />
+                <span className="text-[10px] font-medium text-gray-900">{productRating}</span>
+              </div>
+              <span className="text-[9px] font-medium text-gray-300 uppercase tracking-widest">({reviewsCount})</span>
+            </div>
+
+            <div className="flex items-center gap-4">
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleAddCart?.();
+                }}
+                className={`flex items-center gap-2 px-6 py-2.5 rounded-full text-[10px] font-medium uppercase tracking-[0.15em] transition-all ${isInCart ? 'bg-gray-100 text-gray-900' : 'bg-[#1A1A2E] text-white hover:bg-black shadow-lg shadow-black/10'
+                  }`}
+              >
+                <ShoppingBag size={14} />
+                {isInCart ? 'In Bag' : 'Add'}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", m: 1 }}>
-      <Card
-        sx={{
-          maxWidth: 250,
-          boxShadow: 2,
-          borderRadius: 2,
-          position: "relative",
-          transition: "0.3s",
-        }}
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
-        onClick={handleClick}
-      >
-        <Box sx={{ position: "relative" }}>
-          <CardOverflow sx={{ overflow: "hidden" }} onClick={onClick}>
-            <AspectRatio ratio="1/1" sx={{
-              width: "100%", transition: "0.3s", "&:hover": {
-                transform: "scale(1.2)",
-              }
-            }}>
-              <img
-                src={productImage}
-                loading="lazy"
-                alt={productName}
-                style={{
-                  width: "100%",
-                  height: "100%",
-                  objectFit: "cover",
+    <div
+      className="group bg-white rounded-[20px] border border-transparent hover:border-gray-50 shadow-[0_8px_24px_rgba(0,0,0,0.01)] hover:shadow-[0_24px_48px_rgba(0,0,0,0.06)] transition-all duration-700 flex flex-col h-full overflow-hidden"
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+    >
+      {/* Image Section */}
+      <div className="relative aspect-square bg-[#F9F9F9] overflow-hidden cursor-pointer" onClick={onClick}>
+        <img
+          src={productImage}
+          loading="lazy"
+          alt={productName}
+          className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
+        />
 
+        {/* Share Button */}
+        <button 
+          onClick={(e) => {
+            e.stopPropagation();
+            navigator.share?.({ title: productName, url: window.location.href });
+          }}
+          className="absolute top-3 right-3 z-30 p-2 bg-white/80 backdrop-blur-md rounded-full shadow-lg text-gray-900 opacity-0 group-hover:opacity-100 transition-all duration-500 hover:bg-white active:scale-90"
+        >
+          <Share2 size={12} />
+        </button>
 
-                }}
-              />
-            </AspectRatio>
-          </CardOverflow>
-          {showTrending === true &&
-            (
-              <Typography
-                variant="caption"
-                sx={{
-                  position: "absolute",
-                  bottom: 0,
-                  right: 0,
-                  backgroundColor: "rgba(255, 220, 19, 0.97)",
-                  color: "#000",
-                  padding: "2px 6px",
-                  borderRadius: "4px",
-                  fontWeight: "bold",
-                  fontSize: "0.75rem",
-                }}
-              >
-                Trending
-              </Typography>
-            )}
-        </Box>
-        {/* Favorite & Cart Icons (Visible on Hover) */}
-        {hovered && (
-          <Box
-            sx={{
-              position: "absolute",
-              top: 10,
-              right: 10,
-              display: "flex",
-              flexDirection: "column",
-              gap: 1,
-            }}
-          >
-            {showFavorite && (
-              <CustomIconButton icon={isFavorited ? <Favorite /> : <FavoriteBorder />} iconColor={"error"} tooltip="Add to favorite" onClick={onFavoriteClick} />
-            )}
-            {showCart && (
-              <CustomIconButton
-                icon={isInCart ? <ShoppingCart /> : <ShoppingCartOutlined />}
-                iconColor={isInCart ? "success" : "primary"}
-                tooltip={isInCart ? "Added to Cart" : "Add to Cart"}
-                onClick={handleAddCart}
-              />
-            )}
-            {showShare && (
-              <CustomIconButton icon={<Share />} iconColor={"secondary"} tooltip="Share" onClick={handleShare} />
-            )}
-          </Box>
+        {discount && (
+          <div className="absolute top-3 left-3 z-20 group-hover:-translate-y-0.5 transition-all duration-500">
+            <div className="bg-[#1A1A2E] border border-amber-400/40 px-2.5 py-1 rounded-full shadow-xl flex items-center">
+              <span className="text-[9px] font-black text-white tracking-tight">{discount}% OFF</span>
+            </div>
+          </div>
         )}
 
-        <CardContent sx={{ p: 2 }}>
-          <Tooltip title={productName}>
-            <Typography variant="h6" fontWeight="bold" sx={{
-              whiteSpace: 'nowrap',
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-              fontSize: '18px',
-              mb: 0.5
-            }}>
-              {productName}
-            </Typography>
-          </Tooltip>
-
-          <Typography variant="body2" color="text.secondary" sx={{
-            display: '-webkit-box',
-            WebkitLineClamp: 2,
-            WebkitBoxOrient: 'vertical',
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
-            height: '40px',
-            mb: 1
-          }}>
-            {productDescription}
-          </Typography>
-
-          <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
-            <Rating value={productRating} precision={0.5} readOnly size="small" />
-            <Typography variant="caption" sx={{ ml: 0.5, color: 'text.secondary' }}>
-              ({productRating})
-            </Typography>
-          </Box>
-
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "flex-end",
+        {/* Quick Add (Elegant Overlay) */}
+        <div className={`absolute inset-x-3 bottom-3 transition-all duration-700 transform ${hovered ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'}`}>
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              handleAddCart?.();
             }}
+            className="w-full bg-white/90 backdrop-blur-md text-gray-900 py-2.5 rounded-lg text-[8px] font-bold uppercase tracking-[0.15em] shadow-xl hover:bg-white transition-all flex items-center justify-center gap-1.5"
           >
-            <Box>
-              <Typography variant="h6" fontWeight="bold" color="primary" sx={{ fontSize: '1.1rem', lineHeight: 1 }}>
-                ₹{productPrice}
-              </Typography>
-              {originalPrice && (
-                <Typography variant="caption" sx={{ textDecoration: "line-through", color: "gray", display: 'block' }}>
-                  ₹{originalPrice.toFixed(2)}
-                </Typography>
-              )}
-            </Box>
+            <ShoppingBag size={12} />
+            Quick Add
+          </button>
+        </div>
+      </div>
 
-            {discount && (
-              <Typography
-                variant="caption"
-                color="green"
-                fontWeight="bold"
-                sx={{
-                  backgroundColor: "#d4f4dd",
-                  padding: "2px 6px",
-                  borderRadius: "4px",
-                  fontSize: '0.75rem'
-                }}
-              >
-                {discount}% OFF
-              </Typography>
+      {/* Content Section */}
+      <div className="px-4 py-3.5 flex flex-col flex-1 text-left items-start">
+        {brand && (
+          <span className="text-[8px] font-medium text-gray-300 uppercase tracking-[0.25em] mb-1">
+            {brand}
+          </span>
+        )}
+        <h3 className="text-[13px] font-light text-gray-900 leading-snug line-clamp-2 group-hover:text-violet-600 transition-colors mb-2.5 w-full">
+          {productName}
+        </h3>
+
+        <div className="mt-auto flex flex-col items-start w-full">
+          <div className="flex items-center gap-2 mb-0.5">
+            <span className="text-base font-light text-gray-900 tracking-tight">
+              {formattedPrice}
+            </span>
+            {formattedOriginalPrice && (
+              <span className="text-[9px] line-through text-gray-300">
+                {formattedOriginalPrice}
+              </span>
             )}
-          </Box>
-        </CardContent>
-      </Card>
-    </Box>
+          </div>
+
+          <div className="flex items-center gap-1 opacity-40">
+            <div className="flex items-center gap-0.5">
+              {[1, 2, 3, 4, 5].map((s) => (
+                <Star key={s} size={8} className={s <= Math.round(productRating) ? "fill-gray-900 text-gray-900" : "text-gray-200"} />
+              ))}
+            </div>
+            <span className="text-[8px] font-medium text-gray-900">({reviewsCount})</span>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 };
 

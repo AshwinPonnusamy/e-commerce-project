@@ -1,31 +1,25 @@
-# BUYNWELL E-commerce Platform
+# OMNISTORE | Premium Lifestyle & Tech Experience
 
-BUYNWELL is a modern, premium e-commerce application designed to provide a seamless and visually stunning shopping experience. Built with a mobile-first approach, it offers a responsive and intuitive interface across all devices.
+OMNISTORE is a state-of-the-art e-commerce platform designed for the modern era. Built with a **"Futuristic Luxury"** aesthetic and an **"Elegant Lavender"** palette, OMNISTORE redefines the shopping journey through high-end design, seamless interactions, and a mobile-first philosophy.
 
 ## 🚀 Key Features
 
-- **Dynamic Product Discovery**: Advanced filtering by category, price, and sorting capabilities.
-- **Responsive Design**: Fully optimized for mobile, tablet, and desktop viewports using Material UI v7.
-- **Interactive Shop**: 
-  - Vibrant Hero section with integrated search.
-  - Interactive Category exploration.
-  - Trending and Popular product carousels.
-- **Rich Product Details**: Detailed descriptions, responsive image galleries with fullscreen view, and availability status.
-- **Cart & Checkout**: 
-  - Comprehensive Shopping Cart management.
-  - Secure, multi-step Shipping and Payment process.
-  - Dynamic price calculations and order summary.
-- **Admin Capabilities**: Dedicated dashboard for product management and inventory control.
+- **Futuristic Home Hero**: A stunning, vibrant entry point designed to showcase premium electronics, designer toys, and luxury gifts.
+- **Unified Profile Hub**: A sophisticated customer dashboard for managing orders, addresses, and account settings with a single tap.
+- **Precision Order Tracking**: High-end order history with real-time status trackers and detailed item summaries.
+- **Address Book Manager**: A sleek, card-based interface for effortless management of home and office delivery locations.
+- **Premium FAQ System**: An elegant, categorized accordion-style support center for instant customer assistance.
+- **Instant Secure Login**: A streamlined, modern authentication flow featuring a default login for rapid testing and deployment.
+- **Mobile-Native Excellence**: Fully optimized for the ultimate handheld experience with responsive navigation and horizontal scroll menus.
 
 ## 🛠️ Technology Stack
 
-- **Framework**: [React](https://reactjs.org/) + [Vite](https://vitejs.dev/)
+- **Core**: [React](https://reactjs.org/) + [Vite](https://vitejs.dev/) (High-Performance Architecture)
 - **Language**: [TypeScript](https://www.typescriptlang.org/)
-- **UI Architecture**: [Material UI (MUI) v7](https://mui.com/)
-- **State Management**: [Redux Toolkit](https://redux-toolkit.js.org/)
-- **Form Handling**: [React Hook Form](https://react-hook-form.com/)
-- **Icons**: [MUI Icons](https://mui.com/material-ui/material-icons/)
-- **Carousel**: [PrimeReact](https://primereact.org/)
+- **Styling**: [Tailwind CSS](https://tailwindcss.com/) (Precision UI Layouts)
+- **State Management**: [Redux Toolkit](https://redux-toolkit.js.org/) (Predictable Global State)
+- **Icons**: [Lucide React](https://lucide.dev/) (Crisp, Modern Vector Icons)
+- **State Persistence**: [Redux Persist](https://github.com/rt2zz/redux-persist) (Seamless Session Recovery)
 
 ## 📦 Getting Started
 
@@ -36,35 +30,35 @@ BUYNWELL is a modern, premium e-commerce application designed to provide a seaml
 
 ### Installation
 
-1. Clone the repository:
+1. **Clone the repository**:
    ```bash
    git clone <repository-url>
    ```
 
-2. Install dependencies:
+2. **Install dependencies**:
    ```bash
    npm install
    ```
 
-3. Start the development server:
+3. **Start the OMNISTORE journey**:
    ```bash
    npm run dev
    ```
 
 ### Building for Production
 
-To create an optimized production build:
+To create an optimized, high-performance production build:
 ```bash
 npm run build
 ```
 
 ## 📂 Project Structure
 
-- `src/components`: Reusable UI components and business logic.
-- `src/layout`: Application-wide layouts and structural components (Header, Footer).
-- `src/pages`: Individual page views for various sections.
-- `src/state`: Redux slices and store configuration.
-- `src/centralized`: Core utility components.
+- `src/pages/profile`: The core hub for user account management and orders.
+- `src/pages/faq`: Premium customer support and FAQ system.
+- `src/components/auth`: Modern authentication and secure login components.
+- `src/layout`: Application-wide structural components (Premium Header & Footer).
+- `src/state`: Redux slices and centralized store configuration.
 
 ---
-*Created with passion for Advanced Agentic Coding.*
+*Elevating Lifestyle with Premium Excellence.*

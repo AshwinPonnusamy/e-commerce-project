@@ -1,7 +1,84 @@
-@import url('https://fonts.googleapis.com/css2?family=Lexend:wght@400;600&display=swap');
-*{
-  margin:0;
-  padding:0;
-  box-sizing: border-box;
-  font-family: 'Lexend', sans-serif !important;
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #2563eb;
+  --color-primary-hover: #1d4ed8;
+  --color-secondary: #006c4a;
+  --color-accent: #ff9800;
+  --color-bg-soft: #f8fafc;
+  
+  --font-inter: "Inter", system-ui, sans-serif;
+  
+  --radius-xl: 0.75rem;
+  --radius-2xl: 1rem;
+  --radius-3xl: 1.5rem;
+
+  --animate-entrance: entrance 0.6s ease-out forwards;
+  --animate-fade-in: fade-in 0.5s ease-out forwards;
+  --animate-slide-up: slide-up 0.6s ease-out forwards;
+  --animate-slide-in-right: slide-in-right 0.6s ease-out forwards;
+
+  @keyframes entrance {
+    from { opacity: 0; transform: translateY(10px) scale(0.98); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  @keyframes fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  @keyframes slide-up {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes slide-in-right {
+    from { opacity: 0; transform: translateX(20px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+}
+
+/* Custom Base Styles */
+@layer base {
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+  :root {
+    --background: 210 40% 98%;
+    --foreground: 222 47% 11%;
+  }
+
+  * {
+    @apply border-gray-200;
+    font-family: var(--font-inter);
+  }
+
+  body {
+    @apply bg-slate-50 text-slate-900 font-inter antialiased;
+    margin: 0;
+    padding: 0;
+  }
+}
+
+/* PrimeReact basic styles if needed */
+@layer components {
+  .p-component {
+    font-family: var(--font-inter) !important;
+  }
+}
+
+/* Utility classes for smooth transitions */
+@layer utilities {
+  .glass {
+    @apply bg-white/80 backdrop-blur-md border border-white/20 shadow-xl;
+  }
+  
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
 }

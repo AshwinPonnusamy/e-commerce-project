@@ -1,7 +1,7 @@
 import { NavigateFunction } from "react-router-dom";
-import { addProductToCart, changeCartQuantity, getProductById, getSearchProductList, removeProductFromCart } from "../../state/action/product";
+import { addProductToCart, changeCartQuantity, getProductById, removeProductFromCart } from "../../state/action/product";
 import { AppDispatch, RootState } from "../../state/store/store";
-import { CartItem, Product, setIsFavorited, setSearchProductList } from "../../state/store/features/productData";
+import { CartItem, Product } from "../../state/store/features/productData";
 
 export const handleAddCart = (product: Product) => (dispatch: AppDispatch, getState: () => RootState) => {
   const cartItems = getState().productData.cartItems;
@@ -14,14 +14,20 @@ export const handleAddCart = (product: Product) => (dispatch: AppDispatch, getSt
   }
 };
 
+export const handleBuyNow = (product: Product, dispatch: AppDispatch, getState: () => RootState, navigate: NavigateFunction) => {
+  const cartItems = getState().productData.cartItems;
+  const isInCart = cartItems.some((item: CartItem) => item.id === product.id);
+
+  if (!isInCart) {
+    dispatch(addProductToCart(product));
+  }
+  navigate("/layout/shoppingcart");
+};
+
 export const handleProductCardClick = (item: Product, dispatch: AppDispatch, navigate: NavigateFunction) => {
   console.log("Selected Product:", item);
   dispatch(getProductById(item as { id: string | number }));
-  navigate("/layout/productdetail");
-};
-
-export const toggleFavorite = (dispatch: AppDispatch, productId: number | string, isFavorited: boolean) => {
-  dispatch(setIsFavorited({ productId, isFavorited: !isFavorited }));
+  navigate(`/layout/productdetail/${item.id}`);
 };
 
 // quantity control
@@ -42,13 +48,4 @@ export const handleDecrease = (id: number | string, dispatch: AppDispatch, cartI
 
 export const handleRemove = (id: number | string, dispatch: AppDispatch) => {
   dispatch(removeProductFromCart(id));
-};
-
-//search
-export const handleSearch = (query: string, dispatch: AppDispatch) => {
-  if (!query.trim()) {
-    dispatch(setSearchProductList({ list: [], query: "" }));
-    return;
-  }
-  dispatch(getSearchProductList(query) as any);
-};
+};

@@ -1,7 +1,5 @@
 import React from "react";
-import { Box, IconButton, Typography } from "@mui/material";
-import RemoveIcon from "@mui/icons-material/Remove";
-import AddIcon from "@mui/icons-material/Add";
+import { Minus, Plus } from "lucide-react";
 
 interface QuantityButtonProps {
     onQuant?: number;
@@ -11,30 +9,30 @@ interface QuantityButtonProps {
 
 const QuantityButton: React.FC<QuantityButtonProps> = ({ onQuant, onRemove, onAdd }) => {
     return (
-        <Box
-            display="flex"
-            alignItems="center"
-            sx={{
-                backgroundColor: "#f5f5f5",
-                borderRadius: "8px",
-                width: "fit-content",
-            }}
-        >
+        <div className="flex items-center bg-gray-100 rounded-lg w-fit border border-gray-200">
             {/* Decrease Quantity */}
-            <IconButton onClick={onRemove} disabled={onQuant === 1} color="primary">
-                <RemoveIcon />
-            </IconButton>
+            <button 
+                onClick={onRemove} 
+                disabled={onQuant === 1} 
+                className="p-1.5 text-violet-600 hover:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed transition-colors rounded-l-lg focus:outline-none"
+            >
+                <Minus size={18} />
+            </button>
 
             {/* Quantity Display */}
-            <Typography variant="body1" sx={{ minWidth: "40px", textAlign: "center" }}>
+            <span className="min-w-[40px] text-center text-sm font-black text-gray-800 px-2">
                 {onQuant}
-            </Typography>
+            </span>
 
             {/* Increase Quantity */}
-            <IconButton onClick={onAdd} disabled={onQuant === 10} color="primary">
-                <AddIcon />
-            </IconButton>
-        </Box>
+            <button 
+                onClick={onAdd} 
+                disabled={onQuant === 10} 
+                className="p-1.5 text-violet-600 hover:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed transition-colors rounded-r-lg focus:outline-none"
+            >
+                <Plus size={18} />
+            </button>
+        </div>
     );
 };
 

@@ -1,46 +1,81 @@
-import { Navigate, Route, Routes } from 'react-router-dom';
-import Login from '../authlogin/Login';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import Layout from '../layout/Layout';
 import Home from '../pages/home/Home';
+import ProductsPage from '../pages/productList/ProductsPage';
 import ProductDetailPage from '../pages/productDetail/ProductDetailPage';
 import ShoppingCart from '../pages/cart/ShoppingCart';
-import ProductsPage from '../pages/productList/ProductsPage';
-import FavoritesPage from '../pages/wishList/FavoritesPage';
-import CommonStepper from '../pages/checkout/CheckOut';
-import PaymentStatus from '../pages/checkout/PaymentStatus';
-import Register from '../authlogin/Register';
-import AddProduct from '../pages/productList/add_product/AddProduct';
-import AdminDashboard from '../pages/admin/AdminDashboard';
-import { ProtectedRoute, AdminRoute } from '../components/auth/ProtectedRoute';
+import CheckOut from '../pages/checkout/CheckOut';
+import FAQ from '../pages/faq/FAQ';
+import ProfileLayout from '../pages/profile/ProfileLayout';
+import Orders from '../pages/profile/Orders';
+import Addresses from '../pages/profile/Addresses';
 
+// Admin Imports
+import AdminLayoutWrapper from '../pages/admin/pages/AdminLayoutWrapper';
+import StitchDashboard from '../pages/admin/pages/Dashboard';
+import ProductList from '../pages/admin/pages/Products/ProductList';
+import ProductForm from '../pages/admin/pages/Products/ProductForm';
+import CategoryManager from '../pages/admin/pages/Categories/CategoryManager';
+import StitchInventory from '../pages/admin/pages/Inventory';
+import OrderManager from '../pages/admin/pages/Orders/OrderManager';
+import CouponManager from '../pages/admin/pages/Coupons/CouponManager';
+import CampaignManager from '../pages/admin/pages/Campaigns/CampaignManager';
+import CustomerManager from '../pages/admin/pages/Customers/CustomerManager';
+import ReportDashboard from '../pages/admin/pages/Reports/ReportDashboard';
+import StoreSettings from '../pages/admin/pages/Settings/StoreSettings';
 
-const Router = () => {
+import AdminAccessGuard from '../pages/admin/pages/AdminAccessGuard';
+
+const MainRoutes = () => {
   return (
     <Routes>
-      <Route path="/" element={<Navigate to="/layout/home" />} />
-      <Route path="layout" element={<Layout />}>
-        <Route path='home' element={<Home />} />
-        <Route path="productdetail" element={<ProductDetailPage />} />
+      {/* Root Redirect */}
+      <Route path="/" element={<Navigate to="/layout/home" replace />} />
+
+      {/* Main Layout Routes */}
+      <Route path="/layout" element={<Layout />}>
+        <Route index element={<Navigate to="home" replace />} />
+        <Route path="home" element={<Home />} />
         <Route path="allproducts" element={<ProductsPage />} />
-
-        {/* Protected User Routes */}
-        <Route element={<ProtectedRoute />}>
-          <Route path="shoppingcart" element={<ShoppingCart />} />
-          <Route path="favoritepage" element={<FavoritesPage />} />
-          <Route path="orderDetails" element={<CommonStepper />} />
-          <Route path="orderDetails/payment-status/:status" element={<PaymentStatus />} />
-        </Route>
-
-        {/* Admin Only Routes */}
-        <Route element={<AdminRoute />}>
-          <Route path="addProduct" element={<AddProduct />} />
-          <Route path="dashboard" element={<AdminDashboard />} />
+        <Route path="productdetail/:id" element={<ProductDetailPage />} />
+        <Route path="shoppingcart" element={<ShoppingCart />} />
+        <Route path="checkout" element={<CheckOut />} />
+        <Route path="faq" element={<FAQ />} />
+        <Route path="profile" element={<ProfileLayout />}>
+          <Route index element={<Navigate to="orders" replace />} />
+          <Route path="orders" element={<Orders />} />
+          <Route path="addresses" element={<Addresses />} />
+          <Route path="settings" element={<Orders />} /> {/* Placeholder for now */}
         </Route>
       </Route>
-      <Route path="/login" element={<Login />} />
-      <Route path="/register" element={<Register />} />
+
+      {/* Admin Routes */}
+      <Route 
+        path="/admin" 
+        element={
+          <AdminAccessGuard>
+            <AdminLayoutWrapper />
+          </AdminAccessGuard>
+        }
+      >
+        <Route index element={<Navigate to="dashboard" replace />} />
+        <Route path="dashboard" element={<StitchDashboard />} />
+        <Route path="products" element={<ProductList />} />
+        <Route path="products/new" element={<ProductForm />} />
+        <Route path="categories" element={<CategoryManager />} />
+        <Route path="inventory" element={<StitchInventory />} />
+        <Route path="orders" element={<OrderManager />} />
+        <Route path="coupons" element={<CouponManager />} />
+        <Route path="campaigns" element={<CampaignManager />} />
+        <Route path="customers" element={<CustomerManager />} />
+        <Route path="reports" element={<ReportDashboard />} />
+        <Route path="settings" element={<StoreSettings />} />
+      </Route>
+
+      {/* Fallback */}
+      <Route path="*" element={<Navigate to="/layout/home" replace />} />
     </Routes>
   );
 };
 
-export default Router;
+export default MainRoutes;

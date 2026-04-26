@@ -1,4 +1,3 @@
-import { Grid } from "@mui/material"
 import InputText from "../../centralized/InputText"
 import { useForm } from "react-hook-form";
 
@@ -6,66 +5,80 @@ const ShippingDetails = () => {
   const { control } = useForm();
 
   return (
-    <Grid container spacing={2} p={2}>
-      <Grid size={{ xs: 12 }} boxShadow={2} sx={{ p: 2 }}>
-        <Grid container spacing={2} >
-          <Grid size={{ xs: 12, sm: 6 }}>
+    <div className="space-y-6">
+      <div className="flex items-center gap-2 mb-4">
+        <div className="w-1.5 h-6 bg-violet-600 rounded-full"></div>
+        <h2 className="text-xl font-black text-gray-900 uppercase tracking-tight">Shipping Information</h2>
+      </div>
+
+      <div className="bg-gray-50 p-6 rounded-xl border border-gray-100">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+          <div className="col-span-1">
             <InputText
               fullWidth
-              label="Enter Your Name"
+              label="Full Name"
               name="name"
-              placeholder='Name'
+              placeholder='Enter your name'
               control={control}
             />
-          </Grid>
-          <Grid size={{ xs: 12, sm: 6 }}>
+          </div>
+          <div className="col-span-1">
             <InputText
               fullWidth
-              label="Enter Your Number"
+              label="Phone Number"
               name="number"
-              placeholder='Mobile Number'
+              placeholder='Enter mobile number'
               control={control}
             />
-          </Grid>
-          <Grid size={{ xs: 12, sm: 6 }}>
+          </div>
+          <div className="col-span-1">
             <InputText
               fullWidth
-              label="Enter Pincode"
+              label="Pincode"
               name="pincode"
-              placeholder='Pincode'
+              placeholder='Enter 6-digit pincode'
               control={control}
             />
-          </Grid>
-          <Grid size={{ xs: 12, sm: 6 }}>
+          </div>
+          <div className="col-span-1">
             <InputText
               fullWidth
-              label="Enter Address"
-              name="address"
-              placeholder='Address'
-              control={control}
-            />
-          </Grid>
-          <Grid size={{ xs: 12, sm: 6 }}>
-            <InputText
-              fullWidth
-              label="Enter Your City"
+              label="Town / City"
               name="city"
-              placeholder='City'
+              placeholder='Enter city'
               control={control}
             />
-          </Grid>
-          <Grid size={{ xs: 12, sm: 6 }}>
+          </div>
+          <div className="col-span-2">
             <InputText
               fullWidth
-              label="Enter State"
-              name="state"
-              placeholder='State'
+              label="Full Address"
+              name="address"
+              placeholder='House No, Building, Street, Area'
               control={control}
             />
-          </Grid>
-        </Grid>
-      </Grid>
-    </Grid>
+          </div>
+          <div className="col-span-1">
+            <InputText
+              fullWidth
+              label="State"
+              name="state"
+              placeholder='Enter state'
+              control={control}
+            />
+          </div>
+          <div className="col-span-1">
+            <InputText
+              fullWidth
+              label="Landmark (Optional)"
+              name="landmark"
+              placeholder='E.g. near hospital'
+              control={control}
+            />
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }
 

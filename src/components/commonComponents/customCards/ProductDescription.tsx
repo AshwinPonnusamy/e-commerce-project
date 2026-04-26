@@ -1,19 +1,18 @@
-import React from "react";
-import { Box, Typography, Rating, Chip, Divider, Stack } from "@mui/material";
-import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
-import ShoppingBagIcon from "@mui/icons-material/ShoppingBag";
-import CustomButton from "../button/CustomButton";
+import React, { useState, useMemo } from "react";
+import { Star, ShieldCheck, Zap, Minus, Plus, ShoppingCart } from "lucide-react";
 
 interface ProductDescriptionProps {
   productName: string;
   productDescription: string;
   brand?: string;
+  category?: string;
   price: number;
   stock?: number;
   rating?: number;
   discount: number;
   originalPrice: number;
   handleAddCart: () => void;
+  handleBuyNow?: () => void;
   isInCart: boolean;
 }
 
@@ -21,111 +20,182 @@ const ProductDescription: React.FC<ProductDescriptionProps> = ({
   productName,
   productDescription,
   brand,
+  category = "",
   price,
-  stock,
   rating,
   discount,
   originalPrice,
   handleAddCart,
+  handleBuyNow,
   isInCart
 }) => {
+  const [quantity, setQuantity] = useState(1);
+
+  // Generate dynamic options based on category
+  const { label, options } = useMemo(() => {
+    const cat = category.toLowerCase();
+    if (cat.includes("smartphones") || cat.includes("laptops") || cat.includes("tablets")) {
+      return { label: "Select Storage", options: ["128GB", "256GB", "512GB"] };
+    }
+    if (cat.includes("clothing") || cat.includes("shirts") || cat.includes("tops")) {
+      return { label: "Select Size", options: ["S", "M", "L", "XL", "XXL"] };
+    }
+    if (cat.includes("shoes") || cat.includes("footwear")) {
+      return { label: "Select Size (US)", options: ["8", "9", "10", "11", "12"] };
+    }
+    if (cat.includes("fragrances") || cat.includes("skincare") || cat.includes("beauty")) {
+      return { label: "Select Volume", options: ["30ml", "50ml", "100ml"] };
+    }
+    if (cat.includes("watches")) {
+      return { label: "Select Case Size", options: ["40mm", "44mm", "45mm"] };
+    }
+    if (cat.includes("kitchen") || cat.includes("home")) {
+      return { label: "Select Capacity", options: ["1.5L", "3L", "5L"] };
+    }
+    return { label: "Select Option", options: ["Standard", "Premium", "Pro"] };
+  }, [category]);
+
+  const [selectedOption, setSelectedOption] = useState(options[0]);
 
   return (
-    <Box sx={{ p: { xs: 1, sm: 2, md: 4 }, display: 'flex', flexDirection: 'column', height: '100%' }}>
-      <Stack spacing={{ xs: 2, md: 3 }}>
-        {/* Brand & Rating */}
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <Typography variant="overline" sx={{ letterSpacing: 2, fontWeight: 'bold', color: 'primary.main', fontSize: { xs: '0.7rem', sm: '0.75rem' } }}>
+    <div className="flex flex-col h-full bg-white animate-entrance">
+      <div className="flex flex-col space-y-6">
+        
+        {/* Top Badges */}
+        <div className="flex items-center gap-3">
+          <span className="bg-green-100 text-green-700 text-[10px] font-black px-2.5 py-1 rounded-lg uppercase tracking-widest">
+            Best Seller
+          </span>
+          <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">
             {brand}
-          </Typography>
-          <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            <Rating value={rating || 0} precision={0.1} readOnly size="small" />
-            <Typography variant="body2" sx={{ ml: 1, fontWeight: 'medium', fontSize: '0.8rem' }}>
-              ({rating})
-            </Typography>
-          </Box>
-        </Box>
+          </span>
+        </div>
 
         {/* Product Name */}
-        <Typography variant="h3" sx={{
-          fontWeight: 800,
-          lineHeight: 1.2,
-          fontSize: { xs: '1.75rem', sm: '2.25rem', md: '3rem' }
-        }}>
+        <h1 className="text-2xl md:text-3xl font-black text-gray-900 leading-tight uppercase tracking-tight">
           {productName}
-        </Typography>
+        </h1>
 
-        {/* Pricing */}
-        <Box sx={{ mt: 1 }}>
-          <Stack direction="row" alignItems="center" spacing={2}>
-            <Typography variant="h4" sx={{
-              fontWeight: 'bold',
-              color: 'text.primary',
-              fontSize: { xs: '1.5rem', sm: '1.75rem', md: '2.125rem' }
-            }}>
+        {/* Rating & Reviews */}
+        <div className="flex items-center gap-4">
+          <div className="flex items-center gap-1 bg-yellow-50 px-2 py-1 rounded-lg">
+            <Star size={14} className="fill-yellow-400 text-yellow-400" />
+            <span className="text-sm font-black text-yellow-700">{rating}</span>
+          </div>
+          <span className="text-xs font-bold text-gray-400 border-l border-gray-200 pl-4">
+            (1,248 Reviews)
+          </span>
+        </div>
+
+        {/* Pricing Card */}
+        <div className="bg-violet-50/50 p-6 rounded-2xl border border-violet-100/50">
+          <div className="flex items-end gap-4">
+            <span className="text-3xl font-black text-violet-600 tracking-tighter">
               ₹{price?.toFixed(2)}
-            </Typography>
-            <Chip
-              label={`${discount}% OFF`}
-              color="success"
-              size="small"
-              sx={{ fontWeight: 'bold', borderRadius: '4px' }}
-            />
-          </Stack>
-          <Typography variant="body1" sx={{ textDecoration: 'line-through', color: 'text.secondary', mt: 0.5, fontSize: { xs: '0.9rem', md: '1rem' } }}>
-            MRP: ₹{originalPrice.toFixed(2)}
-          </Typography>
-        </Box>
+            </span>
+            <div className="flex flex-col pb-1">
+              <span className="text-xs text-gray-400 line-through font-bold">
+                ₹{originalPrice.toFixed(2)}
+              </span>
+              <span className="text-[10px] text-green-600 font-black uppercase">
+                {discount}% OFF
+              </span>
+            </div>
+          </div>
+          <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest mt-2">
+            Inclusive of all taxes
+          </p>
+        </div>
 
-        <Divider sx={{ my: { xs: 1.5, md: 3 } }} />
+        {/* Dynamic Selector */}
+        <div className="space-y-3">
+          <h3 className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">
+            {label}
+          </h3>
+          <div className="flex flex-wrap gap-2">
+            {options.map((opt) => (
+              <button
+                key={opt}
+                onClick={() => setSelectedOption(opt)}
+                className={`px-6 py-2.5 rounded-xl text-[10px] font-black transition-all border-2 ${
+                  selectedOption === opt
+                    ? 'border-violet-600 bg-violet-50 text-violet-600 shadow-md scale-105'
+                    : 'border-gray-50 bg-white text-gray-400 hover:border-gray-200'
+                }`}
+              >
+                {opt}
+              </button>
+            ))}
+          </div>
+        </div>
 
-        {/* Stock Status */}
-        <Box>
-          <Typography variant="subtitle2" sx={{ fontWeight: 'bold', mb: 1, fontSize: '0.85rem' }}>
-            Availability:
-          </Typography>
-          <Chip
-            label={stock && stock > 0 ? (stock <= 10 ? `Only ${stock} left in stock!` : 'In Stock') : 'Out of Stock'}
-            color={stock && stock > 10 ? 'success' : 'error'}
-            variant="outlined"
-            size="small"
-          />
-        </Box>
+        {/* Quantity & Stock */}
+        <div className="flex flex-wrap items-center gap-8">
+          <div className="space-y-3">
+            <h3 className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">
+              Quantity
+            </h3>
+            <div className="flex items-center bg-gray-50 p-1 rounded-xl border border-gray-100">
+              <button 
+                onClick={() => setQuantity(q => Math.max(1, q - 1))}
+                className="w-10 h-10 flex items-center justify-center hover:bg-white rounded-lg transition-all text-gray-500"
+              >
+                <Minus size={14} />
+              </button>
+              <span className="w-10 text-center font-black text-xs text-gray-900">{quantity}</span>
+              <button 
+                onClick={() => setQuantity(q => q + 1)}
+                className="w-10 h-10 flex items-center justify-center hover:bg-white rounded-lg transition-all text-gray-500"
+              >
+                <Plus size={14} />
+              </button>
+            </div>
+          </div>
 
-        {/* Description */}
-        <Box>
-          <Typography variant="subtitle2" sx={{ fontWeight: 'bold', mb: 1, fontSize: '0.85rem' }}>
-            Description:
-          </Typography>
-          <Typography variant="body1" sx={{ color: 'text.secondary', lineHeight: 1.6, fontSize: { xs: '0.9rem', md: '1rem' } }}>
-            {productDescription}
-          </Typography>
-        </Box>
+          <div className="space-y-1">
+            <div className="flex items-center gap-2 text-emerald-500">
+              <ShieldCheck size={16} />
+              <span className="text-[10px] font-black uppercase tracking-widest">In Stock</span>
+            </div>
+            <p className="text-[9px] font-bold text-gray-400 ml-6 uppercase">Ships within 24 hours</p>
+          </div>
+        </div>
 
-        {/* Actions */}
-        <Box sx={{ pt: { xs: 2, md: 4 }, mt: 'auto' }}>
-          <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-            <CustomButton
-              fullWidth
-              variant={isInCart ? "outlined" : "contained"}
-              startIcon={<ShoppingCartIcon />}
-              onClick={handleAddCart}
-              color={isInCart ? "error" : "warning"}
-              label={isInCart ? "Remove from Cart" : "Add to Cart"}
-              sx={{ py: 1.5, textTransform: 'none', fontWeight: 'bold' }}
-            />
-            <CustomButton
-              fullWidth
-              variant="contained"
-              startIcon={<ShoppingBagIcon />}
-              color="primary"
-              label="Buy Now"
-              sx={{ py: 1.5, textTransform: 'none', fontWeight: 'bold' }}
-            />
-          </Stack>
-        </Box>
-      </Stack>
-    </Box>
+        {/* Main Actions */}
+        <div className="flex flex-col sm:flex-row gap-4 pt-4">
+          <button
+            onClick={handleAddCart}
+            className={`flex-1 py-5 px-8 rounded-2xl font-black text-[10px] uppercase tracking-widest transition-all flex items-center justify-center gap-3 shadow-xl ${
+              isInCart 
+                ? 'bg-violet-50 text-violet-600 border-2 border-violet-600 shadow-violet-600/5' 
+                : 'bg-violet-600 text-white hover:bg-violet-700 shadow-violet-600/20 active:scale-95'
+            }`}
+          >
+            <ShoppingCart size={18} />
+            {isInCart ? "In Your Cart" : "Add to Cart"}
+          </button>
+          <button
+            onClick={handleBuyNow}
+            className="flex-1 py-5 px-8 bg-gray-900 text-white rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-black shadow-xl shadow-gray-900/20 transition-all active:scale-95"
+          >
+            Buy Now
+          </button>
+        </div>
+
+        {/* Trust Badges */}
+        <div className="flex flex-wrap items-center gap-6 pt-6 border-t border-gray-100">
+          <div className="flex items-center gap-2 text-gray-400">
+            <ShieldCheck size={18} className="text-violet-500" />
+            <span className="text-[9px] font-black uppercase tracking-widest">10 Year Warranty</span>
+          </div>
+          <div className="flex items-center gap-2 text-gray-400">
+            <Zap size={18} className="text-orange-500" />
+            <span className="text-[9px] font-black uppercase tracking-widest">Premium Quality</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
   );
 };
 
