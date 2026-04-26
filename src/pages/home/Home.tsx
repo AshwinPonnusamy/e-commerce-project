@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../state/store/store";
 import { getAllProductList } from "../../state/action/product";
-import { ChevronRight, ArrowRight, Truck, Mail, ChevronLeft, Plus, Percent, Timer, Flame } from "lucide-react";
+import { ChevronRight, ArrowRight, Truck, Mail, ChevronLeft, Plus, Timer, Flame } from "lucide-react";
 import ProductCard from "../../components/commonComponents/customCards/ProductCard";
 import { handleAddCart, handleProductCardClick } from "../../components/commonFunctions/CommonFunctions";
 

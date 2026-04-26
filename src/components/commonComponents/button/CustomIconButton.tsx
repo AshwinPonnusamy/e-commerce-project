@@ -12,7 +12,6 @@ const CustomIconButton: React.FC<CustomIconButtonProps> = ({
     icon,
     onClick,
     iconColor = "primary",
-    tooltip,
     className = "",
 }) => {
     // Map standard MUI colors to Tailwind

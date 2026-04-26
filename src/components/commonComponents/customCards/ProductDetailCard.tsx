@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { X, ZoomIn } from "lucide-react";
+import { ZoomIn } from "lucide-react";
 
 interface ProductDetailCardProps {
   images?: string[];

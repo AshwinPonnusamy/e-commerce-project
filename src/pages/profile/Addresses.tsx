@@ -1,5 +1,5 @@
 import React from "react";
-import { MapPin, Plus, Edit2, Trash2, Home, Briefcase, Globe } from "lucide-react";
+import { Edit2, Trash2, Home, Briefcase, Globe } from "lucide-react";
 
 const Addresses: React.FC = () => {
   const addresses = [

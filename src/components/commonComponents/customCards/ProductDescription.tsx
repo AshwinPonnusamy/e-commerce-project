@@ -18,7 +18,6 @@ interface ProductDescriptionProps {
 
 const ProductDescription: React.FC<ProductDescriptionProps> = ({
   productName,
-  productDescription,
   brand,
   category = "",
   price,

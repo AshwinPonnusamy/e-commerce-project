@@ -1,5 +1,5 @@
 import React from "react";
-import { Package, Truck, CheckCircle2, ChevronRight, Search, Filter } from "lucide-react";
+import { Truck, CheckCircle2, ChevronRight } from "lucide-react";
 
 const Orders: React.FC = () => {
   const orders = [
