@@ -39,9 +39,11 @@ const Home = () => {
         <div className="max-w-[1440px] mx-auto relative h-[500px] rounded-2xl overflow-hidden group">
           <div className="absolute inset-0 bg-gradient-to-r from-black/60 to-transparent z-10" />
           <img
-            src="https://images.unsplash.com/photo-1468436139062-f60a71c5c892?q=80&w=2070&auto=format&fit=crop"
+            src="https://images.unsplash.com/photo-1468436139062-f60a71c5c892?q=75&w=1440&fm=webp&fit=crop"
             alt="OMNISTORE: Gifts, Gadgets & Play"
             className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
+            fetchPriority="high"
+            loading="eager"
           />
           <div className="relative z-20 h-full flex flex-col justify-center px-12 md:px-20 max-w-4xl text-white">
             <div className="bg-violet-600 text-[10px] font-black uppercase tracking-widest px-4 py-1.5 rounded-full w-fit mb-4">

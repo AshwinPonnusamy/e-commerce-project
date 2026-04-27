@@ -16,10 +16,20 @@ const ProductDetailCard: React.FC<ProductDetailCardProps> = ({ images = [] }) =>
     }
   }, [images]);
 
+  const containerRef = React.useRef<HTMLDivElement>(null);
+  const [bounds, setBounds] = useState<{ left: number; top: number; width: number; height: number } | null>(null);
+
+  const handleMouseEnter = () => {
+    setIsHovered(true);
+    if (containerRef.current) {
+      setBounds(containerRef.current.getBoundingClientRect());
+    }
+  };
+
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    const { left, top, width, height } = e.currentTarget.getBoundingClientRect();
-    const x = ((e.clientX - left) / width) * 100;
-    const y = ((e.clientY - top) / height) * 100;
+    if (!bounds) return;
+    const x = ((e.clientX - bounds.left) / bounds.width) * 100;
+    const y = ((e.clientY - bounds.top) / bounds.height) * 100;
     setMousePos({ x, y });
   };
 
@@ -42,9 +52,10 @@ const ProductDetailCard: React.FC<ProductDetailCardProps> = ({ images = [] }) =>
       {/* Main Image Container */}
       <div className="order-1 md:order-2 flex-1 w-full relative group">
         <div
+          ref={containerRef}
           className="relative aspect-[4/4] bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden cursor-zoom-in transition-all duration-500 hover:shadow-xl"
           onMouseMove={handleMouseMove}
-          onMouseEnter={() => setIsHovered(true)}
+          onMouseEnter={handleMouseEnter}
           onMouseLeave={() => setIsHovered(false)}
         >
           {/* Main Product Image with Magnifier Zoom */}
