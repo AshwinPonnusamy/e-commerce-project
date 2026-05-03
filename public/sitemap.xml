@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+  
+  <!-- Home Page -->
+  <url>
+    <loc>https://omnistoreonline.netlify.app/</loc>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+    <image:image>
+      <image:loc>https://omnistoreonline.netlify.app/assets/hero-banner.jpg</image:loc>
+      <image:caption>Omni Store Online - Best E-commerce in India</image:caption>
+    </image:image>
+  </url>
+
+  <!-- Shop / Products -->
+  <url>
+    <loc>https://omnistoreonline.netlify.app/shop</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <!-- About Us -->
+  <url>
+    <loc>https://omnistoreonline.netlify.app/about</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Contact -->
+  <url>
+    <loc>https://omnistoreonline.netlify.app/contact</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Category: Electronics -->
+  <url>
+    <loc>https://omnistoreonline.netlify.app/shop/electronics</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Category: Fashion -->
+  <url>
+    <loc>https://omnistoreonline.netlify.app/shop/fashion</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Note: Dynamic product pages should be added here via build script or dynamically generated -->
+
+</urlset>
