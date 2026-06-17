@@ -1,6 +1,6 @@
 import React from "react";
 import { Outlet, useNavigate, useLocation } from "react-router-dom";
-import { Package, MapPin, Settings, LogOut, ChevronRight } from "lucide-react";
+import { Package, MapPin, Settings, LogOut, ChevronRight, CreditCard } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../state/store/store";
 import { logout } from "../../state/store/features/authData";
@@ -11,9 +11,17 @@ const ProfileLayout: React.FC = () => {
   const dispatch = useDispatch();
   const user = useSelector((state: RootState) => state.userData);
 
+  const getInitials = (name: string) => {
+    if (!name) return "U";
+    const parts = name.trim().split(" ");
+    if (parts.length === 1) return parts[0].substring(0, 2).toUpperCase();
+    return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+  };
+
   const menuItems = [
     { label: "My Orders", path: "/layout/profile/orders", icon: <Package size={18} /> },
     { label: "Saved Addresses", path: "/layout/profile/addresses", icon: <MapPin size={18} /> },
+    { label: "Payment Methods", path: "/layout/profile/payments", icon: <CreditCard size={18} /> },
     { label: "Settings", path: "/layout/profile/settings", icon: <Settings size={18} /> },
   ];
 
@@ -33,12 +41,8 @@ const ProfileLayout: React.FC = () => {
             <div className="absolute top-0 right-0 w-32 h-32 bg-violet-600/5 blur-3xl rounded-full translate-x-1/2 -translate-y-1/2 transition-transform duration-700 group-hover:scale-150" />
             
             <div className="relative z-10 flex flex-row lg:flex-col items-center gap-3 lg:gap-0 lg:text-center">
-              <div className="w-12 h-12 lg:w-16 lg:h-16 rounded-full border-2 border-violet-50 p-0.5">
-                <img 
-                  src={user?.profileUrl || "https://i.pravatar.cc/150?u=user"} 
-                  alt="Profile" 
-                  className="w-full h-full rounded-full object-cover"
-                />
+              <div className="w-12 h-12 lg:w-16 lg:h-16 rounded-full border-2 border-violet-600 bg-gradient-to-tr from-violet-600 to-indigo-600 flex items-center justify-center text-white font-black text-sm lg:text-lg uppercase shadow-md shadow-violet-600/20">
+                {getInitials(user?.fullName || "Guest User")}
               </div>
               <div className="lg:mt-3">
                 <h2 className="text-xs lg:text-sm font-black text-gray-900 tracking-tight uppercase">

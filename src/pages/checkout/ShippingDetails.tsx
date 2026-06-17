@@ -1,9 +1,11 @@
 import InputText from "../../centralized/InputText"
-import { useForm } from "react-hook-form";
+import { Control } from "react-hook-form";
 
-const ShippingDetails = () => {
-  const { control } = useForm();
+interface ShippingDetailsProps {
+  control: Control<any>;
+}
 
+const ShippingDetails: React.FC<ShippingDetailsProps> = ({ control }) => {
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-2 mb-4">
@@ -20,6 +22,7 @@ const ShippingDetails = () => {
               name="name"
               placeholder='Enter your name'
               control={control}
+              required={true}
             />
           </div>
           <div className="col-span-1">
@@ -27,8 +30,10 @@ const ShippingDetails = () => {
               fullWidth
               label="Phone Number"
               name="number"
-              placeholder='Enter mobile number'
+              placeholder='Enter 10-digit mobile number'
               control={control}
+              required={true}
+              pattern={/^[0-9]{10}$/}
             />
           </div>
           <div className="col-span-1">
@@ -38,6 +43,8 @@ const ShippingDetails = () => {
               name="pincode"
               placeholder='Enter 6-digit pincode'
               control={control}
+              required={true}
+              pattern={/^[0-9]{6}$/}
             />
           </div>
           <div className="col-span-1">
@@ -47,6 +54,7 @@ const ShippingDetails = () => {
               name="city"
               placeholder='Enter city'
               control={control}
+              required={true}
             />
           </div>
           <div className="col-span-2">
@@ -56,6 +64,7 @@ const ShippingDetails = () => {
               name="address"
               placeholder='House No, Building, Street, Area'
               control={control}
+              required={true}
             />
           </div>
           <div className="col-span-1">
@@ -65,6 +74,7 @@ const ShippingDetails = () => {
               name="state"
               placeholder='Enter state'
               control={control}
+              required={true}
             />
           </div>
           <div className="col-span-1">

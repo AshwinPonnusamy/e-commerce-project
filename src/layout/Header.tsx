@@ -21,6 +21,7 @@ const Header: React.FC = () => {
 
   const navLinks = [
     { label: "Categories", path: "/layout/allproducts" },
+    { label: "Offers", path: "/layout/offers" },
     { label: "FAQ", path: "/layout/faq" },
   ];
 
@@ -126,7 +127,14 @@ const Header: React.FC = () => {
             {isLoggedIn && (
               <div className="mb-10 pb-10 border-b border-gray-50">
                 <div className="flex items-center gap-4 mb-6">
-                  <img src={user?.profileUrl || "https://i.pravatar.cc/150?u=user"} alt="User" className="w-12 h-12 rounded-full border-2 border-violet-50" />
+                  <div className="w-12 h-12 rounded-full border-2 border-violet-600 bg-gradient-to-tr from-violet-600 to-indigo-600 flex items-center justify-center text-white font-black text-sm uppercase shadow-sm">
+                    {(() => {
+                      const name = user?.fullName || "Guest User";
+                      const parts = name.trim().split(" ");
+                      if (parts.length === 1) return parts[0].substring(0, 2).toUpperCase();
+                      return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+                    })()}
+                  </div>
                   <div>
                     <p className="text-xs font-black text-gray-900 uppercase tracking-tight">Hello, {user?.fullName?.split(' ')[0]}</p>
                     <p className="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Premium Member</p>

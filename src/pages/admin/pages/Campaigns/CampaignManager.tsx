@@ -21,6 +21,24 @@ const mockCampaigns = [
 
 const CampaignManager: React.FC = () => {
   const [showForm, setShowForm] = useState(false);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [filePreview, setFilePreview] = useState<string | null>(null);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      const file = e.target.files[0];
+      setSelectedFile(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setFilePreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const triggerFileInput = () => {
+    document.getElementById("banner-upload")?.click();
+  };
 
   return (
     <div className="space-y-8 animate-entrance">
@@ -31,8 +49,12 @@ const CampaignManager: React.FC = () => {
           <p className="text-sm text-gray-500 font-medium mt-1">Manage storefront banners, popups, and marketing assets.</p>
         </div>
         <button 
-          onClick={() => setShowForm(!showForm)}
-          className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-black transition-all active:scale-95 shadow-lg ${
+          onClick={() => {
+            setShowForm(!showForm);
+            setSelectedFile(null);
+            setFilePreview(null);
+          }}
+          className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-black transition-all active:scale-95 shadow-lg cursor-pointer ${
             showForm 
               ? 'bg-white border border-gray-200 text-gray-600 hover:bg-gray-50' 
               : 'bg-[#7c3aed] text-white hover:bg-violet-700 shadow-violet-600/20'
@@ -56,35 +78,66 @@ const CampaignManager: React.FC = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             <div className="space-y-1.5">
               <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Campaign Title</label>
-              <input type="text" placeholder="e.g. Diwali Mega Sale" className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl text-sm font-black" />
+              <input type="text" placeholder="e.g. Diwali Mega Sale" className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl text-sm font-black focus:outline-none focus:border-violet-500" />
             </div>
             <div className="space-y-1.5">
               <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Call to Action (Link)</label>
               <div className="relative">
                 <ExternalLink className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
-                <input type="text" placeholder="https://omnistore.com/collection/sale" className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-100 rounded-xl text-sm font-bold" />
+                <input type="text" placeholder="https://omnistore.com/collection/sale" className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-100 rounded-xl text-sm font-bold focus:outline-none focus:border-violet-500" />
               </div>
             </div>
             <div className="space-y-1.5">
               <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Start Date</label>
-              <input type="date" className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl text-sm font-bold text-gray-500" />
+              <input type="date" className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl text-sm font-bold text-gray-500 focus:outline-none focus:border-violet-500" />
             </div>
             <div className="space-y-1.5">
               <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">End Date</label>
-              <input type="date" className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl text-sm font-bold text-gray-500" />
+              <input type="date" className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl text-sm font-bold text-gray-500 focus:outline-none focus:border-violet-500" />
             </div>
 
             <div className="sm:col-span-2 space-y-1.5">
               <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Banner Asset</label>
-              <div className="border-4 border-dashed border-gray-50 bg-gray-50/50 rounded-2xl p-8 text-center hover:border-violet-200 transition-all cursor-pointer group">
-                <UploadCloud className="text-gray-300 mx-auto mb-2 group-hover:text-violet-500 group-hover:scale-110 transition-all" size={32} />
-                <p className="text-xs font-black text-gray-900">Upload Creative Asset</p>
-                <p className="text-[10px] text-gray-400 mt-1 uppercase font-bold tracking-widest">Recommended: 1920x600 (Hero) or 800x800 (Popup)</p>
+              <input 
+                type="file" 
+                id="banner-upload" 
+                accept="image/*" 
+                className="hidden" 
+                onChange={handleFileChange} 
+              />
+              <div 
+                onClick={triggerFileInput}
+                className="border-4 border-dashed border-gray-150 bg-gray-50/50 rounded-2xl p-8 text-center hover:border-violet-200 transition-all cursor-pointer group flex flex-col items-center justify-center min-h-[160px] select-none"
+              >
+                {filePreview ? (
+                  <div className="space-y-3 flex flex-col items-center">
+                    <div className="w-32 h-16 rounded-lg overflow-hidden border border-gray-200 shadow-sm bg-white">
+                      <img src={filePreview} alt="Preview" className="w-full h-full object-cover" />
+                    </div>
+                    <div>
+                      <p className="text-xs font-black text-gray-900">{selectedFile?.name}</p>
+                      <p className="text-[9px] text-violet-600 font-bold uppercase tracking-widest mt-1.5">Click to replace asset</p>
+                    </div>
+                  </div>
+                ) : (
+                  <>
+                    <UploadCloud className="text-gray-300 mx-auto mb-2 group-hover:text-violet-500 group-hover:scale-110 transition-all" size={32} />
+                    <p className="text-xs font-black text-gray-900">Upload Creative Asset</p>
+                    <p className="text-[10px] text-gray-400 mt-1 uppercase font-bold tracking-widest">Recommended: 1920x600 (Hero) or 800x800 (Popup)</p>
+                  </>
+                )}
               </div>
             </div>
             
             <div className="sm:col-span-2 pt-6 flex justify-end gap-3">
-              <button className="px-8 py-3 bg-[#7c3aed] text-white text-xs font-black rounded-xl hover:bg-violet-700 shadow-lg shadow-violet-600/20 transition-all active:scale-95">
+              <button 
+                type="button"
+                onClick={() => {
+                  alert("Campaign configured successfully!");
+                  setShowForm(false);
+                }}
+                className="px-8 py-3 bg-[#7c3aed] hover:bg-violet-750 text-white text-xs font-black rounded-xl shadow-lg shadow-violet-600/20 transition-all active:scale-95 cursor-pointer"
+              >
                 LAUNCH CAMPAIGN
               </button>
             </div>

@@ -10,6 +10,9 @@ import FAQ from '../pages/faq/FAQ';
 import ProfileLayout from '../pages/profile/ProfileLayout';
 import Orders from '../pages/profile/Orders';
 import Addresses from '../pages/profile/Addresses';
+import Settings from '../pages/profile/Settings';
+import ProfilePayments from '../pages/profile/ProfilePayments';
+import OffersPage from '../pages/offers/OffersPage';
 
 // Admin Imports
 import AdminLayoutWrapper from '../pages/admin/pages/AdminLayoutWrapper';
@@ -43,11 +46,13 @@ const MainRoutes = () => {
         <Route path="checkout" element={<CheckOut />} />
         <Route path="checkout/payment-status/:status" element={<PaymentStatus />} />
         <Route path="faq" element={<FAQ />} />
+        <Route path="offers" element={<OffersPage />} />
         <Route path="profile" element={<ProfileLayout />}>
           <Route index element={<Navigate to="orders" replace />} />
           <Route path="orders" element={<Orders />} />
           <Route path="addresses" element={<Addresses />} />
-          <Route path="settings" element={<Orders />} /> {/* Placeholder for now */}
+          <Route path="payments" element={<ProfilePayments />} />
+          <Route path="settings" element={<Settings />} />
         </Route>
       </Route>
 

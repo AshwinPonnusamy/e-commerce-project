@@ -22,6 +22,40 @@ export interface CartItem extends Product {
   quantity: number;
 }
 
+export interface OrderItem {
+  id: number | string;
+  name: string;
+  price: number;
+  qty: number;
+  img: string;
+}
+
+export interface ShippingAddress {
+  name: string;
+  number: string;
+  pincode: string;
+  city: string;
+  address: string;
+  state: string;
+  landmark?: string;
+}
+
+export interface Order {
+  id: string;
+  date: string;
+  amount: string;
+  status: "Ordered" | "In Transit" | "Delivered" | "Cancelled" | "Processing";
+  items: OrderItem[];
+  shippingAddress: ShippingAddress;
+  paymentMethod: string;
+  paymentStatus: string;
+  subtotal: number;
+  discount: number;
+  deliveryCharges: number;
+  handlingFee: number;
+  totalAmount: number;
+}
+
 export interface ProductData {
   searchProductList: Product[];
   allProductList: Product[];
@@ -31,7 +65,9 @@ export interface ProductData {
   open: boolean;
   cartItems: CartItem[];
   searchQuery: string;
+  orders: Order[];
 }
+
 const initialState: ProductData = {
   searchProductList: [],
   allProductList: [],
@@ -41,6 +77,59 @@ const initialState: ProductData = {
   open: false,
   cartItems: [],
   searchQuery: "",
+  orders: [
+    {
+      id: "ORD-9921",
+      date: "Oct 24, 2023",
+      amount: "₹4,299",
+      status: "In Transit",
+      items: [
+        { id: "p1", name: "Premium Wireless Headphones", price: 3499, qty: 1, img: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=100" },
+        { id: "p2", name: "Smart Watch Band", price: 800, qty: 1, img: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=100" }
+      ],
+      shippingAddress: {
+        name: "Alex Rivers",
+        number: "+91 9876543210",
+        pincode: "560001",
+        city: "Bangalore",
+        address: "24th Street, Premium Residency, Block C, Apt 402",
+        state: "Karnataka",
+        landmark: "Near Central Park"
+      },
+      paymentMethod: "Card Payment",
+      paymentStatus: "Success",
+      subtotal: 4299,
+      discount: 0,
+      deliveryCharges: 0,
+      handlingFee: 0,
+      totalAmount: 4299
+    },
+    {
+      id: "ORD-9845",
+      date: "Oct 18, 2023",
+      amount: "₹1,850",
+      status: "Delivered",
+      items: [
+        { id: "p3", name: "Luxury Scented Candle", price: 1850, qty: 1, img: "https://images.unsplash.com/photo-1603006375271-7f3b9042c943?w=100" }
+      ],
+      shippingAddress: {
+        name: "Alex Rivers",
+        number: "+91 9876543210",
+        pincode: "560001",
+        city: "Bangalore",
+        address: "24th Street, Premium Residency, Block C, Apt 402",
+        state: "Karnataka",
+        landmark: "Near Central Park"
+      },
+      paymentMethod: "Cash on Delivery",
+      paymentStatus: "Success",
+      subtotal: 1850,
+      discount: 0,
+      deliveryCharges: 0,
+      handlingFee: 0,
+      totalAmount: 1850
+    }
+  ]
 };
 
 export const productSlice = createSlice({
@@ -87,6 +176,12 @@ export const productSlice = createSlice({
     clearCart: (state) => {
       state.cartItems = [];
     },
+    createOrder: (state, action: PayloadAction<Order>) => {
+      if (!state.orders) {
+        state.orders = [];
+      }
+      state.orders.unshift(action.payload);
+    },
   },
 });
 export const {
@@ -99,6 +194,7 @@ export const {
   updateCartQuantity,
   removeFromCart,
   clearCart,
-  setSearchProductList
+  setSearchProductList,
+  createOrder
 } = productSlice.actions;
 export default productSlice.reducer;

@@ -36,7 +36,10 @@ const Home = () => {
     <div className="flex flex-col gap-16 pb-16">
       {/* Hero Section */}
       <section className="px-6 pt-6">
-        <div className="max-w-[1440px] mx-auto relative h-[500px] rounded-2xl overflow-hidden group">
+        <div 
+          className="max-w-[1440px] mx-auto relative h-[500px] rounded-2xl overflow-hidden group cursor-pointer"
+          onClick={() => navigate("/layout/allproducts")}
+        >
           <div className="absolute inset-0 bg-gradient-to-r from-black/60 to-transparent z-10" />
           <img
             src="https://images.unsplash.com/photo-1468436139062-f60a71c5c892?q=75&w=1440&fm=webp&fit=crop"
@@ -158,7 +161,10 @@ const Home = () => {
 
       {/* Clearance Sale Section */}
       <section className="px-6 max-w-[1440px] mx-auto w-full mb-10">
-        <div className="relative bg-[#050505] rounded-[48px] overflow-hidden group border border-white/5">
+        <div 
+          className="relative bg-[#050505] rounded-[48px] overflow-hidden group border border-white/5 cursor-pointer"
+          onClick={() => navigate("/layout/allproducts")}
+        >
           {/* Animated Mesh Gradient Background */}
           <div className="absolute inset-0 z-0">
             <div className="absolute top-0 -left-1/4 w-full h-full bg-[radial-gradient(circle_at_center,_#7c3aed33_0%,_transparent_50%)] animate-pulse" />
@@ -309,7 +315,10 @@ const Home = () => {
         </div>
 
         <div className="lg:col-span-4 flex flex-col gap-8">
-          <div className="bg-[#0F172A] rounded-[32px] p-10 text-white relative overflow-hidden group flex-1 flex flex-col justify-end min-h-[400px]">
+          <div 
+            className="bg-[#0F172A] rounded-[32px] p-10 text-white relative overflow-hidden group flex-1 flex flex-col justify-end min-h-[400px] cursor-pointer"
+            onClick={() => navigate("/layout/allproducts")}
+          >
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent z-10" />
             <img
               src="https://images.unsplash.com/photo-1513519245088-0e12902e5a38?q=80&w=800&auto=format&fit=crop"

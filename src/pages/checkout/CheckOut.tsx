@@ -3,24 +3,93 @@ import OrderSummary from './OrderSummary';
 import PaymentOptions from './PaymentsPage';
 import ShippingDetails from './ShippingDetails';
 import { ArrowLeft, ArrowRight, Check } from 'lucide-react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../../state/store/store';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import CustomButton from '../../components/commonComponents/button/CustomButton';
+import { useForm } from 'react-hook-form';
+import { createOrder, clearCart } from '../../state/store/features/productData';
+import { mockCoupons, calculateDiscount } from '../../utils/offerEngine';
 
 const steps = ['Shipping', 'Order Summary', 'Payment'];
 
 const CheckOut = () => {
     const navigate = useNavigate();
+    const dispatch = useDispatch();
     const [activeStep, setActiveStep] = useState(0);
     const [paymentMethod, setPaymentMethod] = useState('');
     const [isProcessing, setIsProcessing] = useState(false);
     const [processingMessage, setProcessingMessage] = useState('');
+    const [couponCodeInput, setCouponCodeInput] = useState('');
+    const [appliedCoupon, setAppliedCoupon] = useState<any | null>(null);
+    const [couponDiscount, setCouponDiscount] = useState(0);
+    const [couponError, setCouponError] = useState<string | null>(null);
     const cartItems = useSelector((state: RootState) => state.productData.cartItems);
 
-    const handleNext = () => setActiveStep((prevStep) => prevStep + 1);
+    const { control, trigger, getValues } = useForm({
+        defaultValues: {
+            name: '',
+            number: '',
+            pincode: '',
+            city: '',
+            address: '',
+            state: '',
+            landmark: ''
+        }
+    });
+
+    const handleNext = async () => {
+        if (activeStep === 0) {
+            const isValid = await trigger();
+            if (!isValid) return;
+        }
+        setActiveStep((prevStep) => prevStep + 1);
+    };
+
     const handleBack = () => setActiveStep((prevStep) => prevStep - 1);
+
+    const handleApplyCoupon = () => {
+        setCouponError(null);
+        const code = couponCodeInput.trim().toUpperCase();
+        if (!code) {
+            setCouponError("Enter a coupon code.");
+            return;
+        }
+
+        const coupon = mockCoupons.find(c => c.code === code);
+        if (!coupon) {
+            setCouponError("Invalid coupon code.");
+            return;
+        }
+
+        if (!coupon.isActive) {
+            setCouponError("This coupon is no longer active.");
+            return;
+        }
+
+        if (coupon.minOrderValue && subtotal < coupon.minOrderValue) {
+            setCouponError(`Min order value of ₹${coupon.minOrderValue} required.`);
+            return;
+        }
+
+        const discountAmount = calculateDiscount(subtotal, coupon);
+        if (discountAmount <= 0 && coupon.type !== 'freeship') {
+            setCouponError("This coupon is not applicable to your order.");
+            return;
+        }
+
+        setAppliedCoupon(coupon);
+        setCouponDiscount(discountAmount);
+        setCouponError(null);
+    };
+
+    const handleRemoveCoupon = () => {
+        setAppliedCoupon(null);
+        setCouponDiscount(0);
+        setCouponCodeInput('');
+        setCouponError(null);
+    };
 
     const subtotal = cartItems.reduce(
         (sum, item) => sum + item.price * item.quantity,
@@ -34,9 +103,54 @@ const CheckOut = () => {
         0
     );
     const totalDiscount = totalOriginalPrice - subtotal;
-    const deliveryCharges = subtotal > 500 ? 0 : 50;
+    const deliveryCharges = (subtotal > 500 || (appliedCoupon && appliedCoupon.type === 'freeship')) ? 0 : 50;
     const handlingFee = paymentMethod === 'cod' ? 17 : 0;
-    const totalAmount = subtotal + deliveryCharges + handlingFee;
+    const totalAmount = Math.max(0, subtotal + deliveryCharges + handlingFee - couponDiscount);
+
+    const handlePlaceOrder = (method: 'cod' | 'card') => {
+        const orderId = `ORD-${Math.floor(1000 + Math.random() * 9000)}`;
+        const dateStr = new Date().toLocaleDateString('en-US', {
+            month: 'short',
+            day: 'numeric',
+            year: 'numeric'
+        });
+        
+        const shippingDetails = getValues();
+        const orderItems = cartItems.map(item => ({
+            id: item.id,
+            name: item.title,
+            price: item.price,
+            qty: item.quantity,
+            img: item.thumbnail
+        }));
+
+        const newOrder = {
+            id: orderId,
+            date: dateStr,
+            amount: `₹${totalAmount.toLocaleString('en-IN', { maximumFractionDigits: 2 })}`,
+            status: 'Ordered' as const,
+            items: orderItems,
+            shippingAddress: {
+                name: shippingDetails.name || 'Guest User',
+                number: shippingDetails.number || '',
+                pincode: shippingDetails.pincode || '',
+                city: shippingDetails.city || '',
+                address: shippingDetails.address || '',
+                state: shippingDetails.state || '',
+                landmark: shippingDetails.landmark || ''
+            },
+            paymentMethod: method === 'cod' ? 'Cash on Delivery' : 'Card Payment',
+            paymentStatus: method === 'cod' ? 'Pending' : 'Success',
+            subtotal,
+            discount: totalDiscount + couponDiscount,
+            deliveryCharges,
+            handlingFee,
+            totalAmount
+        };
+
+        dispatch(createOrder(newOrder));
+        dispatch(clearCart());
+    };
 
     const handleCardPayment = async (totalAmount?: number) => {
         if (!totalAmount) {
@@ -55,6 +169,7 @@ const CheckOut = () => {
 
             if (response.data?.url) {
                 setProcessingMessage("Redirecting to payment gateway...");
+                handlePlaceOrder('card');
                 await new Promise(resolve => setTimeout(resolve, 800));
                 window.location.href = response.data.url;
             } else {
@@ -67,6 +182,7 @@ const CheckOut = () => {
             setProcessingMessage("Simulating transaction success...");
             await new Promise(resolve => setTimeout(resolve, 1200));
             setIsProcessing(false);
+            handlePlaceOrder('card');
             navigate("/layout/checkout/payment-status/success");
         }
     };
@@ -125,7 +241,7 @@ const CheckOut = () => {
                 {/* Main Content Area */}
                 <div className="lg:col-span-8">
                     <div className="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-gray-100 min-h-[400px]">
-                        {activeStep === 0 && <ShippingDetails />}
+                        {activeStep === 0 && <ShippingDetails control={control} />}
                         {activeStep === 1 && <OrderSummary />}
                         {activeStep === 2 && (
                             <PaymentOptions
@@ -177,6 +293,13 @@ const CheckOut = () => {
                                 <span className="text-sm font-black">-₹{totalDiscount.toFixed(2)}</span>
                             </div>
 
+                            {couponDiscount > 0 && (
+                                <div className="flex justify-between items-center text-green-600 font-bold">
+                                    <span className="text-sm">Coupon Discount</span>
+                                    <span className="text-sm font-black">-₹{couponDiscount.toFixed(2)}</span>
+                                </div>
+                            )}
+
                             <div className="flex justify-between items-center text-gray-600 font-medium">
                                 <span className="text-sm">Delivery Charges</span>
                                 <span className={`text-sm font-bold ${deliveryCharges === 0 ? 'text-green-600' : 'text-gray-900'}`}>
@@ -190,6 +313,52 @@ const CheckOut = () => {
                                     <span className="text-sm font-bold text-gray-900">₹17</span>
                                 </div>
                             )}
+
+                            {/* Coupon apply box */}
+                            <div className="border-t border-gray-100 pt-4 mt-4">
+                                <h3 className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">Apply Coupon</h3>
+                                {appliedCoupon ? (
+                                    <div className="flex items-center justify-between p-3.5 bg-green-50 border border-green-100 rounded-2xl text-green-700">
+                                        <div className="flex flex-col">
+                                            <span className="text-xs font-black uppercase tracking-wider">{appliedCoupon.code}</span>
+                                            <span className="text-[9px] font-bold uppercase tracking-tight text-green-600 mt-0.5">
+                                                {appliedCoupon.type === 'freeship' ? 'Free Shipping Applied' : `₹${couponDiscount.toFixed(2)} Discount Applied`}
+                                            </span>
+                                        </div>
+                                        <button 
+                                            type="button"
+                                            onClick={handleRemoveCoupon}
+                                            className="px-3 py-1.5 hover:bg-green-100 rounded-lg text-green-800 transition-all font-black text-[9px] uppercase tracking-widest cursor-pointer border border-green-200"
+                                        >
+                                            Remove
+                                        </button>
+                                    </div>
+                                ) : (
+                                    <div className="space-y-2">
+                                        <div className="flex gap-2">
+                                            <input 
+                                                type="text" 
+                                                value={couponCodeInput}
+                                                onChange={(e) => setCouponCodeInput(e.target.value)}
+                                                placeholder="ENTER CODE"
+                                                className="flex-1 bg-gray-50 border border-gray-150 rounded-xl px-4 py-2.5 text-xs font-mono font-black uppercase tracking-wider focus:outline-none focus:border-violet-500 transition-all placeholder:font-sans placeholder:font-medium placeholder:text-gray-400"
+                                            />
+                                            <button 
+                                                type="button"
+                                                onClick={handleApplyCoupon}
+                                                className="px-4 py-2.5 bg-gray-900 hover:bg-black text-white text-[10px] font-black uppercase tracking-widest rounded-xl transition-all shadow-sm cursor-pointer"
+                                            >
+                                                Apply
+                                            </button>
+                                        </div>
+                                        {couponError && (
+                                            <p className="text-[9px] font-bold text-red-500 uppercase tracking-tight ml-1">
+                                                {couponError}
+                                            </p>
+                                        )}
+                                    </div>
+                                )}
+                            </div>
 
                             <hr className="border-gray-100 my-4" />
 
@@ -210,6 +379,7 @@ const CheckOut = () => {
                                                 setProcessingMessage("Placing your order...");
                                                 await new Promise(resolve => setTimeout(resolve, 1500));
                                                 setIsProcessing(false);
+                                                handlePlaceOrder('cod');
                                                 navigate("/layout/checkout/payment-status/success");
                                             } else {
                                                 handleCardPayment(totalAmount);
