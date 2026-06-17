@@ -2,10 +2,6 @@ import React from 'react';
 import InputText from '../../centralized/InputText';
 import CustomRadio from '../../centralized/CustomRadio';
 import { useForm } from "react-hook-form";
-import googlePay from '../../assets/image/paymentIcons/google-pay-icon.svg';
-import phonePay from '../../assets/image/paymentIcons/phonepe-icon.svg';
-import stripePay from '../../assets/image/paymentIcons/stripe-icon.svg';
-import razorPay from '../../assets/image/paymentIcons/razorpay-icon.svg';
 import CustomButton from '../../components/commonComponents/button/CustomButton';
 
 interface Props {
@@ -25,10 +21,10 @@ const PaymentsPage: React.FC<Props> = ({ setPaymentMethod, paymentMethod, totalA
   });
 
   const walletOptions = [
-    { name: "Google Pay", src: googlePay, method: "gpay" },
-    { name: "PhonePe", src: phonePay, method: "phonepe" },
-    { name: "Stripe", src: stripePay, method: "stripe" },
-    { name: "Razorpay", src: razorPay, method: "razorpay" }
+    { name: "Google Pay", src: "/image/paymentIcons/google-pay-icon.svg", method: "gpay" },
+    { name: "PhonePe", src: "/image/paymentIcons/phonepe-icon.svg", method: "phonepe" },
+    { name: "Stripe", src: "/image/paymentIcons/stripe-icon.svg", method: "stripe" },
+    { name: "Razorpay", src: "/image/paymentIcons/razorpay-icon.svg", method: "razorpay" }
   ];
 
   const handlePaymentClick = (method: string) => {

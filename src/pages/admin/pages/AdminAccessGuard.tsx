@@ -11,7 +11,7 @@ const AdminAccessGuard: React.FC<AdminAccessGuardProps> = ({ children }) => {
     const [error, setError] = useState<string>('');
     const [isLoading, setIsLoading] = useState<boolean>(false);
 
-    const ADMIN_CODE = "8888"; // You can change this to your preferred code
+    const ADMIN_CODE = "8902"; // You can change this to your preferred code
 
     useEffect(() => {
         const authStatus = sessionStorage.getItem('admin_authenticated');
