@@ -10,7 +10,7 @@
 [[headers]]
   for = "/*"
   [headers.values]
-    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' https://checkout.razorpay.com https://js.stripe.com https://www.google-analytics.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://*.netlify.app; connect-src 'self' https://api.razorpay.com https://api.stripe.com https://www.google-analytics.com;"
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' https://checkout.razorpay.com https://js.stripe.com https://www.google-analytics.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://*.netlify.app https://images.unsplash.com https://picsum.photos https://*.picsum.photos https://flagcdn.com https://razorpay.com https://example.com; connect-src 'self' https://api.razorpay.com https://api.stripe.com https://www.google-analytics.com;"
     Strict-Transport-Security = "max-age=31536000; includeSubDomains; preload"
     X-Frame-Options = "DENY"
     X-Content-Type-Options = "nosniff"
