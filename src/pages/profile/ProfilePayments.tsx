@@ -6,10 +6,8 @@ import {
   Smartphone, 
   CheckCircle, 
   X, 
-  Globe, 
   ShieldCheck,
   AlertCircle,
-  ChevronDown,
   ChevronUp
 } from "lucide-react";
 import { useForm } from "react-hook-form";
