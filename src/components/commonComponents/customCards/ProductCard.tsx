@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { Share2, ShoppingBag, Star } from "lucide-react";
+import { Share2, ShoppingBag, Star, Check } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 interface ProductCardProps {
   productName: string;
@@ -33,6 +34,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
   isInCart,
   viewMode = 'grid'
 }) => {
+  const navigate = useNavigate();
   const [hovered, setHovered] = useState(false);
 
   const formattedPrice = typeof productPrice === 'number' ? `₹${productPrice.toLocaleString()}` : productPrice;
@@ -113,13 +115,18 @@ const ProductCard: React.FC<ProductCardProps> = ({
               <button
                 onClick={(e) => {
                   e.stopPropagation();
-                  handleAddCart?.();
+                  if (isInCart) {
+                    navigate("/layout/shoppingcart");
+                  } else {
+                    handleAddCart?.();
+                  }
                 }}
-                className={`flex items-center gap-2 px-6 py-2.5 rounded-full text-[10px] font-medium uppercase tracking-[0.15em] transition-all ${isInCart ? 'bg-gray-100 text-gray-900' : 'bg-[#1A1A2E] text-white hover:bg-black shadow-lg shadow-black/10'
-                  }`}
+                className={`flex items-center gap-2 px-6 py-2.5 rounded-full text-[10px] font-medium uppercase tracking-[0.15em] transition-all ${
+                  isInCart ? 'bg-violet-600 text-white hover:bg-violet-700' : 'bg-[#1A1A2E] text-white hover:bg-black shadow-lg shadow-black/10'
+                }`}
               >
-                <ShoppingBag size={14} />
-                {isInCart ? 'In Bag' : 'Add'}
+                {isInCart ? <Check size={14} /> : <ShoppingBag size={14} />}
+                {isInCart ? 'Product added' : 'Add'}
               </button>
             </div>
           </div>
@@ -163,16 +170,33 @@ const ProductCard: React.FC<ProductCardProps> = ({
         )}
 
         {/* Quick Add (Elegant Overlay) */}
-        <div className={`absolute inset-x-3 bottom-3 transition-all duration-700 transform ${hovered ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'}`}>
+        <div className={`absolute inset-x-3 bottom-3 transition-all duration-700 transform ${hovered || isInCart ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'}`}>
           <button
             onClick={(e) => {
               e.stopPropagation();
-              handleAddCart?.();
+              if (isInCart) {
+                navigate("/layout/shoppingcart");
+              } else {
+                handleAddCart?.();
+              }
             }}
-            className="w-full bg-white/90 backdrop-blur-md text-gray-900 py-2.5 rounded-lg text-[8px] font-bold uppercase tracking-[0.15em] shadow-xl hover:bg-white transition-all flex items-center justify-center gap-1.5"
+            className={`w-full h-10 backdrop-blur-md rounded-full text-[8px] font-black uppercase tracking-[0.2em] shadow-xl transition-all flex items-center justify-center gap-1.5 border ${
+              isInCart 
+                ? 'bg-violet-600 border-violet-600 text-white hover:bg-violet-700' 
+                : 'bg-white/95 border-gray-100 text-gray-900 hover:bg-white'
+            }`}
           >
-            <ShoppingBag size={12} />
-            Quick Add
+            {isInCart ? (
+              <>
+                <Check size={12} />
+                Product added
+              </>
+            ) : (
+              <>
+                <ShoppingBag size={12} />
+                Quick Add
+              </>
+            )}
           </button>
         </div>
       </div>

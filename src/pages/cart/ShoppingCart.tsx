@@ -22,7 +22,7 @@ const ShoppingCart: React.FC = () => {
     const total = subtotal - storeDiscount + estimatedTax;
 
     const handleBuy = () => {
-        navigate("/layout/orderdetails");
+        navigate("/layout/checkout");
     };
 
     const handleClearAll = () => {

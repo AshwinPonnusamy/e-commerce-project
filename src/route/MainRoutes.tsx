@@ -5,6 +5,7 @@ import ProductsPage from '../pages/productList/ProductsPage';
 import ProductDetailPage from '../pages/productDetail/ProductDetailPage';
 import ShoppingCart from '../pages/cart/ShoppingCart';
 import CheckOut from '../pages/checkout/CheckOut';
+import PaymentStatus from '../pages/checkout/PaymentStatus';
 import FAQ from '../pages/faq/FAQ';
 import ProfileLayout from '../pages/profile/ProfileLayout';
 import Orders from '../pages/profile/Orders';
@@ -40,6 +41,7 @@ const MainRoutes = () => {
         <Route path="productdetail/:id" element={<ProductDetailPage />} />
         <Route path="shoppingcart" element={<ShoppingCart />} />
         <Route path="checkout" element={<CheckOut />} />
+        <Route path="checkout/payment-status/:status" element={<PaymentStatus />} />
         <Route path="faq" element={<FAQ />} />
         <Route path="profile" element={<ProfileLayout />}>
           <Route index element={<Navigate to="orders" replace />} />

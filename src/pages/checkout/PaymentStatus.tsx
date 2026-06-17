@@ -46,7 +46,7 @@ const PaymentStatus = () => {
           ? 'border-violet-600 text-violet-600 hover:bg-violet-50' 
           : 'border-red-600 text-red-600 hover:bg-red-50'
         }`}
-        onClick={() => navigate(isSuccess ? "/layout/home" : "/layout/orderDetails")}
+        onClick={() => navigate(isSuccess ? "/layout/home" : "/layout/checkout")}
       />
     </div>
   );

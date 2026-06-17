@@ -60,7 +60,13 @@ const ProductDetailPage: React.FC = () => {
                             rating={product?.rating}
                             discount={product?.discountPercentage}
                             originalPrice={originalPrice}
-                            handleAddCart={() => dispatch(handleAddCart(product) as any)}
+                            handleAddCart={() => {
+                                if (cartItems.some((item) => item.id === product.id)) {
+                                    navigate("/layout/shoppingcart");
+                                } else {
+                                    dispatch(handleAddCart(product) as any);
+                                }
+                            }}
                             handleBuyNow={() => handleBuyNow(product, dispatch, () => state, navigate)}
                             isInCart={cartItems.some((item) => item.id === product.id)}
                         />
